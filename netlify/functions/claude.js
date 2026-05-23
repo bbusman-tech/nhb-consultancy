@@ -39,7 +39,7 @@ exports.handler = async (event) => {
 
     // Enforce safe defaults — always use Sonnet 4, cap tokens
     const safePayload = {
-      model: 'claude-sonnet-4-20250514',
+      model: 'claude-sonnet-4-5',
       max_tokens: payload.max_tokens || 1000,
       system: payload.system || '',
       messages: payload.messages || [],
