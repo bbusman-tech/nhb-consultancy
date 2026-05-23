@@ -1,6 +1,11 @@
 import { useState, useEffect, useRef } from "react";
 import { submitContact, submitApplication, saveHealthCheck, fetchJobs } from "./lib/supabase";
 
+// ════════════════════════════════════════════════════════════════════════════
+//  NHB CONSULTANCY — Production Build
+//  Editorial-grade design system. No emoji. Premium SVG iconography.
+// ════════════════════════════════════════════════════════════════════════════
+
 const callClaude = async (system, messages, maxTokens = 1000) => {
   const res = await fetch('/.netlify/functions/claude', {
     method: 'POST',
@@ -12,128 +17,240 @@ const callClaude = async (system, messages, maxTokens = 1000) => {
   return data.content?.map(c => c.text).join('') || '';
 };
 
-const NHB_SYSTEM = `You are a senior consultant at NHB Consultancy, a boutique HR and hospitality recruitment firm in Dubai, UAE, founded by Nihel Hassen Busman. You speak like a knowledgeable, experienced professional — not a chatbot. Be direct, warm and concise. Never use phrases like "Certainly!" or "Great question!". Get straight to the point.
+const NHB_SYSTEM = `You are a senior HR advisor at NHB Consultancy — a boutique HR and recruitment firm in Dubai, UAE, founded by Nihel Hassen Busman (Chartered MCIPD, 15+ years across hospitality and corporate HR, formerly Director of HR at Radisson Hotel Group).
 
-NHB services: HR Consultancy (UAE Labour Law, policies, compliance, performance management), Recruitment & Talent Acquisition, Outsourced HR for SMEs, Hospitality Staffing (hotels, F&B, events, pre-opening).
+You speak with the authority and warmth of an experienced consultant. Never use phrases like "Certainly!" or "Great question!" — get straight to the point with substance.
 
-If someone asks about pricing, say the team will provide a tailored proposal. For complex legal matters, recommend speaking directly with NHB's team at admin@nhb-consultancy.com.`;
+NHB services span: HR Consultancy (UAE Labour Law, policy frameworks, organisational design, performance management); Recruitment & Executive Search across hospitality, corporate, events, data centres, energy and insurance; Outsourced HR for SMEs; and full Hospitality Management Services including pre-opening team builds.
+
+For pricing or complex legal matters, recommend direct engagement: admin@nhb-consultancy.com`;
+
+// ── DESIGN TOKENS ────────────────────────────────────────────────────────────
+const T = {
+  // Refined palette — sophisticated, editorial
+  bg:      '#FAFAF7',   // warm off-white
+  white:   '#FFFFFF',
+  ink:     '#0A1628',   // deep navy — primary
+  ink2:    '#1F2937',   // body text
+  muted:   '#6B7280',   // secondary text
+  faded:   '#9CA3AF',   // tertiary
+  border:  '#E5E2DA',   // warm border
+  line:    '#EFEDE6',   // hairline
+  gold:    '#A98B5C',   // refined warm gold
+  goldD:   '#8A6F44',   // gold hover
+  goldL:   '#D4BB8A',   // light gold
+};
 
 const Styles = () => (
   <style>{`
-    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Lato:wght@300;400;700&display=swap');
-    *{margin:0;padding:0;box-sizing:border-box}
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400&family=Inter:wght@300;400;500;600;700;800&display=swap');
+    *{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
     html{scroll-behavior:smooth}
-    body{font-family:'Lato',sans-serif;color:#1a1a1a;background:#fff;overflow-x:hidden}
-    h1,h2,h3,h4{font-family:'Montserrat',sans-serif}
+    body{font-family:'Inter',-apple-system,sans-serif;color:${T.ink2};background:${T.bg};overflow-x:hidden;font-feature-settings:'ss01','cv11'}
+    h1,h2,h3,h4,h5{font-family:'Playfair Display',serif;font-weight:600;color:${T.ink};letter-spacing:-0.01em;line-height:1.1}
     a{text-decoration:none;color:inherit}
-    input,textarea,select{font-family:'Lato',sans-serif}
-    select{-webkit-appearance:none;appearance:none}
-    ::-webkit-scrollbar{width:4px}
-    ::-webkit-scrollbar-thumb{background:#c9a84c}
+    input,textarea,select{font-family:'Inter',sans-serif}
+    select{-webkit-appearance:none;appearance:none;cursor:pointer}
+    ::-webkit-scrollbar{width:5px;height:5px}
+    ::-webkit-scrollbar-track{background:transparent}
+    ::-webkit-scrollbar-thumb{background:${T.border};border-radius:3px}
+    ::-webkit-scrollbar-thumb:hover{background:${T.gold}}
+    ::selection{background:${T.gold};color:${T.white}}
 
-    .btn-primary{background:#c9a84c;color:#fff;border:none;padding:14px 36px;font-family:'Montserrat',sans-serif;font-size:12px;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;cursor:pointer;transition:all 0.3s}
-    .btn-primary:hover{background:#b8922a}
-    .btn-outline{background:transparent;color:#fff;border:1px solid #fff;padding:13px 35px;font-family:'Montserrat',sans-serif;font-size:12px;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;cursor:pointer;transition:all 0.3s}
-    .btn-outline:hover{background:#fff;color:#1a1a1a}
-    .btn-dark{background:#1a1a2e;color:#fff;border:none;padding:14px 36px;font-family:'Montserrat',sans-serif;font-size:12px;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;cursor:pointer;transition:all 0.3s}
-    .btn-dark:hover{background:#c9a84c}
+    /* ── Typography utilities ───────────────────────────────── */
+    .eyebrow{font-family:'Inter',sans-serif;font-size:11px;font-weight:600;letter-spacing:0.22em;text-transform:uppercase;color:${T.gold}}
+    .display-xl{font-family:'Playfair Display',serif;font-size:clamp(56px,8vw,108px);font-weight:600;line-height:0.95;letter-spacing:-0.025em}
+    .display-lg{font-family:'Playfair Display',serif;font-size:clamp(40px,5vw,64px);font-weight:600;line-height:1.05;letter-spacing:-0.02em}
+    .display-md{font-family:'Playfair Display',serif;font-size:clamp(28px,3.5vw,44px);font-weight:600;line-height:1.15;letter-spacing:-0.015em}
+    .display-sm{font-family:'Playfair Display',serif;font-size:clamp(22px,2.5vw,30px);font-weight:600;line-height:1.25;letter-spacing:-0.01em}
+    .body-lg{font-size:18px;line-height:1.7;color:${T.ink2};font-weight:400}
+    .body-md{font-size:16px;line-height:1.7;color:${T.muted};font-weight:400}
+    .body-sm{font-size:14px;line-height:1.65;color:${T.muted};font-weight:400}
+    .micro{font-family:'Inter',sans-serif;font-size:11px;font-weight:500;letter-spacing:0.16em;text-transform:uppercase;color:${T.muted}}
 
-    .section-label{font-family:'Montserrat',sans-serif;font-size:11px;font-weight:600;letter-spacing:0.25em;text-transform:uppercase;color:#c9a84c;margin-bottom:16px}
-    .section-title{font-family:'Montserrat',sans-serif;font-size:clamp(28px,4vw,42px);font-weight:700;color:#1a1a2e;line-height:1.2;margin-bottom:20px}
-    .section-body{font-family:'Lato',sans-serif;font-size:16px;color:#555;line-height:1.8}
-    .gold-line{width:50px;height:2px;background:#c9a84c;margin-bottom:24px}
+    /* ── Buttons ────────────────────────────────────────────── */
+    .btn{display:inline-flex;align-items:center;gap:10px;font-family:'Inter',sans-serif;font-size:13px;font-weight:500;letter-spacing:0.04em;cursor:pointer;border:none;transition:all 0.35s cubic-bezier(0.4,0,0.2,1);padding:16px 30px;text-transform:none;white-space:nowrap}
+    .btn-primary{background:${T.ink};color:${T.white}}
+    .btn-primary:hover{background:${T.gold};transform:translateY(-1px)}
+    .btn-gold{background:${T.gold};color:${T.white}}
+    .btn-gold:hover{background:${T.goldD};transform:translateY(-1px)}
+    .btn-ghost{background:transparent;color:${T.white};border:1px solid rgba(255,255,255,0.3)}
+    .btn-ghost:hover{border-color:${T.white};background:rgba(255,255,255,0.05)}
+    .btn-outline{background:transparent;color:${T.ink};border:1px solid ${T.border}}
+    .btn-outline:hover{border-color:${T.ink};background:${T.ink};color:${T.white}}
+    .btn:disabled{opacity:0.4;cursor:not-allowed}
 
-    .nav-link-item{font-family:'Montserrat',sans-serif;font-size:11px;font-weight:600;letter-spacing:0.15em;text-transform:uppercase;cursor:pointer;transition:color 0.3s;background:none;border:none;color:inherit}
-    .nav-link-item:hover{color:#c9a84c}
+    /* ── Layout utilities ───────────────────────────────────── */
+    .container{max-width:1280px;margin:0 auto;padding:0 48px}
+    .container-narrow{max-width:920px;margin:0 auto;padding:0 48px}
+    .gold-rule{width:48px;height:1px;background:${T.gold};display:block}
 
-    .service-card{border-bottom:1px solid #e8e8e8;padding:36px 0;display:flex;align-items:flex-start;gap:32px;cursor:default;transition:all 0.3s}
-    .service-card:hover .service-num{color:#c9a84c}
-    .service-num{font-family:'Montserrat',sans-serif;font-size:11px;font-weight:600;letter-spacing:0.15em;color:#ccc;min-width:28px;padding-top:4px;transition:color 0.3s}
-    .service-icon{width:48px;height:48px;flex-shrink:0}
-    .service-title{font-family:'Montserrat',sans-serif;font-size:14px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#1a1a2e;margin-bottom:8px}
-    .service-desc{font-size:14px;color:#666;line-height:1.7}
+    /* ── Cards & interactive ────────────────────────────────── */
+    .card{background:${T.white};transition:all 0.4s cubic-bezier(0.4,0,0.2,1);position:relative}
+    .card-hover:hover{transform:translateY(-4px);box-shadow:0 24px 60px -20px rgba(10,22,40,0.15)}
+    .link-underline{position:relative;display:inline-flex;align-items:center;gap:10px;color:${T.gold};font-size:12px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;transition:gap 0.3s}
+    .link-underline:hover{gap:14px}
+    .link-underline::after{content:'';position:absolute;bottom:-4px;left:0;width:24px;height:1px;background:${T.gold};transition:width 0.3s}
+    .link-underline:hover::after{width:100%}
 
-    .stat-num{font-family:'Montserrat',sans-serif;font-size:52px;font-weight:800;color:#c9a84c;line-height:1}
-    .stat-label{font-family:'Lato',sans-serif;font-size:13px;color:#888;margin-top:6px;letter-spacing:0.05em}
+    /* ── Navigation ─────────────────────────────────────────── */
+    .nav-link{font-family:'Inter',sans-serif;font-size:13px;font-weight:500;letter-spacing:0.02em;cursor:pointer;background:none;border:none;color:inherit;padding:8px 0;position:relative;transition:color 0.3s}
+    .nav-link::after{content:'';position:absolute;bottom:-2px;left:0;width:0;height:1px;background:${T.gold};transition:width 0.35s ease}
+    .nav-link:hover::after,.nav-link.active::after{width:100%}
 
-    .chat-bubble{max-width:80%;padding:12px 16px;font-size:14px;line-height:1.6;border-radius:2px}
-    .chat-in{animation:fadeUp 0.3s ease}
-    @keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-    @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(201,168,76,0.4)}50%{box-shadow:0 0 0 10px rgba(201,168,76,0)}}
-    .pulse{animation:pulse 2.5s infinite}
-    @keyframes fadeIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+    /* ── Forms ──────────────────────────────────────────────── */
+    .field{margin-bottom:20px}
+    .label{display:block;font-family:'Inter',sans-serif;font-size:11px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:${T.ink};margin-bottom:8px}
+    .input{width:100%;padding:14px 16px;border:1px solid ${T.border};font-size:14px;color:${T.ink};outline:none;background:${T.white};transition:all 0.3s;font-weight:400}
+    .input:focus{border-color:${T.ink};box-shadow:0 0 0 3px rgba(10,22,40,0.05)}
+    .input::placeholder{color:${T.faded}}
+    textarea.input{resize:vertical;min-height:120px;line-height:1.6}
+
+    /* ── Animations ─────────────────────────────────────────── */
+    @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+    @keyframes scaleIn{from{opacity:0;transform:scale(0.96)}to{opacity:1;transform:scale(1)}}
+    @keyframes drawLine{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+    @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(169,139,92,0.4)}50%{box-shadow:0 0 0 12px rgba(169,139,92,0)}}
+    .fade-up{animation:fadeUp 0.7s cubic-bezier(0.4,0,0.2,1) forwards}
     .fade-in{animation:fadeIn 0.5s ease forwards}
+    .scale-in{animation:scaleIn 0.4s cubic-bezier(0.4,0,0.2,1) forwards}
+    .pulse-ring{animation:pulse 2.5s infinite}
 
-    .form-field{margin-bottom:16px}
-    .form-label{display:block;font-family:'Montserrat',sans-serif;font-size:10px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:#1a1a2e;margin-bottom:7px}
-    .form-input{width:100%;padding:12px 14px;border:1px solid #ddd;font-size:14px;color:#1a1a2e;outline:none;transition:border-color 0.3s;background:#fafafa}
-    .form-input:focus{border-color:#c9a84c;background:#fff}
+    /* ── Section dividers ───────────────────────────────────── */
+    .divider-fade{height:1px;background:linear-gradient(to right,transparent,${T.border},transparent)}
 
-    .job-row{padding:20px 0;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center;gap:16px}
-    .job-title-text{font-family:'Montserrat',sans-serif;font-size:15px;font-weight:600;color:#1a1a2e;margin-bottom:4px}
-    .job-meta{font-size:13px;color:#888}
+    /* ── Chat bubbles ───────────────────────────────────────── */
+    .bubble{max-width:82%;padding:14px 18px;font-size:14px;line-height:1.65;animation:fadeUp 0.3s ease}
+    .bubble-user{background:${T.ink};color:${T.white};border-radius:14px 14px 4px 14px}
+    .bubble-assistant{background:${T.bg};color:${T.ink};border:1px solid ${T.line};border-radius:14px 14px 14px 4px}
 
-    .tool-tab{padding:10px 20px;border:1px solid #e0e0e0;background:#fff;font-family:'Montserrat',sans-serif;font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;transition:all 0.2s;color:#888}
-    .tool-tab.active{background:#1a1a2e;color:#fff;border-color:#1a1a2e}
+    /* ── Service rows (editorial) ───────────────────────────── */
+    .service-row{display:grid;grid-template-columns:80px 1fr 80px 1fr;gap:32px;align-items:center;padding:48px 0;border-bottom:1px solid ${T.line};transition:padding 0.3s}
+    .service-row:hover{padding-left:8px}
+    .service-row:hover .service-num{color:${T.gold}}
+    .service-row:hover .service-arrow{transform:translateX(6px)}
+    .service-num{font-family:'Playfair Display',serif;font-size:48px;font-weight:300;color:${T.faded};font-style:italic;transition:color 0.3s}
+    .service-arrow{transition:transform 0.3s}
 
-    .health-opt{padding:8px 18px;border:1px solid #ddd;font-size:13px;cursor:pointer;transition:all 0.2s;background:#fff;color:#555;font-family:'Lato',sans-serif}
-    .health-opt.selected{background:#c9a84c;border-color:#c9a84c;color:#fff}
+    /* ── Stat counters ──────────────────────────────────────── */
+    .stat{padding:32px 0;border-top:1px solid ${T.border}}
+    .stat-num{font-family:'Playfair Display',serif;font-size:clamp(48px,5vw,64px);font-weight:500;color:${T.ink};line-height:1;letter-spacing:-0.02em}
+    .stat-suffix{font-family:'Playfair Display',serif;font-size:32px;color:${T.gold};font-weight:400;vertical-align:top;margin-left:2px}
+    .stat-label{font-family:'Inter',sans-serif;font-size:12px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:${T.muted};margin-top:14px}
 
-    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;z-index:300;padding:20px}
-    .modal-box{background:#fff;padding:48px;max-width:480px;width:100%;position:relative}
+    /* ── Industry cards ─────────────────────────────────────── */
+    .industry-card{padding:36px 28px;background:${T.white};border:1px solid ${T.line};transition:all 0.4s;cursor:default;position:relative;overflow:hidden}
+    .industry-card::before{content:'';position:absolute;top:0;left:0;width:100%;height:2px;background:${T.gold};transform:scaleX(0);transform-origin:left;transition:transform 0.4s}
+    .industry-card:hover{transform:translateY(-3px);border-color:${T.gold}}
+    .industry-card:hover::before{transform:scaleX(1)}
+
+    /* ── Page transitions ───────────────────────────────────── */
+    .page-enter{animation:fadeUp 0.6s cubic-bezier(0.4,0,0.2,1)}
+
+    /* ── Modal ──────────────────────────────────────────────── */
+    .modal-overlay{position:fixed;inset:0;background:rgba(10,22,40,0.6);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;z-index:300;padding:24px;animation:fadeIn 0.3s ease}
+    .modal-box{background:${T.white};max-width:520px;width:100%;position:relative;animation:scaleIn 0.4s cubic-bezier(0.4,0,0.2,1)}
+
+    /* ── Floating advisor button ────────────────────────────── */
+    .float-btn{width:56px;height:56px;background:${T.ink};border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 12px 32px rgba(10,22,40,0.25);transition:all 0.3s}
+    .float-btn:hover{background:${T.gold};transform:translateY(-2px) scale(1.05)}
+
+    /* ── Responsive ─────────────────────────────────────────── */
+    @media(max-width:900px){
+      .container,.container-narrow{padding:0 24px}
+      .service-row{grid-template-columns:60px 1fr;gap:20px;padding:32px 0}
+      .service-row > div:nth-child(3),.service-row > div:nth-child(4){display:none}
+    }
   `}</style>
 );
 
-const C = { navy: '#1a1a2e', gold: '#c9a84c', white: '#fff', light: '#f8f7f4', muted: '#666', border: '#e8e8e8' };
-
-// ── ICONS (clean SVG) ────────────────────────────────────────────────────────
-const Icon = ({ name, size = 24, color = C.navy }) => {
+// ── ICONS — Custom geometric SVG, 1.5px stroke, refined ──────────────────────
+const Icon = ({ name, size = 24, color = T.ink, strokeWidth = 1.5 }) => {
+  const props = {
+    width: size, height: size, viewBox: '0 0 24 24', fill: 'none',
+    stroke: color, strokeWidth, strokeLinecap: 'round', strokeLinejoin: 'round'
+  };
   const icons = {
-    hr: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>,
-    recruit: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>,
-    outsource: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>,
-    hospitality: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>,
-    send: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>,
-    chat: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>,
-    x: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>,
-    check: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>,
-    arrow: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>,
-    mail: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>,
-    phone: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.77 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>,
-    pin: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>,
+    // Service icons — minimal, geometric
+    strategy: <svg {...props}><circle cx="12" cy="12" r="9" /><path d="M12 3 L12 12 L18 18" /></svg>,
+    search: <svg {...props}><circle cx="11" cy="11" r="6.5" /><path d="M16 16 L21 21" /></svg>,
+    network: <svg {...props}><circle cx="12" cy="5" r="2" /><circle cx="5" cy="19" r="2" /><circle cx="19" cy="19" r="2" /><path d="M12 7 L12 11 M12 11 L6 17 M12 11 L18 17" /></svg>,
+    building: <svg {...props}><rect x="4" y="6" width="16" height="15" /><line x1="4" y1="11" x2="20" y2="11" /><line x1="9" y1="6" x2="9" y2="21" /><line x1="15" y1="6" x2="15" y2="21" /><path d="M9 3 L15 3 L15 6 L9 6 Z" /></svg>,
+    // Industry icons
+    hotel: <svg {...props}><path d="M3 21 L21 21 M3 21 L3 8 L21 8 L21 21 M7 12 L9 12 M7 16 L9 16 M11 12 L13 12 M11 16 L13 16 M15 12 L17 12 M15 16 L17 16 M10 8 L10 3 L14 3 L14 8" /></svg>,
+    chef: <svg {...props}><path d="M12 3 C9 3 7 5 7 8 C5 8 4 9 4 11 C4 13 5 14 7 14 L17 14 C19 14 20 13 20 11 C20 9 19 8 17 8 C17 5 15 3 12 3 Z M7 14 L7 20 L17 20 L17 14" /></svg>,
+    event: <svg {...props}><rect x="3" y="5" width="18" height="16" /><line x1="3" y1="10" x2="21" y2="10" /><line x1="8" y1="3" x2="8" y2="7" /><line x1="16" y1="3" x2="16" y2="7" /><circle cx="12" cy="15" r="1" fill={color} /></svg>,
+    data: <svg {...props}><ellipse cx="12" cy="6" rx="8" ry="3" /><path d="M4 6 V12 C4 13.7 7.6 15 12 15 C16.4 15 20 13.7 20 12 V6 M4 12 V18 C4 19.7 7.6 21 12 21 C16.4 21 20 19.7 20 18 V12" /></svg>,
+    energy: <svg {...props}><path d="M13 2 L5 13 L11 13 L9 22 L17 11 L11 11 L13 2 Z" /></svg>,
+    shield: <svg {...props}><path d="M12 3 L4 6 V12 C4 16 7 19 12 21 C17 19 20 16 20 12 V6 L12 3 Z" /></svg>,
+    // UI icons
+    send: <svg {...props}><path d="M3 12 L21 4 L17 21 L11 13 L3 12 Z" /></svg>,
+    chat: <svg {...props}><path d="M21 11 C21 16 17 19 12 19 C10.7 19 9.4 18.8 8.3 18.4 L3 20 L4.6 15 C3.6 13.8 3 12.5 3 11 C3 6.6 7 3 12 3 C17 3 21 6.6 21 11 Z" /></svg>,
+    x: <svg {...props}><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>,
+    check: <svg {...props} strokeWidth="2"><polyline points="20 6 9 17 4 12" /></svg>,
+    arrow: <svg {...props}><line x1="5" y1="12" x2="19" y2="12" /><polyline points="13 6 19 12 13 18" /></svg>,
+    arrowDown: <svg {...props}><line x1="12" y1="5" x2="12" y2="19" /><polyline points="6 13 12 19 18 13" /></svg>,
+    mail: <svg {...props}><rect x="3" y="5" width="18" height="14" /><polyline points="3,7 12,13 21,7" /></svg>,
+    phone: <svg {...props}><path d="M5 4 L9 4 L11 9 L8.5 10.5 C9.5 13 11 14.5 13.5 15.5 L15 13 L20 15 L20 19 C20 19.5 19.5 20 19 20 C11 20 4 13 4 5 C4 4.5 4.5 4 5 4 Z" /></svg>,
+    pin: <svg {...props}><path d="M12 21 C12 21 19 14 19 10 C19 6 16 3 12 3 C8 3 5 6 5 10 C5 14 12 21 12 21 Z" /><circle cx="12" cy="10" r="2.5" /></svg>,
+    whatsapp: <svg {...props}><path d="M20 12 C20 16.4 16.4 20 12 20 C10.7 20 9.4 19.7 8.3 19.2 L4 20 L4.8 15.7 C4.3 14.6 4 13.3 4 12 C4 7.6 7.6 4 12 4 C16.4 4 20 7.6 20 12 Z M8.5 9 C8.5 9 8.5 10 9 11 C9.5 12 10.5 13.5 12 14.5 C13 15 14 15.5 15 15 L15 13.5 L13.5 13 C13.5 13 13 13.5 12.5 13 C12 12.5 11 11.5 11 11 C11 10.5 11.5 10 11.5 10 L11 8.5 L9.5 8.5 C9 8.5 8.5 9 8.5 9 Z" /></svg>,
+    linkedin: <svg {...props}><rect x="3" y="3" width="18" height="18" /><line x1="7" y1="10" x2="7" y2="17" /><circle cx="7" cy="7" r="0.5" fill={color} /><path d="M11 17 L11 10 M11 13 C11 11 12 10 13.5 10 C15 10 17 11 17 13 L17 17" /></svg>,
+    instagram: <svg {...props}><rect x="3" y="3" width="18" height="18" rx="4" /><circle cx="12" cy="12" r="4" /><circle cx="17.5" cy="6.5" r="0.5" fill={color} /></svg>,
+    quote: <svg {...props} fill={color} stroke="none"><path d="M7 7 L11 7 L11 11 L9 11 L9 13 L7 13 L7 7 Z M13 7 L17 7 L17 11 L15 11 L15 13 L13 13 L13 7 Z" /></svg>,
+    award: <svg {...props}><circle cx="12" cy="9" r="6" /><polyline points="9 14 8 22 12 19 16 22 15 14" /></svg>,
+    plus: <svg {...props}><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>,
   };
   return icons[name] || null;
 };
 
-// ── NAV ──────────────────────────────────────────────────────────────────────
+// ════════════════════════════════════════════════════════════════════════════
+//  NAVIGATION
+// ════════════════════════════════════════════════════════════════════════════
 const Nav = ({ page, setPage }) => {
   const [scrolled, setScrolled] = useState(false);
   useEffect(() => {
-    const fn = () => setScrolled(window.scrollY > 60);
+    const fn = () => setScrolled(window.scrollY > 40);
     window.addEventListener('scroll', fn);
     return () => window.removeEventListener('scroll', fn);
   }, []);
+
   const links = [
-    { id: 'home', label: 'Home' }, { id: 'about', label: 'About Us' },
-    { id: 'hr', label: 'Our Services' }, { id: 'careers', label: 'Career' },
-    { id: 'contact', label: 'Contact Us' },
+    { id: 'home', label: 'Home' },
+    { id: 'about', label: 'About' },
+    { id: 'services', label: 'Services' },
+    { id: 'industries', label: 'Industries' },
+    { id: 'tools', label: 'Tools' },
+    { id: 'careers', label: 'Careers' },
   ];
+
+  const onHero = page === 'home' && !scrolled;
+  const textC = onHero ? T.white : T.ink;
+
   return (
-    <nav style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100, transition: 'all 0.4s', background: scrolled ? 'rgba(255,255,255,0.97)' : 'transparent', backdropFilter: scrolled ? 'blur(12px)' : 'none', borderBottom: scrolled ? `1px solid ${C.border}` : 'none', padding: '0 2.5rem' }}>
-      <div style={{ maxWidth: 1200, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 76 }}>
-        <div onClick={() => setPage('home')} style={{ cursor: 'pointer' }}>
-          <img src="https://nhb-consultancy.com/wp-content/uploads/2025/11/logo-1.png" alt="NHB Consultancy" style={{ height: 44, objectFit: 'contain' }} onError={e => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block'; }} />
-          <div style={{ display: 'none', fontFamily: 'Montserrat,sans-serif', fontWeight: 800, fontSize: 18, color: scrolled ? C.navy : C.white, letterSpacing: '0.05em' }}>NHB</div>
+    <nav style={{
+      position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100,
+      transition: 'all 0.5s cubic-bezier(0.4,0,0.2,1)',
+      background: scrolled ? 'rgba(250,250,247,0.92)' : 'transparent',
+      backdropFilter: scrolled ? 'blur(20px)' : 'none',
+      borderBottom: scrolled ? `1px solid ${T.line}` : '1px solid transparent',
+      padding: '0 48px',
+    }}>
+      <div style={{ maxWidth: 1280, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 88 }}>
+        <div onClick={() => setPage('home')} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 14 }}>
+          <img src="https://nhb-consultancy.com/wp-content/uploads/2025/11/logo-1.png" alt="NHB"
+            style={{ height: 56, objectFit: 'contain', filter: onHero ? 'brightness(0) invert(1)' : 'none', transition: 'filter 0.4s' }}
+            onError={e => { e.target.style.display = 'none'; }} />
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 32 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 36 }}>
           {links.map(l => (
-            <button key={l.id} onClick={() => setPage(l.id)} className="nav-link-item"
-              style={{ color: page === l.id ? C.gold : (scrolled ? C.navy : C.white) }}>
+            <button key={l.id} onClick={() => setPage(l.id)} className={`nav-link ${page === l.id ? 'active' : ''}`}
+              style={{ color: page === l.id ? T.gold : textC }}>
               {l.label}
             </button>
           ))}
-          <button onClick={() => setPage('contact')} className="btn-primary" style={{ padding: '11px 28px', fontSize: 11 }}>
-            Let's Talk
+          <button onClick={() => setPage('contact')} className="btn btn-gold" style={{ padding: '12px 22px', fontSize: 12 }}>
+            Book Consultation
           </button>
         </div>
       </div>
@@ -141,239 +258,496 @@ const Nav = ({ page, setPage }) => {
   );
 };
 
-// ── HOME ─────────────────────────────────────────────────────────────────────
+// ════════════════════════════════════════════════════════════════════════════
+//  HOME
+// ════════════════════════════════════════════════════════════════════════════
 const Home = ({ setPage }) => {
   const services = [
-    { num: '01', icon: 'hr', title: 'HR Consultancy Services', desc: 'Policies, compliance, HR strategy and organizational development' },
-    { num: '02', icon: 'recruit', title: 'Recruitment & Talent Acquisition', desc: 'End-to-end hiring, headhunting & talent mapping' },
-    { num: '03', icon: 'outsource', title: 'Outsourced HR Services', desc: 'Flexible solutions for SMEs & growing businesses' },
-    { num: '04', icon: 'hospitality', title: 'Hospitality Management Services', desc: 'Staffing, operations and service excellence' },
+    { num: '01', icon: 'strategy', title: 'HR Consultancy', desc: 'Strategic HR architecture, UAE Labour Law compliance and organisational design tailored for sustainable performance.' },
+    { num: '02', icon: 'search', title: 'Recruitment & Executive Search', desc: 'End-to-end talent acquisition, mapping and headhunting across senior, specialist and operational mandates.' },
+    { num: '03', icon: 'network', title: 'Outsourced HR Services', desc: 'Fractional HR partnership for SMEs — payroll, PRO services, documentation and on-demand expertise.' },
+    { num: '04', icon: 'building', title: 'Hospitality Management', desc: 'Full-spectrum staffing, pre-opening team builds, SOP development and service excellence frameworks.' },
+  ];
+
+  const stats = [
+    { num: '15', suffix: '+', label: 'Years HR Leadership' },
+    { num: '8,200', suffix: '+', label: 'Professional Network' },
+    { num: '6', suffix: '', label: 'Industries Served' },
+    { num: '100', suffix: '%', label: 'Boutique Engagement' },
   ];
 
   return (
-    <div>
-      {/* HERO — video background */}
-      <div style={{ position: 'relative', height: '100vh', display: 'flex', alignItems: 'center', overflow: 'hidden' }}>
-        <video autoPlay muted loop playsInline style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
+    <div className="page-enter">
+
+      {/* ═══ HERO ═══════════════════════════════════════════════════════════ */}
+      <section style={{ position: 'relative', height: '100vh', minHeight: 720, display: 'flex', alignItems: 'center', overflow: 'hidden' }}>
+        <video autoPlay muted loop playsInline
+          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
           onError={e => e.target.style.display = 'none'}>
           <source src="https://nhb-consultancy.com/wp-content/uploads/2025/11/slide.mp4" type="video/mp4" />
         </video>
-        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(135deg, rgba(26,26,46,0.82) 0%, rgba(26,26,46,0.65) 100%)' }} />
-        <div style={{ position: 'relative', zIndex: 2, maxWidth: 1200, margin: '0 auto', padding: '0 2.5rem', width: '100%' }}>
-          <div style={{ maxWidth: 660 }}>
-            <p className="section-label" style={{ color: C.gold }}>Dubai's Boutique HR Specialist</p>
-            <h1 style={{ fontFamily: 'Montserrat,sans-serif', fontSize: 'clamp(48px,7vw,82px)', fontWeight: 800, color: C.white, lineHeight: 1.05, letterSpacing: '-0.01em', marginBottom: 28 }}>
-              PLAN.<br />LAUNCH.<br />GROW
+        <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(135deg, rgba(10,22,40,0.85) 0%, rgba(10,22,40,0.55) 60%, rgba(10,22,40,0.7) 100%)` }} />
+
+        <div className="container" style={{ position: 'relative', zIndex: 2, width: '100%' }}>
+          <div style={{ maxWidth: 760 }}>
+            <div className="fade-up" style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 32 }}>
+              <span className="gold-rule" />
+              <span className="eyebrow" style={{ color: T.goldL }}>Boutique HR Advisory · Dubai</span>
+            </div>
+            <h1 className="display-xl fade-up" style={{ color: T.white, marginBottom: 32, animationDelay: '0.1s', animationFillMode: 'both' }}>
+              Plan.<br />
+              <span style={{ color: T.goldL }}>Launch.</span><br />
+              Grow.
             </h1>
-            <p style={{ color: 'rgba(255,255,255,0.75)', fontSize: 17, lineHeight: 1.75, marginBottom: 44, maxWidth: 500 }}>
-              NHB Consultancy offers tailored HR services and top-tier talent solutions under one roof — helping companies grow through people.
+            <p className="body-lg fade-up" style={{ color: 'rgba(255,255,255,0.78)', maxWidth: 540, marginBottom: 48, animationDelay: '0.25s', animationFillMode: 'both' }}>
+              NHB Consultancy partners with ambitious companies across the GCC — combining deep regional HR expertise with the precision of executive search.
             </p>
-            <div style={{ display: 'flex', gap: 16 }}>
-              <button onClick={() => setPage('contact')} className="btn-primary">Contact Us</button>
-              <button onClick={() => setPage('hr')} className="btn-outline">Our Services</button>
+            <div className="fade-up" style={{ display: 'flex', gap: 16, animationDelay: '0.4s', animationFillMode: 'both', flexWrap: 'wrap' }}>
+              <button onClick={() => setPage('contact')} className="btn btn-gold">
+                Book a Consultation <Icon name="arrow" size={16} color={T.white} />
+              </button>
+              <button onClick={() => setPage('services')} className="btn btn-ghost">Explore Services</button>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* INTRO SECTION */}
-      <div style={{ background: C.white, padding: '100px 2.5rem' }}>
-        <div style={{ maxWidth: 1200, margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 80, alignItems: 'center' }}>
-          <div>
-            <div className="gold-line" />
-            <p className="section-label">Your Ultimate Partner</p>
-            <h2 className="section-title">Human Resource Excellence</h2>
-            <p className="section-body" style={{ marginBottom: 32 }}>
-              Boutique HR Consultancy & Recruitment Agency delivering personalised solutions across HR, Talent Acquisition, Outsourced Services and Hospitality Management.
-            </p>
-            <button onClick={() => setPage('contact')} className="btn-dark">Book Consultation</button>
-          </div>
-          <div style={{ position: 'relative' }}>
-            <img src="https://nhb-consultancy.com/wp-content/uploads/2025/11/business-concept-with-team-close-up-1024x683.jpg"
-              alt="NHB Team" style={{ width: '100%', height: 360, objectFit: 'cover' }}
-              onError={e => { e.target.style.display = 'none'; }} />
-            <div style={{ position: 'absolute', bottom: -24, left: -24, background: C.navy, padding: '28px 36px' }}>
-              <div className="stat-num">245%</div>
-              <div className="stat-label">Growth Rate</div>
-            </div>
-          </div>
+        {/* Scroll indicator */}
+        <div style={{ position: 'absolute', bottom: 40, left: '50%', transform: 'translateX(-50%)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12, zIndex: 2 }}>
+          <span className="micro" style={{ color: 'rgba(255,255,255,0.5)', fontSize: 10 }}>Scroll</span>
+          <div style={{ width: 1, height: 32, background: 'rgba(255,255,255,0.3)' }} />
         </div>
-      </div>
+      </section>
 
-      {/* SERVICES */}
-      <div style={{ background: C.light, padding: '100px 2.5rem' }}>
-        <div style={{ maxWidth: 1200, margin: '0 auto' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 80 }}>
+      {/* ═══ CREDENTIALS STRIP ══════════════════════════════════════════════ */}
+      <section style={{ background: T.ink, padding: '40px 48px', borderTop: `1px solid rgba(255,255,255,0.08)` }}>
+        <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 48, flexWrap: 'wrap' }}>
+          {[
+            { label: 'Chartered MCIPD' },
+            { label: 'Radisson Hotel Group Alumna' },
+            { label: 'UAE Labour Law Expertise' },
+            { label: 'GCC Coverage' },
+          ].map((c, i) => (
+            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+              <Icon name="check" size={16} color={T.gold} strokeWidth={2} />
+              <span style={{ color: 'rgba(255,255,255,0.85)', fontSize: 13, fontWeight: 500, letterSpacing: '0.02em' }}>{c.label}</span>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ═══ INTRO MANIFESTO ════════════════════════════════════════════════ */}
+      <section style={{ background: T.bg, padding: '140px 48px' }}>
+        <div className="container">
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.5fr', gap: 100, alignItems: 'start' }}>
             <div>
-              <div className="gold-line" />
-              <p className="section-label">What We Do</p>
-              <h2 className="section-title">Our Services</h2>
-              <p className="section-body">
-                NHB HR Solution offers integrated HR Consultancy and Recruitment services to support organisations in optimising their people, processes and performance.
-              </p>
+              <span className="gold-rule" style={{ marginBottom: 24 }} />
+              <p className="eyebrow" style={{ marginBottom: 24 }}>The NHB Approach</p>
+              <h2 className="display-lg" style={{ marginBottom: 0 }}>
+                Built by hospitality.<br />
+                Designed for growth.
+              </h2>
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-              {services.map((s, i) => (
-                <div key={i} className="service-card" onClick={() => setPage(i === 3 ? 'hospitality' : 'hr')}>
-                  <span className="service-num">{s.num}</span>
-                  <Icon name={s.icon} size={36} color={C.gold} />
-                  <div>
-                    <div className="service-title">{s.title}</div>
-                    <div className="service-desc">{s.desc}</div>
-                  </div>
-                </div>
-              ))}
+            <div>
+              <p className="body-lg" style={{ marginBottom: 28, fontSize: 20, color: T.ink2, lineHeight: 1.6 }}>
+                Founded by <strong style={{ color: T.ink, fontWeight: 600 }}>Nihel Hassen Busman, Chartered MCIPD</strong> — a Director of HR with 15+ years leading people strategy across Radisson Hotel Group and the wider hospitality sector — NHB Consultancy was built to give growing companies access to the calibre of HR support previously reserved for global enterprises.
+              </p>
+              <p className="body-md" style={{ marginBottom: 40 }}>
+                We work in true partnership with our clients — understanding their culture, challenges and growth plans, then delivering solutions that fit. Whether you are building a team from scratch, expanding into the UAE, or strengthening your HR foundations, we operate as an embedded extension of your leadership.
+              </p>
+              <button onClick={() => setPage('about')} className="link-underline">
+                Read our story <Icon name="arrow" size={16} color={T.gold} />
+              </button>
             </div>
           </div>
-        </div>
-      </div>
 
-      {/* CTA BAND */}
-      <div style={{ background: C.navy, padding: '80px 2.5rem', textAlign: 'center' }}>
-        <p className="section-label" style={{ color: C.gold, textAlign: 'center' }}>NHB Consultancy</p>
-        <h2 style={{ fontFamily: 'Montserrat,sans-serif', fontSize: 'clamp(28px,4vw,44px)', fontWeight: 700, color: C.white, marginBottom: 20, maxWidth: 700, margin: '0 auto 20px' }}>
-          Take Your Business to the Next Level
-        </h2>
-        <p style={{ color: 'rgba(255,255,255,0.65)', fontSize: 16, maxWidth: 560, margin: '0 auto 40px', lineHeight: 1.75 }}>
-          We deliver strategic HR and recruitment solutions with expertise, efficiency and personalised support to help businesses operate seamlessly and grow.
-        </p>
-        <div style={{ display: 'flex', gap: 16, justifyContent: 'center' }}>
-          <button onClick={() => setPage('contact')} className="btn-primary">Book Consultation</button>
-          <button onClick={() => setPage('contact')} className="btn-outline">Contact Us</button>
+          {/* Stats row */}
+          <div style={{ marginTop: 120, display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 32 }}>
+            {stats.map((s, i) => (
+              <div key={i} className="stat">
+                <div>
+                  <span className="stat-num">{s.num}</span>
+                  <span className="stat-suffix">{s.suffix}</span>
+                </div>
+                <div className="stat-label">{s.label}</div>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+      </section>
 
-      {/* AI TOOLS STRIP */}
-      <div style={{ background: C.white, padding: '80px 2.5rem', borderTop: `1px solid ${C.border}` }}>
-        <div style={{ maxWidth: 1200, margin: '0 auto', textAlign: 'center' }}>
-          <div className="gold-line" style={{ margin: '0 auto 20px' }} />
-          <p className="section-label">Powered by AI</p>
-          <h2 className="section-title" style={{ textAlign: 'center' }}>Free HR Tools</h2>
-          <p className="section-body" style={{ maxWidth: 500, margin: '0 auto 52px', textAlign: 'center' }}>
-            Instant insights for your business — no account required.
-          </p>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 1, background: C.border }}>
-            {[
-              { icon: 'hr', title: 'HR Health Check', desc: 'Assess your HR maturity and get a personalised action plan.' },
-              { icon: 'recruit', title: 'Salary Benchmarker', desc: 'Compare UAE hospitality salary ranges by role and experience.' },
-              { icon: 'chat', title: 'Ask an HR Expert', desc: 'Get instant answers on UAE labour law and HR best practices.' },
-            ].map((t, i) => (
-              <div key={i} onClick={() => setPage('tools')} style={{ background: C.white, padding: '44px 36px', cursor: 'pointer', transition: 'all 0.3s', textAlign: 'left' }}
-                onMouseOver={e => e.currentTarget.style.background = C.light}
-                onMouseOut={e => e.currentTarget.style.background = C.white}>
-                <Icon name={t.icon} size={32} color={C.gold} />
-                <h3 style={{ fontFamily: 'Montserrat,sans-serif', fontSize: 16, fontWeight: 700, color: C.navy, margin: '20px 0 10px' }}>{t.title}</h3>
-                <p style={{ fontSize: 14, color: C.muted, lineHeight: 1.65, marginBottom: 20 }}>{t.desc}</p>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: C.gold, fontSize: 12, fontWeight: 600, fontFamily: 'Montserrat,sans-serif', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
-                  Try Free <Icon name="arrow" size={14} color={C.gold} />
+      {/* ═══ SERVICES ═══════════════════════════════════════════════════════ */}
+      <section style={{ background: T.white, padding: '140px 48px', borderTop: `1px solid ${T.line}` }}>
+        <div className="container">
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 80, marginBottom: 80, alignItems: 'end' }}>
+            <div>
+              <span className="gold-rule" style={{ marginBottom: 24 }} />
+              <p className="eyebrow" style={{ marginBottom: 24 }}>Capabilities</p>
+              <h2 className="display-lg">Four practices.<br />One advisory partner.</h2>
+            </div>
+            <p className="body-md" style={{ maxWidth: 440 }}>
+              Our integrated model serves SME and enterprise clients across the GCC — delivering strategic HR, executive search and operational excellence under one roof.
+            </p>
+          </div>
+
+          <div>
+            {services.map((s, i) => (
+              <div key={i} className="service-row" onClick={() => setPage(i === 3 ? 'industries' : 'services')} style={{ cursor: 'pointer' }}>
+                <div className="service-num">{s.num}</div>
+                <div>
+                  <h3 className="display-sm" style={{ marginBottom: 12 }}>{s.title}</h3>
+                  <p className="body-sm" style={{ maxWidth: 380 }}>{s.desc}</p>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                  <Icon name={s.icon} size={40} color={T.gold} strokeWidth={1.25} />
+                </div>
+                <div className="service-arrow" style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                  <Icon name="arrow" size={20} color={T.ink} />
                 </div>
               </div>
             ))}
           </div>
         </div>
-      </div>
+      </section>
+
+      {/* ═══ TESTIMONIAL — Featured quote ═══════════════════════════════════ */}
+      <section style={{ background: T.ink, padding: '140px 48px', position: 'relative' }}>
+        <div className="container-narrow" style={{ textAlign: 'center' }}>
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 40 }}>
+            <Icon name="quote" size={48} color={T.gold} />
+          </div>
+          <blockquote style={{ fontFamily: 'Playfair Display, serif', fontSize: 'clamp(24px,3vw,36px)', lineHeight: 1.4, color: T.white, fontWeight: 400, marginBottom: 48, fontStyle: 'italic', letterSpacing: '-0.01em' }}>
+            "What sets Nihel apart is her ability to align HR strategy with business goals while fostering a culture of growth, collaboration and accountability. A strong example of leadership, adaptability and continuous professional growth."
+          </blockquote>
+          <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 16 }}>
+            <div style={{ width: 32, height: 1, background: T.gold }} />
+            <div style={{ textAlign: 'left' }}>
+              <div style={{ color: T.white, fontSize: 14, fontWeight: 500 }}>Arbab Ali</div>
+              <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: 12, letterSpacing: '0.05em', marginTop: 2 }}>Inspiring Women Leadership · Spotlight Feature</div>
+            </div>
+            <div style={{ width: 32, height: 1, background: T.gold }} />
+          </div>
+        </div>
+      </section>
+
+      {/* ═══ INDUSTRIES PREVIEW ═════════════════════════════════════════════ */}
+      <section style={{ background: T.bg, padding: '140px 48px' }}>
+        <div className="container">
+          <div style={{ textAlign: 'center', marginBottom: 80 }}>
+            <span className="gold-rule" style={{ margin: '0 auto 24px' }} />
+            <p className="eyebrow" style={{ marginBottom: 24 }}>Sectors We Serve</p>
+            <h2 className="display-lg" style={{ marginBottom: 24 }}>Industry depth, not just reach.</h2>
+            <p className="body-md" style={{ maxWidth: 540, margin: '0 auto' }}>
+              From luxury hospitality to data centre infrastructure — we understand the specific talent dynamics of each sector we operate in.
+            </p>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 24 }}>
+            {[
+              { icon: 'hotel', name: 'Hospitality & Hotels', desc: 'Pre-opening, F&B, FOH and BOH leadership' },
+              { icon: 'chef', name: 'F&B Operations', desc: 'Restaurant groups, catering and culinary talent' },
+              { icon: 'event', name: 'Events & Conferences', desc: 'Production, speakers and event leadership' },
+              { icon: 'data', name: 'Data Centres', desc: 'Technical, project and executive mandates' },
+              { icon: 'energy', name: 'Energy & Sustainability', desc: 'Engineering, project and operations talent' },
+              { icon: 'shield', name: 'Insurance & Finance', desc: 'Sales, advisory and corporate functions' },
+            ].map((ind, i) => (
+              <div key={i} className="industry-card">
+                <Icon name={ind.icon} size={32} color={T.gold} strokeWidth={1.25} />
+                <h4 style={{ fontFamily: 'Playfair Display, serif', fontSize: 22, fontWeight: 600, color: T.ink, margin: '20px 0 8px' }}>{ind.name}</h4>
+                <p style={{ fontSize: 14, color: T.muted, lineHeight: 1.6 }}>{ind.desc}</p>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ textAlign: 'center', marginTop: 60 }}>
+            <button onClick={() => setPage('industries')} className="link-underline">
+              See all industries <Icon name="arrow" size={16} color={T.gold} />
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══ AI ADVISORY TOOLS ══════════════════════════════════════════════ */}
+      <section style={{ background: T.white, padding: '140px 48px', borderTop: `1px solid ${T.line}` }}>
+        <div className="container">
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 100, alignItems: 'start' }}>
+            <div>
+              <span className="gold-rule" style={{ marginBottom: 24 }} />
+              <p className="eyebrow" style={{ marginBottom: 24 }}>Intelligent Advisory</p>
+              <h2 className="display-lg" style={{ marginBottom: 28 }}>Tools, calibrated for the GCC market.</h2>
+              <p className="body-md" style={{ marginBottom: 36 }}>
+                Three AI-powered tools developed in-house — informed by Chartered HR expertise, calibrated against current UAE market data, and available to use without obligation.
+              </p>
+              <button onClick={() => setPage('tools')} className="btn btn-primary">
+                Explore Tools <Icon name="arrow" size={16} color={T.white} />
+              </button>
+            </div>
+            <div>
+              {[
+                { num: '01', title: 'HR Maturity Assessment', desc: 'Ten diagnostic questions. AI-generated audit report with prioritised actions.' },
+                { num: '02', title: 'Compensation Benchmarker', desc: 'Salary intelligence across 12+ hospitality roles and three experience tiers.' },
+                { num: '03', title: 'Conversational HR Advisor', desc: 'Direct access to GCC labour law guidance and best-practice frameworks.' },
+              ].map((t, i) => (
+                <div key={i} onClick={() => setPage('tools')} style={{ padding: '28px 0', borderBottom: i < 2 ? `1px solid ${T.line}` : 'none', cursor: 'pointer', display: 'grid', gridTemplateColumns: '60px 1fr 30px', gap: 20, alignItems: 'start', transition: 'all 0.3s' }}
+                  onMouseOver={e => e.currentTarget.style.paddingLeft = '8px'}
+                  onMouseOut={e => e.currentTarget.style.paddingLeft = '0'}>
+                  <span style={{ fontFamily: 'Playfair Display,serif', fontSize: 18, color: T.gold, fontStyle: 'italic' }}>{t.num}</span>
+                  <div>
+                    <h4 style={{ fontFamily: 'Playfair Display,serif', fontSize: 20, fontWeight: 600, color: T.ink, marginBottom: 6 }}>{t.title}</h4>
+                    <p style={{ fontSize: 14, color: T.muted, lineHeight: 1.6 }}>{t.desc}</p>
+                  </div>
+                  <Icon name="arrow" size={16} color={T.muted} />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══ FINAL CTA ══════════════════════════════════════════════════════ */}
+      <section style={{ position: 'relative', background: T.ink, padding: '140px 48px', overflow: 'hidden' }}>
+        <div style={{ position: 'absolute', top: 0, right: 0, width: 500, height: 500, border: `1px solid rgba(169,139,92,0.1)`, borderRadius: '50%', transform: 'translate(40%, -40%)' }} />
+        <div style={{ position: 'absolute', bottom: 0, left: 0, width: 300, height: 300, border: `1px solid rgba(169,139,92,0.08)`, borderRadius: '50%', transform: 'translate(-30%, 30%)' }} />
+        <div className="container-narrow" style={{ position: 'relative', zIndex: 2, textAlign: 'center' }}>
+          <span className="gold-rule" style={{ margin: '0 auto 32px' }} />
+          <h2 className="display-lg" style={{ color: T.white, marginBottom: 28 }}>
+            Let's discuss your<br />people strategy.
+          </h2>
+          <p className="body-lg" style={{ color: 'rgba(255,255,255,0.7)', maxWidth: 460, margin: '0 auto 48px' }}>
+            A complimentary 30-minute consultation — no obligation, full discretion.
+          </p>
+          <button onClick={() => setPage('contact')} className="btn btn-gold">
+            Schedule Consultation <Icon name="arrow" size={16} color={T.white} />
+          </button>
+        </div>
+      </section>
+
     </div>
   );
 };
 
-// ── ABOUT ────────────────────────────────────────────────────────────────────
+// ════════════════════════════════════════════════════════════════════════════
+//  ABOUT
+// ════════════════════════════════════════════════════════════════════════════
 const About = ({ setPage }) => (
-  <div style={{ paddingTop: 76 }}>
-    <div style={{ background: C.navy, padding: '90px 2.5rem', textAlign: 'center' }}>
-      <p className="section-label">Who We Are</p>
-      <h1 style={{ fontFamily: 'Montserrat,sans-serif', fontSize: 'clamp(36px,5vw,56px)', fontWeight: 800, color: C.white, marginTop: 8 }}>About NHB Consultancy</h1>
-    </div>
-    <div style={{ background: C.white, padding: '90px 2.5rem' }}>
-      <div style={{ maxWidth: 1100, margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 80, alignItems: 'start' }}>
-        <div>
-          <div className="gold-line" />
-          <p className="section-label">Our Story</p>
-          <h2 className="section-title">People at the Heart of Everything</h2>
-          <p className="section-body" style={{ marginBottom: 20 }}>
-            NHB Consultancy was founded with a clear mission: to give businesses access to expert, personalised HR support that was traditionally only available to large corporations.
-          </p>
-          <p className="section-body" style={{ marginBottom: 32 }}>
-            Every company — regardless of size — deserves world-class people strategy. We serve both SME and enterprise-level clients across the GCC with high-impact HR strategies and targeted talent acquisition services.
-          </p>
-          <button onClick={() => setPage('contact')} className="btn-dark">Work With Us</button>
-        </div>
-        <div>
-          <div style={{ background: C.light, padding: 40, borderLeft: `3px solid ${C.gold}` }}>
-            <h3 style={{ fontFamily: 'Montserrat,sans-serif', fontSize: 20, fontWeight: 700, color: C.navy, marginBottom: 6 }}>Nihel Hassen Busman</h3>
-            <p style={{ fontSize: 12, color: C.gold, fontFamily: 'Montserrat,sans-serif', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 20 }}>Founder & Executive HR Consultant</p>
-            <p style={{ fontSize: 14, color: C.muted, lineHeight: 1.8, marginBottom: 24 }}>
-              An accomplished HR professional with extensive experience across HR operations, recruitment, employee relations and hospitality management. Nihel brings deep regional knowledge of UAE labour law, HR systems, employee engagement and organisational development.
+  <div className="page-enter" style={{ paddingTop: 88 }}>
+    <section style={{ background: T.ink, padding: '120px 48px 100px' }}>
+      <div className="container">
+        <span className="gold-rule" style={{ marginBottom: 24 }} />
+        <p className="eyebrow" style={{ marginBottom: 24 }}>About NHB Consultancy</p>
+        <h1 className="display-lg" style={{ color: T.white, maxWidth: 800 }}>
+          Strategic HR advisory.<br />
+          <span style={{ color: T.goldL }}>People-led, business-focused.</span>
+        </h1>
+      </div>
+    </section>
+
+    <section style={{ background: T.white, padding: '120px 48px' }}>
+      <div className="container">
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 100, alignItems: 'start', marginBottom: 120 }}>
+          <div>
+            <span className="gold-rule" style={{ marginBottom: 24 }} />
+            <p className="eyebrow" style={{ marginBottom: 24 }}>Our Story</p>
+            <h2 className="display-md" style={{ marginBottom: 32 }}>
+              Boutique by design.<br />
+              Global by capability.
+            </h2>
+            <p className="body-md" style={{ marginBottom: 24 }}>
+              NHB Consultancy was founded on a clear premise: the calibre of HR support traditionally reserved for global enterprises should be accessible to every ambitious business.
+            </p>
+            <p className="body-md" style={{ marginBottom: 24 }}>
+              We were built by hospitality leaders — operators who have led people strategy through openings, scale-ups, transformations and tough conversations. That operational lens means our advisory is grounded, practical and commercially aware.
+            </p>
+            <p className="body-md">
+              We serve SME and enterprise clients across the GCC with high-impact HR strategies, executive search and outsourced services — operating as a true partner, not a transactional vendor.
+            </p>
+          </div>
+          <div style={{ background: T.bg, padding: 56, borderLeft: `3px solid ${T.gold}` }}>
+            <div style={{ marginBottom: 32 }}>
+              <p className="eyebrow" style={{ marginBottom: 14 }}>Leadership</p>
+              <h3 style={{ fontFamily: 'Playfair Display,serif', fontSize: 32, fontWeight: 600, color: T.ink, marginBottom: 6 }}>Nihel Hassen Busman</h3>
+              <p style={{ fontSize: 14, color: T.gold, fontWeight: 500, letterSpacing: '0.05em' }}>Chartered MCIPD · Founder & Principal Advisor</p>
+            </div>
+            <p className="body-sm" style={{ marginBottom: 24, color: T.ink2, fontSize: 15, lineHeight: 1.75 }}>
+              Nihel brings 15+ years of HR leadership, most recently as <strong style={{ color: T.ink, fontWeight: 600 }}>Director of Human Resources and Training</strong> within Radisson Hotel Group. Her career spans pre-opening team builds, large-scale workforce strategy and executive search across the hospitality and corporate sectors.
+            </p>
+            <p className="body-sm" style={{ marginBottom: 32, color: T.ink2, fontSize: 15, lineHeight: 1.75 }}>
+              She holds Chartered MCIPD status — one of the most respected HR qualifications globally — and has been featured in <em>Inspiring Women Leadership</em>'s spotlight on senior HR practitioners shaping the regional industry.
             </p>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-              {['UAE Labour Law', 'HR Strategy', 'Hospitality', 'Talent Acquisition', 'HR Analytics'].map((t, i) => (
-                <span key={i} style={{ padding: '5px 12px', border: `1px solid ${C.gold}`, color: C.gold, fontSize: 11, fontFamily: 'Montserrat,sans-serif', fontWeight: 600, letterSpacing: '0.08em' }}>{t}</span>
+              {['Chartered MCIPD', 'UAE Labour Law', 'Executive Search', 'Pre-Opening', 'Hospitality', 'HR Strategy'].map((t, i) => (
+                <span key={i} style={{ padding: '6px 14px', border: `1px solid ${T.border}`, color: T.ink, fontSize: 11, fontWeight: 500, letterSpacing: '0.05em', background: T.white }}>{t}</span>
               ))}
             </div>
+            <a href="https://www.linkedin.com/in/nihelhassenbusman/" target="_blank" rel="noreferrer" className="link-underline" style={{ marginTop: 28 }}>
+              View LinkedIn Profile <Icon name="arrow" size={14} color={T.gold} />
+            </a>
           </div>
-{['Integrity', 'Excellence', 'Agility', 'Partnership', 'Confidentiality', 'Impact'].map((val, i) => (
-  <div key={i} style={{ background: C.white, padding: '22px 16px', textAlign: 'center', borderTop: `2px solid ${i < 3 ? C.gold : 'transparent'}` }}>
-    <div style={{ width: 24, height: 1, background: C.gold, margin: '0 auto 12px' }} />
-    <div style={{ fontFamily: 'Montserrat,sans-serif', fontSize: 10, fontWeight: 700, color: C.navy, letterSpacing: '0.14em', textTransform: 'uppercase' }}>{val}</div>
-  </div>
-))}
+        </div>
+
+        {/* Values — refined typography only */}
+        <div style={{ borderTop: `1px solid ${T.border}`, paddingTop: 80 }}>
+          <div style={{ textAlign: 'center', marginBottom: 64 }}>
+            <p className="eyebrow" style={{ marginBottom: 16 }}>What We Stand For</p>
+            <h2 className="display-md">Our principles.</h2>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 1, background: T.border }}>
+            {[
+              { v: 'Integrity', d: 'Transparent counsel, even when it isn\'t what you want to hear.' },
+              { v: 'Excellence', d: 'Uncompromising standards across every engagement and placement.' },
+              { v: 'Agility', d: 'Responsive, adaptive solutions for fast-moving businesses.' },
+              { v: 'Partnership', d: 'Embedded with your team — not a transactional vendor.' },
+              { v: 'Confidentiality', d: 'Discretion in every client and candidate matter.' },
+              { v: 'Impact', d: 'Measured outcomes that move the commercial dial.' },
+            ].map((val, i) => (
+              <div key={i} style={{ background: T.white, padding: '40px 32px' }}>
+                <span style={{ fontFamily: 'Playfair Display,serif', fontSize: 14, color: T.gold, fontStyle: 'italic' }}>{String(i + 1).padStart(2, '0')}</span>
+                <h4 style={{ fontFamily: 'Playfair Display,serif', fontSize: 22, fontWeight: 600, color: T.ink, margin: '12px 0 10px' }}>{val.v}</h4>
+                <p style={{ fontSize: 14, color: T.muted, lineHeight: 1.65 }}>{val.d}</p>
+              </div>
             ))}
           </div>
         </div>
       </div>
-    </div>
+    </section>
+
+    <section style={{ background: T.ink, padding: '100px 48px', textAlign: 'center' }}>
+      <div className="container-narrow">
+        <h2 className="display-md" style={{ color: T.white, marginBottom: 28 }}>Work with us.</h2>
+        <p className="body-lg" style={{ color: 'rgba(255,255,255,0.7)', marginBottom: 40 }}>
+          A complimentary consultation to explore where we can add value.
+        </p>
+        <button onClick={() => setPage('contact')} className="btn btn-gold">
+          Get in Touch <Icon name="arrow" size={16} color={T.white} />
+        </button>
+      </div>
+    </section>
   </div>
 );
 
-// ── HR SERVICES ──────────────────────────────────────────────────────────────
-const HRServices = ({ setPage }) => {
+// ════════════════════════════════════════════════════════════════════════════
+//  SERVICES
+// ════════════════════════════════════════════════════════════════════════════
+const Services = ({ setPage }) => {
   const services = [
-    { num: '01', icon: 'hr', title: 'HR Consultancy Services', items: ['UAE Labour Law compliance', 'Policy & procedure development', 'HR strategy & organisational design', 'Performance management frameworks', 'Employee engagement & culture'] },
-    { num: '02', icon: 'recruit', title: 'Recruitment & Talent Acquisition', items: ['End-to-end hiring management', 'Executive & senior search', 'Headhunting & talent mapping', 'Candidate screening & assessment', 'Onboarding support'] },
-    { num: '03', icon: 'outsource', title: 'Outsourced HR Services', items: ['Payroll management', 'PRO services & visa processing', 'Leave & absence management', 'Employee documentation', 'On-demand HR support'] },
-    { num: '04', icon: 'hospitality', title: 'Hospitality Management Services', items: ['Hotel & resort staffing', 'F&B recruitment', 'Pre-opening team builds', 'Events & catering staffing', 'SOP development'] },
+    { num: '01', icon: 'strategy', title: 'HR Consultancy', desc: 'Strategic HR architecture for organisations entering or scaling in the UAE.',
+      items: ['UAE Labour Law compliance audits', 'Policy frameworks & employee handbooks', 'Organisational design & workforce planning', 'Performance management systems', 'Compensation & benefits structuring', 'Change management programmes'] },
+    { num: '02', icon: 'search', title: 'Recruitment & Executive Search', desc: 'End-to-end talent acquisition — from operational to C-suite.',
+      items: ['Executive & senior leadership search', 'Mid-level professional recruitment', 'Headhunting & talent mapping', 'Candidate assessment & screening', 'Pre-opening team builds', 'Onboarding & integration support'] },
+    { num: '03', icon: 'network', title: 'Outsourced HR Services', desc: 'Fractional HR partnership for businesses without an internal function.',
+      items: ['Payroll administration', 'PRO services & visa processing', 'Leave & attendance management', 'Employee documentation & contracts', 'Day-to-day HR support', 'Exit management & offboarding'] },
+    { num: '04', icon: 'building', title: 'Hospitality Management', desc: 'Specialist services for hotels, F&B groups and hospitality operators.',
+      items: ['Pre-opening recruitment packages', 'SOP & service standard development', 'FOH and BOH staffing', 'Hospitality executive search', 'Training programme design', 'Operational HR support'] },
   ];
+
   return (
-    <div style={{ paddingTop: 76 }}>
-      <div style={{ background: C.navy, padding: '90px 2.5rem', textAlign: 'center' }}>
-        <p className="section-label">What We Offer</p>
-        <h1 style={{ fontFamily: 'Montserrat,sans-serif', fontSize: 'clamp(36px,5vw,56px)', fontWeight: 800, color: C.white, marginTop: 8 }}>Our Services</h1>
-      </div>
-      <div style={{ background: C.white, padding: '90px 2.5rem' }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 48 }}>
+    <div className="page-enter" style={{ paddingTop: 88 }}>
+      <section style={{ background: T.ink, padding: '120px 48px 100px' }}>
+        <div className="container">
+          <span className="gold-rule" style={{ marginBottom: 24 }} />
+          <p className="eyebrow" style={{ marginBottom: 24 }}>Capabilities</p>
+          <h1 className="display-lg" style={{ color: T.white, maxWidth: 800 }}>Four practices.<br /><span style={{ color: T.goldL }}>One advisory partner.</span></h1>
+        </div>
+      </section>
+
+      <section style={{ background: T.white, padding: '120px 48px' }}>
+        <div className="container">
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64 }}>
             {services.map((s, i) => (
-              <div key={i} style={{ borderTop: `2px solid ${C.gold}`, paddingTop: 32 }}>
-                <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start', marginBottom: 20 }}>
-                  <Icon name={s.icon} size={32} color={C.gold} />
-                  <div>
-                    <div style={{ fontSize: 11, color: '#ccc', fontFamily: 'Montserrat,sans-serif', fontWeight: 600, letterSpacing: '0.1em', marginBottom: 4 }}>{s.num}</div>
-                    <h3 style={{ fontFamily: 'Montserrat,sans-serif', fontSize: 15, fontWeight: 700, color: C.navy, textTransform: 'uppercase', letterSpacing: '0.06em' }}>{s.title}</h3>
-                  </div>
+              <div key={i} style={{ padding: 48, background: T.bg, borderTop: `2px solid ${T.gold}`, position: 'relative' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 28 }}>
+                  <Icon name={s.icon} size={36} color={T.gold} strokeWidth={1.25} />
+                  <span style={{ fontFamily: 'Playfair Display,serif', fontSize: 28, color: T.faded, fontStyle: 'italic', fontWeight: 400 }}>{s.num}</span>
                 </div>
-                {s.items.map((item, j) => (
-                  <div key={j} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 0', borderBottom: `1px solid ${C.border}`, fontSize: 14, color: C.muted }}>
-                    <div style={{ width: 4, height: 4, background: C.gold, flexShrink: 0, borderRadius: '50%' }} />
-                    {item}
-                  </div>
-                ))}
+                <h3 className="display-sm" style={{ marginBottom: 14 }}>{s.title}</h3>
+                <p className="body-md" style={{ marginBottom: 28, fontSize: 15 }}>{s.desc}</p>
+                <div>
+                  {s.items.map((item, j) => (
+                    <div key={j} style={{ display: 'flex', alignItems: 'flex-start', gap: 12, padding: '11px 0', borderBottom: j < s.items.length - 1 ? `1px solid ${T.line}` : 'none' }}>
+                      <div style={{ width: 4, height: 4, background: T.gold, marginTop: 8, flexShrink: 0 }} />
+                      <span style={{ fontSize: 14, color: T.ink2, lineHeight: 1.5 }}>{item}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
             ))}
           </div>
-          <div style={{ marginTop: 80, background: C.navy, padding: '60px', textAlign: 'center' }}>
-            <p className="section-label">Ready to Start?</p>
-            <h2 style={{ fontFamily: 'Montserrat,sans-serif', fontSize: 32, fontWeight: 700, color: C.white, marginBottom: 24 }}>Let's Discuss Your Needs</h2>
-            <button onClick={() => setPage('contact')} className="btn-primary">Book a Consultation</button>
-          </div>
         </div>
-      </div>
+      </section>
+
+      <section style={{ background: T.ink, padding: '100px 48px', textAlign: 'center' }}>
+        <div className="container-narrow">
+          <h2 className="display-md" style={{ color: T.white, marginBottom: 28 }}>Bespoke engagements only.</h2>
+          <p className="body-lg" style={{ color: 'rgba(255,255,255,0.7)', marginBottom: 40 }}>
+            Every mandate is scoped against your specific business context. No templated packages — only tailored advisory.
+          </p>
+          <button onClick={() => setPage('contact')} className="btn btn-gold">
+            Discuss Your Needs <Icon name="arrow" size={16} color={T.white} />
+          </button>
+        </div>
+      </section>
     </div>
   );
 };
 
-// ── AI TOOLS ─────────────────────────────────────────────────────────────────
-const AITools = () => {
+// ════════════════════════════════════════════════════════════════════════════
+//  INDUSTRIES
+// ════════════════════════════════════════════════════════════════════════════
+const Industries = ({ setPage }) => {
+  const sectors = [
+    { icon: 'hotel', name: 'Hospitality & Hotels', desc: 'Pre-opening teams, hotel operations, FOH and BOH leadership across luxury and boutique properties.', roles: ['Hotel GM', 'F&B Manager', 'Front Office', 'Revenue Manager'] },
+    { icon: 'chef', name: 'Restaurant & F&B', desc: 'Restaurant groups, catering operations and culinary leadership across casual to fine-dining concepts.', roles: ['Executive Chef', 'Restaurant Manager', 'Sommelier', 'F&B Director'] },
+    { icon: 'event', name: 'Events & Conferences', desc: 'Production teams, conference programming, speaker management and event operations.', roles: ['Conference Producer', 'Event Director', 'Production Lead', 'Operations'] },
+    { icon: 'data', name: 'Data Centres', desc: 'Technical leadership, project management and executive functions for hyperscale infrastructure.', roles: ['Project Manager', 'Executive Assistant', 'Operations', 'Engineering'] },
+    { icon: 'energy', name: 'Energy & Sustainability', desc: 'Engineering, project delivery and operations roles across renewable and waste management sectors.', roles: ['Project Manager', 'Operations Lead', 'Engineering', 'HSE'] },
+    { icon: 'shield', name: 'Insurance & Finance', desc: 'Sales executives, advisory talent and corporate functions for insurance and financial services.', roles: ['Marketing Executive', 'Sales', 'Advisory', 'Corporate'] },
+  ];
+
+  return (
+    <div className="page-enter" style={{ paddingTop: 88 }}>
+      <section style={{ background: T.ink, padding: '120px 48px 100px' }}>
+        <div className="container">
+          <span className="gold-rule" style={{ marginBottom: 24 }} />
+          <p className="eyebrow" style={{ marginBottom: 24 }}>Sectors</p>
+          <h1 className="display-lg" style={{ color: T.white, maxWidth: 800 }}>Where we work.<br /><span style={{ color: T.goldL }}>What we know.</span></h1>
+        </div>
+      </section>
+
+      <section style={{ background: T.bg, padding: '120px 48px' }}>
+        <div className="container">
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 32 }}>
+            {sectors.map((s, i) => (
+              <div key={i} style={{ background: T.white, padding: 48, border: `1px solid ${T.line}`, transition: 'all 0.4s', position: 'relative', overflow: 'hidden' }}
+                onMouseOver={e => { e.currentTarget.style.borderColor = T.gold; e.currentTarget.style.transform = 'translateY(-3px)'; }}
+                onMouseOut={e => { e.currentTarget.style.borderColor = T.line; e.currentTarget.style.transform = 'translateY(0)'; }}>
+                <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 28 }}>
+                  <Icon name={s.icon} size={36} color={T.gold} strokeWidth={1.25} />
+                  <span style={{ fontFamily: 'Playfair Display,serif', fontSize: 24, color: T.faded, fontStyle: 'italic' }}>{String(i + 1).padStart(2, '0')}</span>
+                </div>
+                <h3 className="display-sm" style={{ marginBottom: 14 }}>{s.name}</h3>
+                <p className="body-sm" style={{ marginBottom: 28, fontSize: 14 }}>{s.desc}</p>
+                <div>
+                  <p className="micro" style={{ marginBottom: 12, fontSize: 10 }}>Representative Roles</p>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                    {s.roles.map((r, j) => (
+                      <span key={j} style={{ padding: '5px 12px', background: T.bg, color: T.ink, fontSize: 12, fontWeight: 500 }}>{r}</span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+};
+
+// ════════════════════════════════════════════════════════════════════════════
+//  TOOLS
+// ════════════════════════════════════════════════════════════════════════════
+const Tools = () => {
   const [tab, setTab] = useState('chat');
-  const [msgs, setMsgs] = useState([{ r: 'a', t: "How can I help you today? I can answer questions about UAE labour law, HR practices, salary benchmarks, or NHB's services." }]);
+  const [msgs, setMsgs] = useState([{ r: 'a', t: "I'm here to help with questions on UAE labour law, HR strategy, executive search, or how NHB Consultancy could support your business." }]);
   const [inp, setInp] = useState('');
   const [chatLoad, setChatLoad] = useState(false);
   const endRef = useRef(null);
@@ -388,15 +762,15 @@ const AITools = () => {
 
   const hQs = [
     { q: 'Do you have documented HR policies and procedures?', k: 'p1' },
-    { q: 'Is your business compliant with UAE Labour Law?', k: 'p2' },
-    { q: 'Do you have a formal performance management process?', k: 'p3' },
-    { q: 'Do you conduct regular employee engagement activities?', k: 'p4' },
-    { q: 'Do you have a structured onboarding programme?', k: 'p5' },
-    { q: 'Do you track HR metrics and KPIs regularly?', k: 'p6' },
-    { q: 'Do you have a training and development programme?', k: 'p7' },
-    { q: 'Is your payroll process accurate and compliant?', k: 'p8' },
-    { q: 'Do you have clear job descriptions for all roles?', k: 'p9' },
-    { q: 'Do you have a structured recruitment process?', k: 'p10' },
+    { q: 'Is your business fully compliant with UAE Labour Law?', k: 'p2' },
+    { q: 'Do you operate a formal performance management process?', k: 'p3' },
+    { q: 'Do you run regular employee engagement initiatives?', k: 'p4' },
+    { q: 'Is there a structured onboarding programme in place?', k: 'p5' },
+    { q: 'Do you track and report HR metrics regularly?', k: 'p6' },
+    { q: 'Is there a defined training and development pathway?', k: 'p7' },
+    { q: 'Is your payroll process accurate and audit-ready?', k: 'p8' },
+    { q: 'Do all roles have clear, current job descriptions?', k: 'p9' },
+    { q: 'Is your recruitment process consistent and structured?', k: 'p10' },
   ];
 
   const salaries = {
@@ -408,6 +782,8 @@ const AITools = () => {
     'Front Office Manager': { j: '10,000–15,000', m: '15,000–25,000', s: '25,000–40,000' },
     'HR Manager': { j: '12,000–18,000', m: '18,000–30,000', s: '30,000–50,000' },
     'Revenue Manager': { j: '12,000–18,000', m: '18,000–28,000', s: '28,000–45,000' },
+    'Project Manager': { j: '15,000–22,000', m: '22,000–35,000', s: '35,000–55,000' },
+    'Executive Assistant': { j: '8,000–12,000', m: '12,000–18,000', s: '18,000–25,000' },
     'Bartender': { j: '4,000–7,000', m: '7,000–12,000', s: '12,000–20,000' },
     'Waiter / Server': { j: '2,500–4,500', m: '4,500–8,000', s: '8,000–14,000' },
   };
@@ -421,7 +797,7 @@ const AITools = () => {
       const history = [...msgs.map(m => ({ role: m.r === 'u' ? 'user' : 'assistant', content: m.t })), { role: 'user', content: userMsg }];
       const reply = await callClaude(NHB_SYSTEM, history);
       setMsgs(p => [...p, { r: 'a', t: reply }]);
-    } catch { setMsgs(p => [...p, { r: 'a', t: 'Unable to connect at the moment. Please email admin@nhb-consultancy.com.' }]); }
+    } catch { setMsgs(p => [...p, { r: 'a', t: 'Unable to connect at this moment. For direct support, email admin@nhb-consultancy.com.' }]); }
     setChatLoad(false);
   };
 
@@ -429,159 +805,177 @@ const AITools = () => {
     setHLoad(true);
     try {
       const answers = hQs.map(q => `${q.q}: ${hAnswers[q.k] || 'Not answered'}`).join('\n');
-      const HEALTH_SYSTEM = 'You are an expert HR consultant. Analyse these HR health check answers. Return ONLY valid JSON (no markdown): {"score":number,"grade":"string","summary":"string","strengths":["string","string","string"],"gaps":["string","string","string"],"recommendations":["string","string","string"]}';
-      const raw = await callClaude(HEALTH_SYSTEM, [{ role: 'user', content: `HR Health Check:\n${answers}` }]);
+      const HEALTH_SYSTEM = 'You are a senior HR consultant analysing HR maturity. Return ONLY valid JSON (no markdown, no preamble): {"score":number,"grade":"string","summary":"string","strengths":["string","string","string"],"gaps":["string","string","string"],"recommendations":["string","string","string"]}';
+      const raw = await callClaude(HEALTH_SYSTEM, [{ role: 'user', content: `HR Maturity Assessment:\n${answers}` }]);
       setHResult(JSON.parse(raw.replace(/```json|```/g, '').trim()));
     } catch {
-      setHResult({ score: 60, grade: 'C+', summary: 'Assessment complete. Contact NHB for a detailed review.', strengths: ['Awareness of HR importance', 'Openness to improvement', 'Some processes in place'], gaps: ['Policies need formalisation', 'Compliance may need review', 'Analytics not yet established'], recommendations: ['Engage NHB for an HR audit', 'Develop a core policy framework', 'Implement basic HR metrics'] });
+      setHResult({ score: 60, grade: 'B-', summary: 'Foundational HR practices are in place with clear opportunities for strengthening.', strengths: ['Awareness of HR governance', 'Willingness to invest in structure', 'Baseline operational processes'], gaps: ['Policies require formalisation', 'Compliance review recommended', 'Analytics framework absent'], recommendations: ['Conduct a comprehensive HR audit', 'Develop core policy frameworks', 'Implement HR metrics dashboards'] });
     }
     setHLoad(false);
   };
 
+  const tabs = [
+    { id: 'chat', label: 'Advisor' },
+    { id: 'health', label: 'HR Maturity' },
+    { id: 'salary', label: 'Compensation' },
+  ];
+
   return (
-    <div style={{ paddingTop: 76 }}>
-      <div style={{ background: C.navy, padding: '90px 2.5rem', textAlign: 'center' }}>
-        <p className="section-label">AI-Powered</p>
-        <h1 style={{ fontFamily: 'Montserrat,sans-serif', fontSize: 'clamp(36px,5vw,56px)', fontWeight: 800, color: C.white, marginTop: 8 }}>Free HR Tools</h1>
-      </div>
-      <div style={{ background: C.light, padding: '60px 2.5rem', minHeight: '70vh' }}>
-        <div style={{ maxWidth: 860, margin: '0 auto' }}>
-          <div style={{ display: 'flex', gap: 1, marginBottom: 40, background: C.border }}>
-            {[{ id: 'chat', label: 'HR Assistant' }, { id: 'health', label: 'HR Health Check' }, { id: 'salary', label: 'Salary Benchmarker' }].map(t => (
-              <button key={t.id} onClick={() => setTab(t.id)} className={`tool-tab ${tab === t.id ? 'active' : ''}`} style={{ flex: 1 }}>{t.label}</button>
+    <div className="page-enter" style={{ paddingTop: 88 }}>
+      <section style={{ background: T.ink, padding: '120px 48px 100px' }}>
+        <div className="container">
+          <span className="gold-rule" style={{ marginBottom: 24 }} />
+          <p className="eyebrow" style={{ marginBottom: 24 }}>Advisory Tools</p>
+          <h1 className="display-lg" style={{ color: T.white, maxWidth: 800 }}>Intelligence,<br /><span style={{ color: T.goldL }}>on demand.</span></h1>
+          <p style={{ color: 'rgba(255,255,255,0.65)', fontSize: 17, lineHeight: 1.65, marginTop: 28, maxWidth: 560 }}>
+            Three AI-powered tools — calibrated to the GCC market and informed by Chartered HR expertise. Available without obligation.
+          </p>
+        </div>
+      </section>
+
+      <section style={{ background: T.bg, padding: '80px 48px 120px' }}>
+        <div className="container" style={{ maxWidth: 980 }}>
+          <div style={{ display: 'flex', gap: 0, marginBottom: 40, borderBottom: `1px solid ${T.border}` }}>
+            {tabs.map(t => (
+              <button key={t.id} onClick={() => setTab(t.id)}
+                style={{ padding: '16px 28px', background: 'transparent', border: 'none', borderBottom: tab === t.id ? `2px solid ${T.gold}` : '2px solid transparent', fontFamily: 'Inter,sans-serif', fontSize: 13, fontWeight: 500, color: tab === t.id ? T.ink : T.muted, cursor: 'pointer', transition: 'all 0.3s', marginBottom: -1 }}>
+                {t.label}
+              </button>
             ))}
           </div>
 
           {/* CHAT */}
           {tab === 'chat' && (
-            <div style={{ background: C.white, border: `1px solid ${C.border}` }}>
-              <div style={{ padding: '16px 24px', borderBottom: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', gap: 14 }}>
-                <div style={{ width: 40, height: 40, background: C.navy, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <Icon name="chat" size={18} color={C.white} />
+            <div className="scale-in" style={{ background: T.white, border: `1px solid ${T.line}` }}>
+              <div style={{ padding: '20px 28px', borderBottom: `1px solid ${T.line}`, display: 'flex', alignItems: 'center', gap: 16 }}>
+                <div style={{ width: 44, height: 44, background: T.ink, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Icon name="chat" size={20} color={T.gold} />
                 </div>
                 <div>
-                  <div style={{ fontFamily: 'Montserrat,sans-serif', fontWeight: 700, fontSize: 14, color: C.navy }}>NHB HR Advisor</div>
-                  <div style={{ fontSize: 12, color: C.gold, fontFamily: 'Montserrat,sans-serif' }}>Online</div>
+                  <div style={{ fontFamily: 'Playfair Display,serif', fontSize: 18, fontWeight: 600, color: T.ink }}>HR Advisor</div>
+                  <div style={{ fontSize: 12, color: T.muted }}>Powered by Claude · Calibrated for GCC market</div>
                 </div>
               </div>
-              <div style={{ height: 420, overflowY: 'auto', padding: 24, display: 'flex', flexDirection: 'column', gap: 14 }}>
+              <div style={{ height: 460, overflowY: 'auto', padding: 28, display: 'flex', flexDirection: 'column', gap: 14 }}>
                 {msgs.map((m, i) => (
-                  <div key={i} className="chat-in" style={{ display: 'flex', justifyContent: m.r === 'u' ? 'flex-end' : 'flex-start' }}>
-                    <div className="chat-bubble" style={{ background: m.r === 'u' ? C.navy : C.light, color: m.r === 'u' ? C.white : C.navy }}>{m.t}</div>
+                  <div key={i} style={{ display: 'flex', justifyContent: m.r === 'u' ? 'flex-end' : 'flex-start' }}>
+                    <div className={`bubble bubble-${m.r === 'u' ? 'user' : 'assistant'}`}>{m.t}</div>
                   </div>
                 ))}
-                {chatLoad && <div style={{ background: C.light, padding: '12px 16px', color: C.muted, fontSize: 18, width: 'fit-content' }}>···</div>}
+                {chatLoad && <div style={{ background: T.bg, padding: '14px 18px', color: T.muted, fontSize: 20, width: 'fit-content', border: `1px solid ${T.line}`, borderRadius: '14px 14px 14px 4px' }}>···</div>}
                 <div ref={endRef} />
               </div>
-              <div style={{ padding: '14px 20px', borderTop: `1px solid ${C.border}`, display: 'flex', gap: 10 }}>
+              <div style={{ padding: 20, borderTop: `1px solid ${T.line}`, display: 'flex', gap: 10 }}>
                 <input value={inp} onChange={e => setInp(e.target.value)} onKeyDown={e => e.key === 'Enter' && sendChat()}
-                  placeholder="Ask about UAE labour law, HR practices, our services..."
-                  className="form-input" style={{ flex: 1 }} />
-                <button onClick={sendChat} disabled={chatLoad} className="btn-dark" style={{ padding: '12px 20px', display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <Icon name="send" size={14} color={C.white} />
+                  placeholder="Ask about labour law, HR strategy, or our services..." className="input" style={{ flex: 1 }} />
+                <button onClick={sendChat} disabled={chatLoad} className="btn btn-primary" style={{ padding: '14px 20px' }}>
+                  <Icon name="send" size={14} color={T.white} />
                 </button>
               </div>
             </div>
           )}
 
-          {/* HEALTH CHECK */}
+          {/* HR MATURITY */}
           {tab === 'health' && (
-            <div style={{ background: C.white, border: `1px solid ${C.border}`, padding: 44 }}>
-              <h2 style={{ fontFamily: 'Montserrat,sans-serif', fontSize: 26, fontWeight: 700, color: C.navy, marginBottom: 8 }}>HR Health Check</h2>
-              <p style={{ color: C.muted, marginBottom: 32, fontSize: 15 }}>Answer 10 questions to receive your AI-powered HR maturity score.</p>
+            <div className="scale-in" style={{ background: T.white, border: `1px solid ${T.line}`, padding: 56 }}>
+              <h2 className="display-sm" style={{ marginBottom: 12 }}>HR Maturity Assessment</h2>
+              <p className="body-md" style={{ marginBottom: 40, fontSize: 15 }}>Ten questions. Five minutes. An AI-generated diagnostic report with prioritised recommendations.</p>
               {!hResult ? (
                 <div>
-                  <div style={{ marginBottom: 32 }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
-                      <span style={{ fontSize: 12, color: C.muted }}>Progress</span>
-                      <span style={{ fontSize: 12, color: C.gold, fontWeight: 600 }}>{Object.keys(hAnswers).length} / {hQs.length}</span>
+                  <div style={{ marginBottom: 40 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
+                      <span style={{ fontSize: 12, color: T.muted, letterSpacing: '0.05em' }}>Progress</span>
+                      <span style={{ fontSize: 12, color: T.gold, fontWeight: 600 }}>{Object.keys(hAnswers).length} / {hQs.length}</span>
                     </div>
-                    <div style={{ height: 2, background: C.border }}>
-                      <div style={{ height: '100%', background: C.gold, width: `${(Object.keys(hAnswers).length / hQs.length) * 100}%`, transition: 'width 0.4s' }} />
+                    <div style={{ height: 2, background: T.line }}>
+                      <div style={{ height: '100%', background: T.gold, width: `${(Object.keys(hAnswers).length / hQs.length) * 100}%`, transition: 'width 0.5s cubic-bezier(0.4,0,0.2,1)' }} />
                     </div>
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                     {hQs.map((q, i) => (
-                      <div key={i} style={{ padding: '18px 20px', background: C.light, borderLeft: `3px solid ${hAnswers[q.k] ? C.gold : C.border}` }}>
-                        <p style={{ fontSize: 14, color: C.navy, fontWeight: 500, marginBottom: 12 }}>{i + 1}. {q.q}</p>
+                      <div key={i} style={{ padding: '24px 28px', background: T.bg, borderLeft: `3px solid ${hAnswers[q.k] ? T.gold : T.border}`, transition: 'border-color 0.3s' }}>
+                        <p style={{ fontSize: 15, color: T.ink, marginBottom: 16, fontWeight: 500 }}>{String(i + 1).padStart(2, '0')}. {q.q}</p>
                         <div style={{ display: 'flex', gap: 8 }}>
                           {['Yes', 'Partially', 'No'].map(opt => (
-                            <button key={opt} onClick={() => setHAnswers(p => ({ ...p, [q.k]: opt }))} className={`health-opt ${hAnswers[q.k] === opt ? 'selected' : ''}`}>{opt}</button>
+                            <button key={opt} onClick={() => setHAnswers(p => ({ ...p, [q.k]: opt }))}
+                              style={{ padding: '8px 20px', border: `1px solid ${hAnswers[q.k] === opt ? T.gold : T.border}`, background: hAnswers[q.k] === opt ? T.gold : T.white, color: hAnswers[q.k] === opt ? T.white : T.muted, cursor: 'pointer', fontSize: 13, fontWeight: 500, fontFamily: 'Inter,sans-serif', transition: 'all 0.2s' }}>{opt}</button>
                           ))}
                         </div>
                       </div>
                     ))}
                   </div>
-                  <button onClick={submitHealth} disabled={Object.keys(hAnswers).length < 10 || hLoad} className="btn-dark"
-                    style={{ marginTop: 28, opacity: Object.keys(hAnswers).length < 10 || hLoad ? 0.5 : 1, cursor: Object.keys(hAnswers).length < 10 ? 'not-allowed' : 'pointer' }}>
-                    {hLoad ? 'Analysing...' : 'Get My Score'}
+                  <button onClick={submitHealth} disabled={Object.keys(hAnswers).length < 10 || hLoad} className="btn btn-primary" style={{ marginTop: 36 }}>
+                    {hLoad ? 'Analysing...' : 'Generate Report'} <Icon name="arrow" size={16} color={T.white} />
                   </button>
                 </div>
               ) : (
                 <div className="fade-in">
-                  <div style={{ textAlign: 'center', padding: '40px 0', borderBottom: `1px solid ${C.border}`, marginBottom: 40 }}>
-                    <div style={{ fontFamily: 'Montserrat,sans-serif', fontSize: 96, fontWeight: 800, color: C.gold, lineHeight: 1 }}>{hResult.score}</div>
-                    <div style={{ fontFamily: 'Montserrat,sans-serif', fontSize: 24, fontWeight: 600, color: C.navy, marginTop: 4 }}>Grade: {hResult.grade}</div>
-                    <p style={{ color: C.muted, fontSize: 15, marginTop: 14, maxWidth: 500, margin: '14px auto 0', lineHeight: 1.7 }}>{hResult.summary}</p>
+                  <div style={{ textAlign: 'center', padding: '40px 0', borderBottom: `1px solid ${T.border}`, marginBottom: 48 }}>
+                    <p className="eyebrow" style={{ marginBottom: 20 }}>Your HR Maturity Score</p>
+                    <div style={{ fontFamily: 'Playfair Display,serif', fontSize: 120, fontWeight: 500, color: T.ink, lineHeight: 1, letterSpacing: '-0.03em' }}>{hResult.score}</div>
+                    <div style={{ fontFamily: 'Playfair Display,serif', fontSize: 24, fontWeight: 500, color: T.gold, marginTop: 8 }}>Grade · {hResult.grade}</div>
+                    <p style={{ color: T.muted, fontSize: 15, marginTop: 24, maxWidth: 520, margin: '24px auto 0', lineHeight: 1.75 }}>{hResult.summary}</p>
                   </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 24 }}>
-                    {[{ label: 'Strengths', items: hResult.strengths, col: '#22c55e' }, { label: 'Gaps', items: hResult.gaps, col: '#f59e0b' }, { label: 'Recommendations', items: hResult.recommendations, col: C.gold }].map((col, i) => (
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 32 }}>
+                    {[{ label: 'Strengths', items: hResult.strengths }, { label: 'Gaps', items: hResult.gaps }, { label: 'Recommendations', items: hResult.recommendations }].map((col, i) => (
                       <div key={i}>
-                        <div style={{ fontFamily: 'Montserrat,sans-serif', fontSize: 11, fontWeight: 700, color: col.col, letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 14, borderBottom: `2px solid ${col.col}`, paddingBottom: 8 }}>{col.label}</div>
-                        {col.items?.map((s, j) => <div key={j} style={{ fontSize: 13, color: C.muted, padding: '8px 0', borderBottom: `1px solid ${C.border}`, lineHeight: 1.5 }}>{s}</div>)}
+                        <p className="micro" style={{ marginBottom: 16, color: T.gold, fontSize: 10 }}>{String(i + 1).padStart(2, '0')} · {col.label}</p>
+                        {col.items?.map((s, j) => <p key={j} style={{ fontSize: 14, color: T.ink2, padding: '12px 0', borderBottom: j < col.items.length - 1 ? `1px solid ${T.line}` : 'none', lineHeight: 1.6 }}>{s}</p>)}
                       </div>
                     ))}
                   </div>
-                  <button onClick={() => { setHResult(null); setHAnswers({}); }} className="btn-dark" style={{ marginTop: 32, fontSize: 11 }}>Retake Assessment</button>
+                  <button onClick={() => { setHResult(null); setHAnswers({}); }} className="btn btn-outline" style={{ marginTop: 40 }}>Take Assessment Again</button>
                 </div>
               )}
             </div>
           )}
 
-          {/* SALARY */}
+          {/* COMPENSATION */}
           {tab === 'salary' && (
-            <div style={{ background: C.white, border: `1px solid ${C.border}`, padding: 44 }}>
-              <h2 style={{ fontFamily: 'Montserrat,sans-serif', fontSize: 26, fontWeight: 700, color: C.navy, marginBottom: 8 }}>UAE Hospitality Salary Benchmarker</h2>
-              <p style={{ color: C.muted, marginBottom: 36, fontSize: 15 }}>Estimated monthly salary ranges for hospitality roles in the UAE (AED).</p>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, marginBottom: 24 }}>
-                <div className="form-field">
-                  <label className="form-label">Role</label>
-                  <select value={sRole} onChange={e => { setSRole(e.target.value); setSResult(null); }} className="form-input">
-                    <option value="">Select a role...</option>
+            <div className="scale-in" style={{ background: T.white, border: `1px solid ${T.line}`, padding: 56 }}>
+              <h2 className="display-sm" style={{ marginBottom: 12 }}>Compensation Benchmarker</h2>
+              <p className="body-md" style={{ marginBottom: 40, fontSize: 15 }}>Salary intelligence across hospitality and corporate roles in the UAE market (AED monthly).</p>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, marginBottom: 28 }}>
+                <div className="field">
+                  <label className="label">Role</label>
+                  <select value={sRole} onChange={e => { setSRole(e.target.value); setSResult(null); }} className="input">
+                    <option value="">Select a role</option>
                     {Object.keys(salaries).map(r => <option key={r} value={r}>{r}</option>)}
                   </select>
                 </div>
-                <div className="form-field">
-                  <label className="form-label">Experience Level</label>
-                  <select value={sExp} onChange={e => { setSExp(e.target.value); setSResult(null); }} className="form-input">
-                    <option value="">Select...</option>
-                    <option value="j">Junior (0–3 years)</option>
-                    <option value="m">Mid-level (3–7 years)</option>
-                    <option value="s">Senior (7+ years)</option>
+                <div className="field">
+                  <label className="label">Experience Tier</label>
+                  <select value={sExp} onChange={e => { setSExp(e.target.value); setSResult(null); }} className="input">
+                    <option value="">Select tier</option>
+                    <option value="j">Junior · 0–3 years</option>
+                    <option value="m">Mid-level · 3–7 years</option>
+                    <option value="s">Senior · 7+ years</option>
                   </select>
                 </div>
               </div>
-              <button onClick={() => sRole && sExp && setSResult(salaries[sRole]?.[sExp])} disabled={!sRole || !sExp} className="btn-dark"
-                style={{ opacity: !sRole || !sExp ? 0.5 : 1, cursor: !sRole || !sExp ? 'not-allowed' : 'pointer' }}>
-                Get Salary Range
+              <button onClick={() => sRole && sExp && setSResult(salaries[sRole]?.[sExp])} disabled={!sRole || !sExp} className="btn btn-primary">
+                Generate Benchmark <Icon name="arrow" size={16} color={T.white} />
               </button>
               {sResult && (
-                <div className="fade-in" style={{ marginTop: 40, background: C.navy, padding: '44px 40px', textAlign: 'center' }}>
-                  <div style={{ fontFamily: 'Montserrat,sans-serif', fontSize: 10, fontWeight: 600, letterSpacing: '0.18em', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', marginBottom: 12 }}>Estimated Monthly Salary (AED)</div>
-                  <div style={{ fontFamily: 'Montserrat,sans-serif', fontSize: 52, fontWeight: 800, color: C.gold }}>{sResult}</div>
-                  <div style={{ color: 'rgba(255,255,255,0.4)', fontSize: 12, marginTop: 10 }}>{sRole} · {sExp === 'j' ? '0–3 yrs' : sExp === 'm' ? '3–7 yrs' : '7+ yrs'}</div>
-                  <p style={{ color: 'rgba(255,255,255,0.28)', fontSize: 11, marginTop: 16, lineHeight: 1.6 }}>Indicative ranges based on UAE market data. Contact NHB for precise benchmarking.</p>
+                <div className="fade-in" style={{ marginTop: 48, background: T.ink, padding: '56px 48px', textAlign: 'center' }}>
+                  <p className="eyebrow" style={{ marginBottom: 18, color: T.goldL }}>Estimated Monthly · AED</p>
+                  <div style={{ fontFamily: 'Playfair Display,serif', fontSize: 56, fontWeight: 500, color: T.white, letterSpacing: '-0.02em', lineHeight: 1.1 }}>{sResult}</div>
+                  <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: 14, marginTop: 18 }}>{sRole} · {sExp === 'j' ? '0–3 years' : sExp === 'm' ? '3–7 years' : '7+ years'}</p>
+                  <div style={{ height: 1, background: 'rgba(255,255,255,0.1)', margin: '32px auto', maxWidth: 200 }} />
+                  <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: 12, lineHeight: 1.7, maxWidth: 440, margin: '0 auto' }}>Indicative range based on current UAE market intelligence. Actual packages vary by employer, total compensation structure and individual experience. Contact NHB for tailored benchmarking.</p>
                 </div>
               )}
             </div>
           )}
         </div>
-      </div>
+      </section>
     </div>
   );
 };
 
-// ── CAREERS ──────────────────────────────────────────────────────────────────
+// ════════════════════════════════════════════════════════════════════════════
+//  CAREERS
+// ════════════════════════════════════════════════════════════════════════════
 const Careers = ({ setPage }) => {
   const [filter, setFilter] = useState('All');
   const [jobs, setJobs] = useState([]);
@@ -592,17 +986,17 @@ const Careers = ({ setPage }) => {
   const [appLoading, setAppLoading] = useState(false);
 
   const fallback = [
-    { title: 'Restaurant Manager', location: 'Dubai Marina', sector: 'F&B', type: 'Permanent' },
-    { title: 'Front Office Manager', location: 'JBR, Dubai', sector: 'Hotels', type: 'Permanent' },
-    { title: 'HR Manager', location: 'DIFC, Dubai', sector: 'Corporate', type: 'Permanent' },
-    { title: 'Executive Chef', location: 'Downtown Dubai', sector: 'F&B', type: 'Permanent' },
-    { title: 'Events Coordinator', location: 'Business Bay', sector: 'Events', type: 'Permanent' },
-    { title: 'Hotel General Manager', location: 'DIFC, Dubai', sector: 'Hotels', type: 'Permanent' },
+    { title: 'Executive Assistant', location: 'Dubai', sector: 'Corporate', type: 'Permanent', salary: 'AED 15,000–20,000' },
+    { title: 'Conference Producer', location: 'Dubai / Bahrain', sector: 'Events', type: 'Project', salary: 'Up to AED 20,000' },
+    { title: 'Project Manager', location: 'UAE', sector: 'Energy', type: 'Permanent', salary: 'AED 17,000–23,000' },
+    { title: 'Marketing Executive', location: 'Dubai', sector: 'Insurance', type: 'Permanent', salary: 'AED 6,000–10,000 + commission' },
+    { title: 'Business Development Executive', location: 'Dubai', sector: 'Corporate', type: 'Permanent', salary: 'Commission structure' },
+    { title: 'Restaurant Manager', location: 'Dubai Marina', sector: 'F&B', type: 'Permanent', salary: 'Competitive' },
   ];
 
   useEffect(() => { fetchJobs().then(d => setJobs(d || [])).catch(() => setJobs(fallback)).finally(() => setLoading(false)); }, []);
 
-  const sectors = ['All', 'Hotels', 'F&B', 'Corporate', 'Events'];
+  const sectors = ['All', 'Hospitality', 'Corporate', 'F&B', 'Events', 'Energy', 'Insurance'];
   const filtered = filter === 'All' ? jobs : jobs.filter(j => j.sector === filter);
 
   const handleApply = async () => {
@@ -614,64 +1008,88 @@ const Careers = ({ setPage }) => {
   };
 
   return (
-    <div style={{ paddingTop: 76 }}>
-      <div style={{ background: C.navy, padding: '90px 2.5rem', textAlign: 'center' }}>
-        <p className="section-label">Join Our Network</p>
-        <h1 style={{ fontFamily: 'Montserrat,sans-serif', fontSize: 'clamp(36px,5vw,56px)', fontWeight: 800, color: C.white, marginTop: 8 }}>Current Opportunities</h1>
-      </div>
-      <div style={{ background: C.white, padding: '70px 2.5rem' }}>
-        <div style={{ maxWidth: 900, margin: '0 auto' }}>
-          <div style={{ display: 'flex', gap: 1, marginBottom: 40, background: C.border }}>
+    <div className="page-enter" style={{ paddingTop: 88 }}>
+      <section style={{ background: T.ink, padding: '120px 48px 100px' }}>
+        <div className="container">
+          <span className="gold-rule" style={{ marginBottom: 24 }} />
+          <p className="eyebrow" style={{ marginBottom: 24 }}>Opportunities</p>
+          <h1 className="display-lg" style={{ color: T.white, maxWidth: 800 }}>Current<br /><span style={{ color: T.goldL }}>mandates.</span></h1>
+        </div>
+      </section>
+
+      <section style={{ background: T.bg, padding: '80px 48px 120px' }}>
+        <div className="container" style={{ maxWidth: 980 }}>
+          <div style={{ display: 'flex', gap: 0, marginBottom: 48, borderBottom: `1px solid ${T.border}`, flexWrap: 'wrap' }}>
             {sectors.map(s => (
-              <button key={s} onClick={() => setFilter(s)} className={`tool-tab ${filter === s ? 'active' : ''}`}>{s}</button>
+              <button key={s} onClick={() => setFilter(s)}
+                style={{ padding: '14px 24px', background: 'transparent', border: 'none', borderBottom: filter === s ? `2px solid ${T.gold}` : '2px solid transparent', fontFamily: 'Inter,sans-serif', fontSize: 13, fontWeight: 500, color: filter === s ? T.ink : T.muted, cursor: 'pointer', marginBottom: -1, transition: 'all 0.3s' }}>{s}</button>
             ))}
           </div>
-          {loading ? <div style={{ textAlign: 'center', padding: '60px 0', color: C.muted }}>Loading...</div> : (
-            filtered.map((job, i) => (
-              <div key={i} className="job-row">
-                <div>
-                  <div className="job-title-text">{job.title}</div>
-                  <div className="job-meta">Confidential — {job.location} · <span style={{ color: C.gold }}>{job.sector}</span> · {job.type}</div>
+
+          {loading ? <p style={{ textAlign: 'center', padding: '60px 0', color: T.muted }}>Loading opportunities...</p> : (
+            <div style={{ background: T.white }}>
+              {filtered.map((job, i) => (
+                <div key={i} style={{ padding: '32px 36px', borderBottom: i < filtered.length - 1 ? `1px solid ${T.line}` : 'none', display: 'grid', gridTemplateColumns: '1fr auto auto', gap: 32, alignItems: 'center', transition: 'background 0.3s' }}
+                  onMouseOver={e => e.currentTarget.style.background = T.bg}
+                  onMouseOut={e => e.currentTarget.style.background = T.white}>
+                  <div>
+                    <h3 style={{ fontFamily: 'Playfair Display,serif', fontSize: 20, fontWeight: 600, color: T.ink, marginBottom: 6 }}>{job.title}</h3>
+                    <div style={{ display: 'flex', gap: 14, color: T.muted, fontSize: 13 }}>
+                      <span>{job.location}</span>
+                      <span>·</span><span style={{ color: T.gold, fontWeight: 500 }}>{job.sector}</span>
+                      <span>·</span><span>{job.type}</span>
+                    </div>
+                  </div>
+                  <div style={{ fontSize: 13, color: T.ink2, fontWeight: 500 }}>{job.salary || '—'}</div>
+                  <button onClick={() => { setApplyJob(job); setAppSent(false); setAppForm({ name: '', email: '', message: '' }); }} className="btn btn-outline" style={{ padding: '10px 22px', fontSize: 12 }}>
+                    Apply <Icon name="arrow" size={14} color={T.ink} />
+                  </button>
                 </div>
-                <button onClick={() => { setApplyJob(job); setAppSent(false); setAppForm({ name: '', email: '', message: '' }); }} className="btn-dark" style={{ padding: '10px 24px', fontSize: 11, whiteSpace: 'nowrap' }}>Apply Now</button>
-              </div>
-            ))
+              ))}
+            </div>
           )}
-          <div style={{ marginTop: 60, background: C.light, padding: 44, textAlign: 'center', borderTop: `2px solid ${C.gold}` }}>
-            <h3 style={{ fontFamily: 'Montserrat,sans-serif', fontSize: 22, fontWeight: 700, color: C.navy, marginBottom: 12 }}>Don't See the Right Role?</h3>
-            <p style={{ color: C.muted, marginBottom: 24, fontSize: 15 }}>Register your CV and we'll be in touch when the right opportunity arises.</p>
-            <button onClick={() => setPage('contact')} className="btn-dark">Register Your CV</button>
+
+          <div style={{ marginTop: 64, padding: '56px 48px', background: T.ink, textAlign: 'center' }}>
+            <span className="gold-rule" style={{ margin: '0 auto 24px' }} />
+            <h3 className="display-sm" style={{ color: T.white, marginBottom: 14 }}>Don't see the right role?</h3>
+            <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: 15, marginBottom: 32, maxWidth: 440, margin: '0 auto 32px' }}>Register your profile confidentially — we'll be in touch when the right mandate arises.</p>
+            <button onClick={() => setPage('contact')} className="btn btn-gold">Register Confidentially</button>
           </div>
         </div>
-      </div>
+      </section>
 
       {applyJob && (
         <div className="modal-overlay">
-          <div className="modal-box">
-            <button onClick={() => setApplyJob(null)} style={{ position: 'absolute', top: 16, right: 16, background: 'none', border: 'none', cursor: 'pointer' }}><Icon name="x" size={20} color={C.muted} /></button>
+          <div className="modal-box" style={{ padding: 56 }}>
+            <button onClick={() => setApplyJob(null)} style={{ position: 'absolute', top: 20, right: 20, background: 'none', border: 'none', cursor: 'pointer', padding: 4 }}>
+              <Icon name="x" size={20} color={T.muted} />
+            </button>
             {!appSent ? (
               <div>
-                <h3 style={{ fontFamily: 'Montserrat,sans-serif', fontSize: 20, fontWeight: 700, color: C.navy, marginBottom: 6 }}>Apply: {applyJob.title}</h3>
-                <p style={{ color: C.muted, fontSize: 14, marginBottom: 28 }}>We'll review your details and be in touch within 24 hours.</p>
-                {[{ label: 'Full Name *', k: 'name', ph: 'Your name' }, { label: 'Email *', k: 'email', ph: 'your@email.com' }].map(f => (
-                  <div key={f.k} className="form-field">
-                    <label className="form-label">{f.label}</label>
-                    <input value={appForm[f.k]} onChange={e => setAppForm(p => ({ ...p, [f.k]: e.target.value }))} placeholder={f.ph} className="form-input" />
+                <p className="eyebrow" style={{ marginBottom: 12 }}>Apply</p>
+                <h3 className="display-sm" style={{ marginBottom: 8 }}>{applyJob.title}</h3>
+                <p style={{ color: T.muted, fontSize: 14, marginBottom: 32 }}>We'll be in touch within 24 hours.</p>
+                {[{ label: 'Full Name', k: 'name', ph: 'Your full name' }, { label: 'Email', k: 'email', ph: 'you@email.com' }].map(f => (
+                  <div key={f.k} className="field">
+                    <label className="label">{f.label}</label>
+                    <input value={appForm[f.k]} onChange={e => setAppForm(p => ({ ...p, [f.k]: e.target.value }))} placeholder={f.ph} className="input" />
                   </div>
                 ))}
-                <div className="form-field">
-                  <label className="form-label">Brief Note (optional)</label>
-                  <textarea value={appForm.message} onChange={e => setAppForm(p => ({ ...p, message: e.target.value }))} rows={3} className="form-input" style={{ resize: 'vertical' }} />
+                <div className="field">
+                  <label className="label">Brief Note <span style={{ color: T.faded, fontWeight: 400, textTransform: 'none', letterSpacing: 'normal' }}>(optional)</span></label>
+                  <textarea value={appForm.message} onChange={e => setAppForm(p => ({ ...p, message: e.target.value }))} rows={3} className="input" />
                 </div>
-                <button onClick={handleApply} disabled={!appForm.name || !appForm.email || appLoading} className="btn-dark" style={{ width: '100%', marginTop: 8, opacity: !appForm.name || !appForm.email ? 0.5 : 1 }}>
-                  {appLoading ? 'Submitting...' : 'Submit Application'}
+                <button onClick={handleApply} disabled={!appForm.name || !appForm.email || appLoading} className="btn btn-primary" style={{ width: '100%', marginTop: 8 }}>
+                  {appLoading ? 'Submitting...' : 'Submit Application'} <Icon name="arrow" size={16} color={T.white} />
                 </button>
               </div>
             ) : (
               <div style={{ textAlign: 'center', padding: '40px 0' }}>
-                <div style={{ marginBottom: 20 }}><Icon name="check" size={48} color={C.gold} /></div>
-                <h3 style={{ fontFamily: 'Montserrat,sans-serif', fontSize: 24, fontWeight: 700, color: C.navy, marginBottom: 12 }}>Application Received</h3>
-                <p style={{ color: C.muted, lineHeight: 1.7 }}>We'll be in touch within 24 hours.</p>
+                <div style={{ width: 64, height: 64, background: T.ink, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
+                  <Icon name="check" size={28} color={T.gold} strokeWidth={2} />
+                </div>
+                <h3 className="display-sm" style={{ marginBottom: 14 }}>Application received.</h3>
+                <p style={{ color: T.muted, lineHeight: 1.7 }}>We'll review your details and be in touch within 24 hours.</p>
               </div>
             )}
           </div>
@@ -681,7 +1099,9 @@ const Careers = ({ setPage }) => {
   );
 };
 
-// ── CONTACT ──────────────────────────────────────────────────────────────────
+// ════════════════════════════════════════════════════════════════════════════
+//  CONTACT
+// ════════════════════════════════════════════════════════════════════════════
 const Contact = () => {
   const [form, setForm] = useState({ name: '', email: '', company: '', service: '', message: '' });
   const [sent, setSent] = useState(false);
@@ -699,114 +1119,170 @@ const Contact = () => {
   };
 
   return (
-    <div style={{ paddingTop: 76 }}>
-      <div style={{ background: C.navy, padding: '90px 2.5rem', textAlign: 'center' }}>
-        <p className="section-label">Get in Touch</p>
-        <h1 style={{ fontFamily: 'Montserrat,sans-serif', fontSize: 'clamp(36px,5vw,56px)', fontWeight: 800, color: C.white, marginTop: 8 }}>Contact Us</h1>
-      </div>
-      <div style={{ background: C.white, padding: '90px 2.5rem' }}>
-        <div style={{ maxWidth: 1000, margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 1.6fr', gap: 72 }}>
-          <div>
-            <div className="gold-line" />
-            <h2 style={{ fontFamily: 'Montserrat,sans-serif', fontSize: 24, fontWeight: 700, color: C.navy, marginBottom: 28 }}>Let's Start a Conversation</h2>
-            {[{ icon: 'mail', label: 'Email', value: 'admin@nhb-consultancy.com' }, { icon: 'phone', label: 'WhatsApp', value: '+971 52 489 0505' }, { icon: 'pin', label: 'Location', value: 'Dubai, UAE' }].map((c, i) => (
-              <div key={i} style={{ display: 'flex', gap: 16, padding: '18px 0', borderBottom: `1px solid ${C.border}` }}>
-                <Icon name={c.icon} size={20} color={C.gold} />
-                <div>
-                  <div style={{ fontFamily: 'Montserrat,sans-serif', fontSize: 10, fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: C.gold, marginBottom: 4 }}>{c.label}</div>
-                  <div style={{ fontSize: 14, color: C.navy }}>{c.value}</div>
-                </div>
-              </div>
-            ))}
-          </div>
-          <div style={{ background: C.light, padding: 48 }}>
-            {!sent ? (
-              <div>
-                <h3 style={{ fontFamily: 'Montserrat,sans-serif', fontSize: 20, fontWeight: 700, color: C.navy, marginBottom: 28 }}>Send a Message</h3>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
-                  {[{ label: 'Full Name *', k: 'name', ph: 'Your name' }, { label: 'Email *', k: 'email', ph: 'your@email.com' }].map(f => (
-                    <div key={f.k} className="form-field">
-                      <label className="form-label">{f.label}</label>
-                      <input value={form[f.k]} onChange={set(f.k)} placeholder={f.ph} className="form-input" />
-                    </div>
+    <div className="page-enter" style={{ paddingTop: 88 }}>
+      <section style={{ background: T.ink, padding: '120px 48px 100px' }}>
+        <div className="container">
+          <span className="gold-rule" style={{ marginBottom: 24 }} />
+          <p className="eyebrow" style={{ marginBottom: 24 }}>Contact</p>
+          <h1 className="display-lg" style={{ color: T.white, maxWidth: 800 }}>Let's begin a<br /><span style={{ color: T.goldL }}>conversation.</span></h1>
+        </div>
+      </section>
+
+      <section style={{ background: T.bg, padding: '120px 48px' }}>
+        <div className="container">
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.6fr', gap: 80 }}>
+            <div>
+              <p className="eyebrow" style={{ marginBottom: 18 }}>Direct Contact</p>
+              <h3 className="display-sm" style={{ marginBottom: 40 }}>For new mandates, advisory enquiries, or media.</h3>
+              {[
+                { icon: 'mail', label: 'Email', value: 'admin@nhb-consultancy.com', href: 'mailto:admin@nhb-consultancy.com' },
+                { icon: 'phone', label: 'WhatsApp', value: '+971 52 489 0505', href: 'https://wa.me/971524890505' },
+                { icon: 'pin', label: 'Location', value: 'Dubai, United Arab Emirates' },
+              ].map((c, i) => (
+                <a key={i} href={c.href} target={c.href ? '_blank' : undefined} rel="noreferrer"
+                  style={{ display: 'flex', gap: 18, padding: '22px 0', borderBottom: `1px solid ${T.line}`, alignItems: 'center', transition: 'all 0.3s', cursor: c.href ? 'pointer' : 'default' }}
+                  onMouseOver={e => c.href && (e.currentTarget.style.paddingLeft = '8px')}
+                  onMouseOut={e => c.href && (e.currentTarget.style.paddingLeft = '0')}>
+                  <div style={{ width: 44, height: 44, background: T.ink, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <Icon name={c.icon} size={20} color={T.gold} />
+                  </div>
+                  <div>
+                    <p className="micro" style={{ marginBottom: 4, fontSize: 10 }}>{c.label}</p>
+                    <p style={{ fontSize: 15, color: T.ink, fontWeight: 500 }}>{c.value}</p>
+                  </div>
+                </a>
+              ))}
+              <div style={{ marginTop: 36, paddingTop: 32, borderTop: `1px solid ${T.line}` }}>
+                <p className="micro" style={{ marginBottom: 16, fontSize: 10 }}>Connect</p>
+                <div style={{ display: 'flex', gap: 12 }}>
+                  {[
+                    { icon: 'linkedin', href: 'https://www.linkedin.com/company/nhb-consultancy' },
+                    { icon: 'instagram', href: 'https://www.instagram.com/nhb_hr_solution/' },
+                  ].map((s, i) => (
+                    <a key={i} href={s.href} target="_blank" rel="noreferrer"
+                      style={{ width: 40, height: 40, border: `1px solid ${T.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.3s', background: T.white }}
+                      onMouseOver={e => { e.currentTarget.style.borderColor = T.gold; e.currentTarget.style.background = T.ink; }}
+                      onMouseOut={e => { e.currentTarget.style.borderColor = T.border; e.currentTarget.style.background = T.white; }}>
+                      <Icon name={s.icon} size={16} color={T.ink} />
+                    </a>
                   ))}
                 </div>
-                <div className="form-field">
-                  <label className="form-label">Company</label>
-                  <input value={form.company} onChange={set('company')} placeholder="Your company" className="form-input" />
-                </div>
-                <div className="form-field">
-                  <label className="form-label">I'm Interested In</label>
-                  <select value={form.service} onChange={set('service')} className="form-input">
-                    <option value="">Select...</option>
-                    {['HR Consultancy Services', 'Recruitment & Talent Acquisition', 'Outsourced HR Services', 'Hospitality Recruitment', 'Register my CV', 'Other'].map(s => <option key={s}>{s}</option>)}
-                  </select>
-                </div>
-                <div className="form-field">
-                  <label className="form-label">Message *</label>
-                  <textarea value={form.message} onChange={set('message')} rows={4} placeholder="Tell us about your needs..." className="form-input" style={{ resize: 'vertical' }} />
-                </div>
-                {error && <p style={{ color: '#dc2626', fontSize: 13, marginBottom: 14 }}>{error}</p>}
-                <button onClick={handleSubmit} disabled={!canSend || loading} className="btn-dark" style={{ width: '100%', marginTop: 4, opacity: !canSend ? 0.5 : 1, cursor: !canSend ? 'not-allowed' : 'pointer' }}>
-                  {loading ? 'Sending...' : 'Send Message'}
-                </button>
               </div>
-            ) : (
-              <div style={{ textAlign: 'center', padding: '60px 0' }}>
-                <Icon name="check" size={52} color={C.gold} />
-                <h3 style={{ fontFamily: 'Montserrat,sans-serif', fontSize: 26, fontWeight: 700, color: C.navy, margin: '20px 0 12px' }}>Message Sent</h3>
-                <p style={{ color: C.muted, fontSize: 15, lineHeight: 1.75 }}>Thank you for reaching out. Our team will respond within 24 hours.</p>
-              </div>
-            )}
+            </div>
+
+            <div style={{ background: T.white, padding: 64, border: `1px solid ${T.line}` }}>
+              {!sent ? (
+                <div>
+                  <p className="eyebrow" style={{ marginBottom: 12 }}>Send a Message</p>
+                  <h3 className="display-sm" style={{ marginBottom: 36 }}>Tell us about your needs.</h3>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
+                    {[{ label: 'Full Name', k: 'name', ph: 'Your name' }, { label: 'Email', k: 'email', ph: 'you@email.com' }].map(f => (
+                      <div key={f.k} className="field">
+                        <label className="label">{f.label} <span style={{ color: T.gold }}>*</span></label>
+                        <input value={form[f.k]} onChange={set(f.k)} placeholder={f.ph} className="input" />
+                      </div>
+                    ))}
+                  </div>
+                  <div className="field">
+                    <label className="label">Company</label>
+                    <input value={form.company} onChange={set('company')} placeholder="Your organisation" className="input" />
+                  </div>
+                  <div className="field">
+                    <label className="label">Area of Interest</label>
+                    <select value={form.service} onChange={set('service')} className="input">
+                      <option value="">Please select</option>
+                      {['HR Consultancy', 'Recruitment & Executive Search', 'Outsourced HR Services', 'Hospitality Management', 'Candidate Registration', 'Media & Partnership', 'Other'].map(s => <option key={s}>{s}</option>)}
+                    </select>
+                  </div>
+                  <div className="field">
+                    <label className="label">Message <span style={{ color: T.gold }}>*</span></label>
+                    <textarea value={form.message} onChange={set('message')} rows={5} placeholder="Briefly describe your requirements..." className="input" />
+                  </div>
+                  {error && <p style={{ color: '#B91C1C', fontSize: 13, marginBottom: 16 }}>{error}</p>}
+                  <button onClick={handleSubmit} disabled={!canSend || loading} className="btn btn-primary" style={{ width: '100%', marginTop: 12 }}>
+                    {loading ? 'Sending...' : 'Send Message'} <Icon name="arrow" size={16} color={T.white} />
+                  </button>
+                  <p style={{ fontSize: 12, color: T.muted, marginTop: 20, lineHeight: 1.6 }}>By submitting, you agree to be contacted regarding your enquiry. All communications are confidential.</p>
+                </div>
+              ) : (
+                <div style={{ textAlign: 'center', padding: '60px 0' }}>
+                  <div style={{ width: 72, height: 72, background: T.ink, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 28px' }}>
+                    <Icon name="check" size={32} color={T.gold} strokeWidth={2} />
+                  </div>
+                  <h3 className="display-sm" style={{ marginBottom: 16 }}>Thank you.</h3>
+                  <p className="body-md">Your message has been received. We'll be in touch within 24 hours.</p>
+                </div>
+              )}
+            </div>
           </div>
         </div>
-      </div>
+      </section>
     </div>
   );
 };
 
-// ── FOOTER ───────────────────────────────────────────────────────────────────
+// ════════════════════════════════════════════════════════════════════════════
+//  FOOTER
+// ════════════════════════════════════════════════════════════════════════════
 const Footer = ({ setPage }) => (
-  <footer style={{ background: C.navy, padding: '60px 2.5rem 32px' }}>
-    <div style={{ maxWidth: 1200, margin: '0 auto' }}>
-      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr', gap: 48, marginBottom: 48, paddingBottom: 48, borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+  <footer style={{ background: T.ink, padding: '80px 48px 40px' }}>
+    <div className="container">
+      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr', gap: 64, marginBottom: 64, paddingBottom: 64, borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
         <div>
-          <img src="https://nhb-consultancy.com/wp-content/uploads/2025/11/logo-1.png" alt="NHB" style={{ height: 40, marginBottom: 20, objectFit: 'contain' }} />
-          <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: 13, lineHeight: 1.75, maxWidth: 280 }}>
-            Dubai's boutique HR and hospitality recruitment specialist. Helping companies grow through people.
+          <img src="https://nhb-consultancy.com/wp-content/uploads/2025/11/logo-1.png" alt="NHB"
+            style={{ height: 56, marginBottom: 28, objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
+          <p style={{ color: 'rgba(255,255,255,0.55)', fontSize: 14, lineHeight: 1.75, maxWidth: 320, marginBottom: 28 }}>
+            Boutique HR advisory and executive search for ambitious companies across the GCC.
           </p>
-          <div style={{ display: 'flex', gap: 16, marginTop: 24 }}>
-            {['LinkedIn', 'Instagram', 'Facebook', 'TikTok'].map((s, i) => (
-              <span key={i} style={{ color: 'rgba(255,255,255,0.35)', fontSize: 12, fontFamily: 'Montserrat,sans-serif', cursor: 'pointer', transition: 'color 0.2s' }}
-                onMouseOver={e => e.target.style.color = C.gold} onMouseOut={e => e.target.style.color = 'rgba(255,255,255,0.35)'}>{s}</span>
-            ))}
-          </div>
+          <p className="micro" style={{ color: 'rgba(255,255,255,0.4)', fontSize: 10 }}>Chartered MCIPD · Founded by Nihel Hassen Busman</p>
         </div>
         {[
-          { title: 'Pages', links: [['Home', 'home'], ['About Us', 'about'], ['Our Services', 'hr'], ['Career', 'careers'], ['Contact Us', 'contact']] },
-          { title: 'Services', links: [['HR Consultancy', 'hr'], ['Recruitment', 'hr'], ['Outsourced HR', 'hr'], ['Hospitality', 'hr']] },
-          { title: 'Contact', links: [['admin@nhb-consultancy.com', null], ['+971 52 489 0505', null], ['Dubai, UAE', null]] },
+          { title: 'Practice', links: [['About', 'about'], ['Services', 'services'], ['Industries', 'industries'], ['Tools', 'tools']] },
+          { title: 'Engage', links: [['Careers', 'careers'], ['Contact', 'contact']] },
+          { title: 'Direct', links: [['admin@nhb-consultancy.com', 'mailto:admin@nhb-consultancy.com'], ['+971 52 489 0505', 'https://wa.me/971524890505'], ['Dubai, UAE', null]] },
         ].map((col, i) => (
           <div key={i}>
-            <div style={{ fontFamily: 'Montserrat,sans-serif', fontSize: 11, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: C.gold, marginBottom: 20 }}>{col.title}</div>
-            {col.links.map(([label, pg], j) => (
-              <div key={j} onClick={() => pg && setPage(pg)} style={{ color: 'rgba(255,255,255,0.45)', fontSize: 13, marginBottom: 10, cursor: pg ? 'pointer' : 'default', transition: 'color 0.2s' }}
-                onMouseOver={e => pg && (e.target.style.color = C.white)} onMouseOut={e => (e.target.style.color = 'rgba(255,255,255,0.45)')}>{label}</div>
-            ))}
+            <p className="micro" style={{ color: T.gold, fontSize: 10, marginBottom: 24 }}>{col.title}</p>
+            {col.links.map(([label, target], j) => {
+              const isExt = typeof target === 'string' && (target.startsWith('http') || target.startsWith('mailto'));
+              const Component = isExt ? 'a' : 'div';
+              return (
+                <Component key={j} href={isExt ? target : undefined} target={isExt && target.startsWith('http') ? '_blank' : undefined} rel="noreferrer"
+                  onClick={() => !isExt && target && setPage(target)}
+                  style={{ color: 'rgba(255,255,255,0.55)', fontSize: 14, marginBottom: 12, cursor: target ? 'pointer' : 'default', transition: 'color 0.2s', display: 'block', textDecoration: 'none' }}
+                  onMouseOver={e => target && (e.currentTarget.style.color = T.gold)}
+                  onMouseOut={e => (e.currentTarget.style.color = 'rgba(255,255,255,0.55)')}>{label}</Component>
+              );
+            })}
           </div>
         ))}
       </div>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <div style={{ color: 'rgba(255,255,255,0.25)', fontSize: 12 }}>© 2025 NHB Consultancy. All rights reserved.</div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 16 }}>
+        <p style={{ color: 'rgba(255,255,255,0.3)', fontSize: 12 }}>© 2025 NHB Consultancy. All rights reserved.</p>
+        <div style={{ display: 'flex', gap: 12 }}>
+          {[
+            { icon: 'linkedin', href: 'https://www.linkedin.com/company/nhb-consultancy' },
+            { icon: 'instagram', href: 'https://www.instagram.com/nhb_hr_solution/' },
+          ].map((s, i) => (
+            <a key={i} href={s.href} target="_blank" rel="noreferrer"
+              style={{ width: 36, height: 36, border: '1px solid rgba(255,255,255,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.3s' }}
+              onMouseOver={e => { e.currentTarget.style.borderColor = T.gold; e.currentTarget.style.background = T.gold; }}
+              onMouseOut={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.15)'; e.currentTarget.style.background = 'transparent'; }}>
+              <Icon name={s.icon} size={14} color="rgba(255,255,255,0.7)" />
+            </a>
+          ))}
+        </div>
       </div>
     </div>
   </footer>
 );
 
-// ── FLOATING CHAT ────────────────────────────────────────────────────────────
-const FloatChat = () => {
+// ════════════════════════════════════════════════════════════════════════════
+//  WHATSAPP + ADVISOR BUTTONS
+// ════════════════════════════════════════════════════════════════════════════
+const FloatingActions = () => {
   const [open, setOpen] = useState(false);
-  const [msgs, setMsgs] = useState([{ r: 'a', t: "How can I help you? I can answer questions about HR, recruitment, or our services." }]);
+  const [msgs, setMsgs] = useState([{ r: 'a', t: 'I can help with questions on UAE labour law, HR strategy, or our services. What would you like to explore?' }]);
   const [inp, setInp] = useState('');
   const [load, setLoad] = useState(false);
   const endRef = useRef(null);
@@ -819,70 +1295,79 @@ const FloatChat = () => {
     setLoad(true);
     try {
       const history = [...msgs.map(m => ({ role: m.r === 'u' ? 'user' : 'assistant', content: m.t })), { role: 'user', content: msg }];
-      const reply = await callClaude(`${NHB_SYSTEM} Keep replies to 2-3 sentences maximum — this is a compact widget.`, history, 400);
+      const reply = await callClaude(`${NHB_SYSTEM} Keep replies concise — 2 to 3 sentences maximum for this compact widget.`, history, 400);
       setMsgs(p => [...p, { r: 'a', t: reply }]);
-    } catch { setMsgs(p => [...p, { r: 'a', t: 'Please try again or email admin@nhb-consultancy.com' }]); }
+    } catch { setMsgs(p => [...p, { r: 'a', t: 'Please try again or email admin@nhb-consultancy.com directly.' }]); }
     setLoad(false);
   };
 
   return (
-    <div style={{ position: 'fixed', bottom: 28, right: 28, zIndex: 1000 }}>
+    <div style={{ position: 'fixed', bottom: 28, right: 28, zIndex: 1000, display: 'flex', flexDirection: 'column', gap: 12, alignItems: 'flex-end' }}>
       {open && (
-        <div style={{ width: 340, background: C.white, border: `1px solid ${C.border}`, boxShadow: '0 20px 60px rgba(0,0,0,0.15)', marginBottom: 12, display: 'flex', flexDirection: 'column' }}>
-          <div style={{ background: C.navy, padding: '14px 18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div className="scale-in" style={{ width: 380, background: T.white, boxShadow: '0 30px 80px rgba(10,22,40,0.25)', display: 'flex', flexDirection: 'column', border: `1px solid ${T.line}` }}>
+          <div style={{ background: T.ink, padding: '18px 22px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              <div style={{ width: 32, height: 32, background: C.gold, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <Icon name="chat" size={16} color={C.white} />
+              <div style={{ width: 34, height: 34, background: T.gold, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Icon name="chat" size={16} color={T.white} />
               </div>
               <div>
-                <div style={{ color: C.white, fontSize: 13, fontFamily: 'Montserrat,sans-serif', fontWeight: 600 }}>NHB HR Advisor</div>
-                <div style={{ color: C.gold, fontSize: 11 }}>Online</div>
+                <div style={{ color: T.white, fontSize: 13, fontFamily: 'Inter,sans-serif', fontWeight: 600 }}>NHB Advisor</div>
+                <div style={{ color: T.goldL, fontSize: 11 }}>Online · Confidential</div>
               </div>
             </div>
-            <button onClick={() => setOpen(false)} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
+            <button onClick={() => setOpen(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 4 }}>
               <Icon name="x" size={18} color="rgba(255,255,255,0.5)" />
             </button>
           </div>
-          <div style={{ height: 320, overflowY: 'auto', padding: 16, display: 'flex', flexDirection: 'column', gap: 10 }}>
+          <div style={{ height: 360, overflowY: 'auto', padding: 18, display: 'flex', flexDirection: 'column', gap: 10, background: T.bg }}>
             {msgs.map((m, i) => (
-              <div key={i} className="chat-in" style={{ display: 'flex', justifyContent: m.r === 'u' ? 'flex-end' : 'flex-start' }}>
-                <div style={{ maxWidth: '84%', padding: '10px 14px', fontSize: 13.5, lineHeight: 1.6, background: m.r === 'u' ? C.navy : C.light, color: m.r === 'u' ? C.white : C.navy }}>{m.t}</div>
+              <div key={i} style={{ display: 'flex', justifyContent: m.r === 'u' ? 'flex-end' : 'flex-start' }}>
+                <div className={`bubble bubble-${m.r === 'u' ? 'user' : 'assistant'}`} style={{ fontSize: 13.5, padding: '10px 14px' }}>{m.t}</div>
               </div>
             ))}
-            {load && <div style={{ background: C.light, padding: '10px 14px', color: C.muted, fontSize: 18 }}>···</div>}
+            {load && <div style={{ background: T.white, padding: '10px 14px', color: T.muted, fontSize: 18, border: `1px solid ${T.line}`, borderRadius: '14px 14px 14px 4px', width: 'fit-content' }}>···</div>}
             <div ref={endRef} />
           </div>
-          <div style={{ padding: '10px 12px', borderTop: `1px solid ${C.border}`, display: 'flex', gap: 8 }}>
+          <div style={{ padding: '12px 14px', borderTop: `1px solid ${T.line}`, display: 'flex', gap: 8, background: T.white }}>
             <input value={inp} onChange={e => setInp(e.target.value)} onKeyDown={e => e.key === 'Enter' && send()}
               placeholder="Ask a question..."
-              style={{ flex: 1, padding: '10px 12px', border: `1px solid ${C.border}`, fontSize: 13, color: C.navy, outline: 'none', background: C.light }} />
-            <button onClick={send} disabled={load} className="btn-dark" style={{ padding: '10px 14px', display: 'flex', alignItems: 'center' }}>
-              <Icon name="send" size={14} color={C.white} />
+              style={{ flex: 1, padding: '11px 14px', border: `1px solid ${T.border}`, fontSize: 13, color: T.ink, outline: 'none', background: T.bg }} />
+            <button onClick={send} disabled={load} className="btn btn-primary" style={{ padding: '10px 16px' }}>
+              <Icon name="send" size={14} color={T.white} />
             </button>
           </div>
         </div>
       )}
-      <button onClick={() => setOpen(p => !p)} className="pulse"
-        style={{ width: 52, height: 52, background: C.gold, border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 8px 24px rgba(201,168,76,0.45)', marginLeft: 'auto' }}>
-        {open ? <Icon name="x" size={20} color={C.white} /> : <Icon name="chat" size={20} color={C.white} />}
+
+      <a href="https://wa.me/971524890505" target="_blank" rel="noreferrer"
+        style={{ width: 56, height: 56, background: '#25D366', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 12px 32px rgba(37,211,102,0.35)', transition: 'transform 0.3s' }}
+        onMouseOver={e => e.currentTarget.style.transform = 'translateY(-2px) scale(1.05)'}
+        onMouseOut={e => e.currentTarget.style.transform = 'translateY(0) scale(1)'}>
+        <Icon name="whatsapp" size={28} color={T.white} strokeWidth={1.5} />
+      </a>
+
+      <button onClick={() => setOpen(p => !p)} className="float-btn pulse-ring">
+        {open ? <Icon name="x" size={20} color={T.white} /> : <Icon name="chat" size={20} color={T.white} />}
       </button>
     </div>
   );
 };
 
-// ── APP ──────────────────────────────────────────────────────────────────────
+// ════════════════════════════════════════════════════════════════════════════
+//  APP
+// ════════════════════════════════════════════════════════════════════════════
 export default function App() {
   const [page, setPage] = useState('home');
   useEffect(() => { window.scrollTo(0, 0); }, [page]);
-  const pages = { home: Home, about: About, hr: HRServices, tools: AITools, careers: Careers, contact: Contact };
+  const pages = { home: Home, about: About, services: Services, industries: Industries, tools: Tools, careers: Careers, contact: Contact };
   const Page = pages[page] || Home;
   return (
-    <div style={{ minHeight: '100vh', background: C.white }}>
+    <div style={{ minHeight: '100vh', background: T.bg }}>
       <Styles />
       <Nav page={page} setPage={setPage} />
       <Page setPage={setPage} />
       <Footer setPage={setPage} />
-      <FloatChat />
+      <FloatingActions />
     </div>
   );
 }
