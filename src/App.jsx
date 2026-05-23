@@ -310,12 +310,12 @@ const About = ({ setPage }) => (
               ))}
             </div>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 1, background: C.border, marginTop: 1 }}>
-            {[{ icon: '🤝', v: 'Integrity' }, { icon: '⭐', v: 'Excellence' }, { icon: '⚡', v: 'Agility' }, { icon: '🤲', v: 'Partnership' }, { icon: '🔒', v: 'Confidentiality' }, { icon: '🎯', v: 'Impact' }].map((val, i) => (
-              <div key={i} style={{ background: C.white, padding: '20px 16px', textAlign: 'center' }}>
-                <div style={{ fontSize: 22, marginBottom: 8 }}>{val.icon}</div>
-                <div style={{ fontFamily: 'Montserrat,sans-serif', fontSize: 11, fontWeight: 700, color: C.navy, letterSpacing: '0.08em', textTransform: 'uppercase' }}>{val.v}</div>
-              </div>
+{['Integrity', 'Excellence', 'Agility', 'Partnership', 'Confidentiality', 'Impact'].map((val, i) => (
+  <div key={i} style={{ background: C.white, padding: '22px 16px', textAlign: 'center', borderTop: `2px solid ${i < 3 ? C.gold : 'transparent'}` }}>
+    <div style={{ width: 24, height: 1, background: C.gold, margin: '0 auto 12px' }} />
+    <div style={{ fontFamily: 'Montserrat,sans-serif', fontSize: 10, fontWeight: 700, color: C.navy, letterSpacing: '0.14em', textTransform: 'uppercase' }}>{val}</div>
+  </div>
+))}
             ))}
           </div>
         </div>
