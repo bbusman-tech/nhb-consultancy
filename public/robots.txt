@@ -1,0 +1,50 @@
+# robots.txt — NHB Consultancy
+# https://nhb-consultancy.com
+
+# Default: allow all standard crawlers
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /.netlify/
+
+# --- AI / LLM crawlers (explicit allow) ---
+# Allowing these increases the chance of being cited by ChatGPT, Claude, Perplexity, Gemini.
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Perplexity-User
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: Bytespider
+Allow: /
+
+User-agent: cohere-ai
+Allow: /
+
+# --- Sitemap ---
+Sitemap: https://nhb-consultancy.com/sitemap.xml
