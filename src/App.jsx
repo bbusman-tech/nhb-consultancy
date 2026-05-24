@@ -165,6 +165,55 @@ const Styles = () => (
   `}</style>
 );
 
+// ── BRAND LOGO — elegant text wordmark, always reliable ─────────────────────
+const Logo = ({ inverted = false, size = 'md' }) => {
+  const sizes = {
+    sm: { mark: 38, nhb: 16, sub: 8, gap: 12 },
+    md: { mark: 54, nhb: 24, sub: 10, gap: 14 },
+    lg: { mark: 64, nhb: 30, sub: 11, gap: 16 },
+  };
+  const s = sizes[size];
+  const fg = inverted ? T.white : T.ink;
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: s.gap, transition: 'all 0.4s' }}>
+      <div style={{
+        width: s.mark, height: s.mark,
+        border: `1.5px solid ${T.gold}`,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        position: 'relative', flexShrink: 0,
+      }}>
+        <span style={{
+          fontFamily: "'Playfair Display',serif",
+          fontSize: s.mark * 0.5,
+          fontWeight: 600,
+          color: T.gold,
+          fontStyle: 'italic',
+          lineHeight: 1,
+        }}>N</span>
+      </div>
+      <div>
+        <div style={{
+          fontFamily: "'Playfair Display',serif",
+          fontSize: s.nhb,
+          fontWeight: 600,
+          color: fg,
+          lineHeight: 1,
+          letterSpacing: '0.02em',
+        }}>NHB</div>
+        <div style={{
+          fontFamily: "'Inter',sans-serif",
+          fontSize: s.sub,
+          fontWeight: 600,
+          color: T.gold,
+          letterSpacing: '0.28em',
+          marginTop: 6,
+          textTransform: 'uppercase',
+        }}>Consultancy</div>
+      </div>
+    </div>
+  );
+};
+
 // ── ICONS — Custom geometric SVG, 1.5px stroke, refined ──────────────────────
 const Icon = ({ name, size = 24, color = T.ink, strokeWidth = 1.5 }) => {
   const props = {
@@ -236,11 +285,9 @@ const Nav = ({ page, setPage }) => {
       borderBottom: scrolled ? `1px solid ${T.line}` : '1px solid transparent',
       padding: '0 48px',
     }}>
-      <div style={{ maxWidth: 1280, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 88 }}>
-        <div onClick={() => setPage('home')} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 14 }}>
-          <img src="https://nhb-consultancy.com/wp-content/uploads/2025/11/logo-1.png" alt="NHB"
-            style={{ height: 56, objectFit: 'contain', filter: onHero ? 'brightness(0) invert(1)' : 'none', transition: 'filter 0.4s' }}
-            onError={e => { e.target.style.display = 'none'; }} />
+      <div style={{ maxWidth: 1280, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 96 }}>
+        <div onClick={() => setPage('home')} style={{ cursor: 'pointer' }}>
+          <Logo inverted={onHero} size="md" />
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 36 }}>
           {links.map(l => (
@@ -322,9 +369,9 @@ const Home = ({ setPage }) => {
       <section style={{ background: T.ink, padding: '40px 48px', borderTop: `1px solid rgba(255,255,255,0.08)` }}>
         <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 48, flexWrap: 'wrap' }}>
           {[
-            { label: 'Chartered MCIPD' },
-            { label: 'Radisson Hotel Group Alumna' },
-            { label: 'UAE Labour Law Expertise' },
+            { label: 'Chartered Expertise' },
+            { label: 'Boutique by Design' },
+            { label: 'UAE Labour Law Specialists' },
             { label: 'GCC Coverage' },
           ].map((c, i) => (
             <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
@@ -343,13 +390,13 @@ const Home = ({ setPage }) => {
               <span className="gold-rule" style={{ marginBottom: 24 }} />
               <p className="eyebrow" style={{ marginBottom: 24 }}>The NHB Approach</p>
               <h2 className="display-lg" style={{ marginBottom: 0 }}>
-                Built by hospitality.<br />
+                Strategic HR.<br />
                 Designed for growth.
               </h2>
             </div>
             <div>
               <p className="body-lg" style={{ marginBottom: 28, fontSize: 20, color: T.ink2, lineHeight: 1.6 }}>
-                Founded by <strong style={{ color: T.ink, fontWeight: 600 }}>Nihel Hassen Busman, Chartered MCIPD</strong> — a Director of HR with 15+ years leading people strategy across Radisson Hotel Group and the wider hospitality sector — NHB Consultancy was built to give growing companies access to the calibre of HR support previously reserved for global enterprises.
+                Founded by <strong style={{ color: T.ink, fontWeight: 600 }}>Nihel Hassen Busman, Chartered MCIPD</strong> — a senior HR leader with 15+ years across multinational organisations — NHB Consultancy was built to give growing companies access to the calibre of HR support previously reserved for global enterprises.
               </p>
               <p className="body-md" style={{ marginBottom: 40 }}>
                 We work in true partnership with our clients — understanding their culture, challenges and growth plans, then delivering solutions that fit. Whether you are building a team from scratch, expanding into the UAE, or strengthening your HR foundations, we operate as an embedded extension of your leadership.
@@ -437,18 +484,18 @@ const Home = ({ setPage }) => {
             <p className="eyebrow" style={{ marginBottom: 24 }}>Sectors We Serve</p>
             <h2 className="display-lg" style={{ marginBottom: 24 }}>Industry depth, not just reach.</h2>
             <p className="body-md" style={{ maxWidth: 540, margin: '0 auto' }}>
-              From luxury hospitality to data centre infrastructure — we understand the specific talent dynamics of each sector we operate in.
+              From corporate functions to specialist sectors — we understand the specific talent dynamics of each industry we operate in.
             </p>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 24 }}>
             {[
-              { icon: 'hotel', name: 'Hospitality & Hotels', desc: 'Pre-opening, F&B, FOH and BOH leadership' },
-              { icon: 'chef', name: 'F&B Operations', desc: 'Restaurant groups, catering and culinary talent' },
-              { icon: 'event', name: 'Events & Conferences', desc: 'Production, speakers and event leadership' },
-              { icon: 'data', name: 'Data Centres', desc: 'Technical, project and executive mandates' },
+              { icon: 'shield', name: 'Corporate & Professional', desc: 'C-suite, executive support and corporate functions' },
+              { icon: 'data', name: 'Data Centres & Technology', desc: 'Technical, project and executive mandates' },
               { icon: 'energy', name: 'Energy & Sustainability', desc: 'Engineering, project and operations talent' },
-              { icon: 'shield', name: 'Insurance & Finance', desc: 'Sales, advisory and corporate functions' },
+              { icon: 'event', name: 'Events & Conferences', desc: 'Production, programming and event leadership' },
+              { icon: 'hotel', name: 'Hospitality & Hotels', desc: 'Pre-opening, F&B and operations leadership' },
+              { icon: 'chef', name: 'F&B Operations', desc: 'Restaurant groups, catering and culinary talent' },
             ].map((ind, i) => (
               <div key={i} className="industry-card">
                 <Icon name={ind.icon} size={32} color={T.gold} strokeWidth={1.25} />
@@ -484,7 +531,7 @@ const Home = ({ setPage }) => {
             <div>
               {[
                 { num: '01', title: 'HR Maturity Assessment', desc: 'Ten diagnostic questions. AI-generated audit report with prioritised actions.' },
-                { num: '02', title: 'Compensation Benchmarker', desc: 'Salary intelligence across 12+ hospitality roles and three experience tiers.' },
+                { num: '02', title: 'Compensation Benchmarker', desc: 'Salary intelligence across 12+ roles and three experience tiers in the UAE market.' },
                 { num: '03', title: 'Conversational HR Advisor', desc: 'Direct access to GCC labour law guidance and best-practice frameworks.' },
               ].map((t, i) => (
                 <div key={i} onClick={() => setPage('tools')} style={{ padding: '28px 0', borderBottom: i < 2 ? `1px solid ${T.line}` : 'none', cursor: 'pointer', display: 'grid', gridTemplateColumns: '60px 1fr 30px', gap: 20, alignItems: 'start', transition: 'all 0.3s' }}
@@ -529,7 +576,7 @@ const Home = ({ setPage }) => {
 //  ABOUT
 // ════════════════════════════════════════════════════════════════════════════
 const About = ({ setPage }) => (
-  <div className="page-enter" style={{ paddingTop: 88 }}>
+  <div className="page-enter" style={{ paddingTop: 96 }}>
     <section style={{ background: T.ink, padding: '120px 48px 100px' }}>
       <div className="container">
         <span className="gold-rule" style={{ marginBottom: 24 }} />
@@ -555,7 +602,7 @@ const About = ({ setPage }) => (
               NHB Consultancy was founded on a clear premise: the calibre of HR support traditionally reserved for global enterprises should be accessible to every ambitious business.
             </p>
             <p className="body-md" style={{ marginBottom: 24 }}>
-              We were built by hospitality leaders — operators who have led people strategy through openings, scale-ups, transformations and tough conversations. That operational lens means our advisory is grounded, practical and commercially aware.
+              We were built by senior HR practitioners — leaders who have shaped people strategy through scale-ups, transformations, openings and tough conversations. That operational lens means our advisory is grounded, practical and commercially aware.
             </p>
             <p className="body-md">
               We serve SME and enterprise clients across the GCC with high-impact HR strategies, executive search and outsourced services — operating as a true partner, not a transactional vendor.
@@ -568,7 +615,7 @@ const About = ({ setPage }) => (
               <p style={{ fontSize: 14, color: T.gold, fontWeight: 500, letterSpacing: '0.05em' }}>Chartered MCIPD · Founder & Principal Advisor</p>
             </div>
             <p className="body-sm" style={{ marginBottom: 24, color: T.ink2, fontSize: 15, lineHeight: 1.75 }}>
-              Nihel brings 15+ years of HR leadership, most recently as <strong style={{ color: T.ink, fontWeight: 600 }}>Director of Human Resources and Training</strong> within Radisson Hotel Group. Her career spans pre-opening team builds, large-scale workforce strategy and executive search across the hospitality and corporate sectors.
+              Nihel brings 15+ years of HR leadership across multinational organisations, most recently in <strong style={{ color: T.ink, fontWeight: 600 }}>Director of Human Resources</strong> roles within global hotel groups. Her career spans HR strategy, executive search, pre-opening team builds and large-scale workforce transformation across diverse sectors.
             </p>
             <p className="body-sm" style={{ marginBottom: 32, color: T.ink2, fontSize: 15, lineHeight: 1.75 }}>
               She holds Chartered MCIPD status — one of the most respected HR qualifications globally — and has been featured in <em>Inspiring Women Leadership</em>'s spotlight on senior HR practitioners shaping the regional industry.
@@ -640,7 +687,7 @@ const Services = ({ setPage }) => {
   ];
 
   return (
-    <div className="page-enter" style={{ paddingTop: 88 }}>
+    <div className="page-enter" style={{ paddingTop: 96 }}>
       <section style={{ background: T.ink, padding: '120px 48px 100px' }}>
         <div className="container">
           <span className="gold-rule" style={{ marginBottom: 24 }} />
@@ -694,16 +741,17 @@ const Services = ({ setPage }) => {
 // ════════════════════════════════════════════════════════════════════════════
 const Industries = ({ setPage }) => {
   const sectors = [
-    { icon: 'hotel', name: 'Hospitality & Hotels', desc: 'Pre-opening teams, hotel operations, FOH and BOH leadership across luxury and boutique properties.', roles: ['Hotel GM', 'F&B Manager', 'Front Office', 'Revenue Manager'] },
-    { icon: 'chef', name: 'Restaurant & F&B', desc: 'Restaurant groups, catering operations and culinary leadership across casual to fine-dining concepts.', roles: ['Executive Chef', 'Restaurant Manager', 'Sommelier', 'F&B Director'] },
+    { icon: 'shield', name: 'Corporate & Professional Services', desc: 'C-suite recruitment, executive support, business development and corporate functions across the GCC.', roles: ['Executive Assistant', 'Business Development', 'Operations', 'Corporate Functions'] },
+    { icon: 'data', name: 'Data Centres & Technology', desc: 'Technical leadership, project management and executive functions for hyperscale and enterprise infrastructure.', roles: ['Project Manager', 'Executive Assistant', 'Operations', 'Engineering'] },
+    { icon: 'energy', name: 'Energy & Sustainability', desc: 'Engineering, project delivery and operations roles across renewable energy and environmental sectors.', roles: ['Project Manager', 'Operations Lead', 'Engineering', 'HSE'] },
     { icon: 'event', name: 'Events & Conferences', desc: 'Production teams, conference programming, speaker management and event operations.', roles: ['Conference Producer', 'Event Director', 'Production Lead', 'Operations'] },
-    { icon: 'data', name: 'Data Centres', desc: 'Technical leadership, project management and executive functions for hyperscale infrastructure.', roles: ['Project Manager', 'Executive Assistant', 'Operations', 'Engineering'] },
-    { icon: 'energy', name: 'Energy & Sustainability', desc: 'Engineering, project delivery and operations roles across renewable and waste management sectors.', roles: ['Project Manager', 'Operations Lead', 'Engineering', 'HSE'] },
-    { icon: 'shield', name: 'Insurance & Finance', desc: 'Sales executives, advisory talent and corporate functions for insurance and financial services.', roles: ['Marketing Executive', 'Sales', 'Advisory', 'Corporate'] },
+    { icon: 'hotel', name: 'Hospitality & Hotels', desc: 'Pre-opening teams, hotel operations and leadership across luxury and boutique properties.', roles: ['Hotel GM', 'F&B Manager', 'Front Office', 'Revenue Manager'] },
+    { icon: 'chef', name: 'Restaurant & F&B', desc: 'Restaurant groups, catering operations and culinary leadership across casual to fine-dining concepts.', roles: ['Executive Chef', 'Restaurant Manager', 'Sommelier', 'F&B Director'] },
+    { icon: 'shield', name: 'Insurance & Financial Services', desc: 'Sales executives, advisory talent and corporate functions for insurance and financial services.', roles: ['Marketing Executive', 'Sales', 'Advisory', 'Corporate'] },
   ];
 
   return (
-    <div className="page-enter" style={{ paddingTop: 88 }}>
+    <div className="page-enter" style={{ paddingTop: 96 }}>
       <section style={{ background: T.ink, padding: '120px 48px 100px' }}>
         <div className="container">
           <span className="gold-rule" style={{ marginBottom: 24 }} />
@@ -821,7 +869,7 @@ const Tools = () => {
   ];
 
   return (
-    <div className="page-enter" style={{ paddingTop: 88 }}>
+    <div className="page-enter" style={{ paddingTop: 96 }}>
       <section style={{ background: T.ink, padding: '120px 48px 100px' }}>
         <div className="container">
           <span className="gold-rule" style={{ marginBottom: 24 }} />
@@ -934,7 +982,7 @@ const Tools = () => {
           {tab === 'salary' && (
             <div className="scale-in" style={{ background: T.white, border: `1px solid ${T.line}`, padding: 56 }}>
               <h2 className="display-sm" style={{ marginBottom: 12 }}>Compensation Benchmarker</h2>
-              <p className="body-md" style={{ marginBottom: 40, fontSize: 15 }}>Salary intelligence across hospitality and corporate roles in the UAE market (AED monthly).</p>
+              <p className="body-md" style={{ marginBottom: 40, fontSize: 15 }}>Salary intelligence across professional roles in the UAE market (AED monthly).</p>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, marginBottom: 28 }}>
                 <div className="field">
                   <label className="label">Role</label>
@@ -1008,7 +1056,7 @@ const Careers = ({ setPage }) => {
   };
 
   return (
-    <div className="page-enter" style={{ paddingTop: 88 }}>
+    <div className="page-enter" style={{ paddingTop: 96 }}>
       <section style={{ background: T.ink, padding: '120px 48px 100px' }}>
         <div className="container">
           <span className="gold-rule" style={{ marginBottom: 24 }} />
@@ -1119,7 +1167,7 @@ const Contact = () => {
   };
 
   return (
-    <div className="page-enter" style={{ paddingTop: 88 }}>
+    <div className="page-enter" style={{ paddingTop: 96 }}>
       <section style={{ background: T.ink, padding: '120px 48px 100px' }}>
         <div className="container">
           <span className="gold-rule" style={{ marginBottom: 24 }} />
@@ -1229,8 +1277,9 @@ const Footer = ({ setPage }) => (
     <div className="container">
       <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr', gap: 64, marginBottom: 64, paddingBottom: 64, borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
         <div>
-          <img src="https://nhb-consultancy.com/wp-content/uploads/2025/11/logo-1.png" alt="NHB"
-            style={{ height: 56, marginBottom: 28, objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
+          <div style={{ marginBottom: 28 }}>
+            <Logo inverted={true} size="lg" />
+          </div>
           <p style={{ color: 'rgba(255,255,255,0.55)', fontSize: 14, lineHeight: 1.75, maxWidth: 320, marginBottom: 28 }}>
             Boutique HR advisory and executive search for ambitious companies across the GCC.
           </p>
