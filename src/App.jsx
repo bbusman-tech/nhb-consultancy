@@ -1012,8 +1012,8 @@ const Careers = ({ setPage }) => {
       <section style={{ background: T.ink, padding: '120px 48px 100px' }}>
         <div className="container">
           <span className="gold-rule" style={{ marginBottom: 24 }} />
-          <p className="eyebrow" style={{ marginBottom: 24 }}>Opportunities</p>
-          <h1 className="display-lg" style={{ color: T.white, maxWidth: 800 }}>Current<br /><span style={{ color: T.goldL }}>mandates.</span></h1>
+          <p className="eyebrow" style={{ marginBottom: 24 }}>Careers</p>
+          <h1 className="display-lg" style={{ color: T.white, maxWidth: 800 }}>Live<br /><span style={{ color: T.goldL }}>vacancies.</span></h1>
         </div>
       </section>
 
@@ -1052,7 +1052,7 @@ const Careers = ({ setPage }) => {
           <div style={{ marginTop: 64, padding: '56px 48px', background: T.ink, textAlign: 'center' }}>
             <span className="gold-rule" style={{ margin: '0 auto 24px' }} />
             <h3 className="display-sm" style={{ color: T.white, marginBottom: 14 }}>Don't see the right role?</h3>
-            <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: 15, marginBottom: 32, maxWidth: 440, margin: '0 auto 32px' }}>Register your profile confidentially — we'll be in touch when the right mandate arises.</p>
+            <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: 15, marginBottom: 32, maxWidth: 440, margin: '0 auto 32px' }}>Register your profile confidentially — we'll be in touch when the right role becomes available.</p>
             <button onClick={() => setPage('contact')} className="btn btn-gold">Register Confidentially</button>
           </div>
         </div>
@@ -1133,7 +1133,7 @@ const Contact = () => {
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.6fr', gap: 80 }}>
             <div>
               <p className="eyebrow" style={{ marginBottom: 18 }}>Direct Contact</p>
-              <h3 className="display-sm" style={{ marginBottom: 40 }}>For new mandates, advisory enquiries, or media.</h3>
+              <h3 className="display-sm" style={{ marginBottom: 40 }}>For new enquiries, advisory engagements, or media.</h3>
               {[
                 { icon: 'mail', label: 'Email', value: 'admin@nhb-consultancy.com', href: 'mailto:admin@nhb-consultancy.com' },
                 { icon: 'phone', label: 'WhatsApp', value: '+971 52 489 0505', href: 'https://wa.me/971524890505' },
