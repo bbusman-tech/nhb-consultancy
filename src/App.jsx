@@ -1405,9 +1405,71 @@ const FloatingActions = () => {
 // ════════════════════════════════════════════════════════════════════════════
 //  APP
 // ════════════════════════════════════════════════════════════════════════════
+// ────────────────────────────────────────────────────────────────────────────
+// Per-page SEO metadata. Updated dynamically on page state change so crawlers
+// that execute JS (Googlebot, Bingbot) see unique <title>, description and
+// canonical per "route". Universal JSON-LD lives in index.html.
+// ────────────────────────────────────────────────────────────────────────────
+const PAGE_META = {
+  home:       { title: 'NHB Consultancy | HR & Executive Search Dubai, UAE',
+                desc:  'Boutique HR consultancy and executive search firm in Dubai. CIPD-chartered advisory on talent acquisition, HR transformation, and hospitality recruitment across the UAE.',
+                path:  '/' },
+  about:      { title: 'About NHB | CIPD-Chartered HR & Executive Search Dubai',
+                desc:  'Founded by Nihel Hassen Busman, MCIPD — 15+ years leading HR and executive search across the UAE, MENA, Europe and APAC. Boutique, senior-led, results-driven.',
+                path:  '/about' },
+  services:   { title: 'HR & Executive Search Services in Dubai | NHB Consultancy',
+                desc:  'Executive search, talent acquisition, HR outsourcing, organizational development and hospitality HR advisory — delivered by a CIPD-chartered Dubai consultancy.',
+                path:  '/services' },
+  industries: { title: 'Industries We Serve | Hospitality, Corporate & Private Sector',
+                desc:  'NHB Consultancy partners with hospitality groups, corporate businesses and private sector organisations across the UAE, GCC and MENA on HR and executive search.',
+                path:  '/industries' },
+  tools:      { title: 'Free HR Tools | UAE Labour Law Chat & HR Health Check',
+                desc:  'Free interactive tools from NHB Consultancy: UAE labour law assistant, HR health check, and salary benchmarking guidance for Dubai-based employers.',
+                path:  '/tools' },
+  careers:    { title: 'Open Roles & Careers | NHB Consultancy Dubai',
+                desc:  'Explore current executive search mandates and open roles placed by NHB Consultancy. Apply directly or join our talent network for senior opportunities in the UAE.',
+                path:  '/careers' },
+  contact:    { title: 'Contact NHB Consultancy | Dubai HR & Executive Search',
+                desc:  'Speak to NHB Consultancy in Dubai. Email admin@nhb-consultancy.com or WhatsApp +971 52 489 0505 for executive search, HR advisory and recruitment enquiries.',
+                path:  '/contact' }
+};
+
+const setMetaTag = (selector, attr, value) => {
+  let el = document.head.querySelector(selector);
+  if (!el) {
+    el = document.createElement('meta');
+    const [, name] = selector.match(/\[(?:name|property)="([^"]+)"\]/) || [];
+    if (selector.includes('property=')) el.setAttribute('property', name);
+    else if (name) el.setAttribute('name', name);
+    document.head.appendChild(el);
+  }
+  el.setAttribute(attr, value);
+};
+
+const setCanonical = (href) => {
+  let link = document.head.querySelector('link[rel="canonical"]');
+  if (!link) { link = document.createElement('link'); link.setAttribute('rel', 'canonical'); document.head.appendChild(link); }
+  link.setAttribute('href', href);
+};
+
 export default function App() {
   const [page, setPage] = useState('home');
   useEffect(() => { window.scrollTo(0, 0); }, [page]);
+
+  // Per-page SEO metadata sync
+  useEffect(() => {
+    const m = PAGE_META[page] || PAGE_META.home;
+    const origin = 'https://nhb-consultancy.com';
+    document.title = m.title;
+    setMetaTag('meta[name="description"]', 'content', m.desc);
+    setMetaTag('meta[property="og:title"]', 'content', m.title);
+    setMetaTag('meta[property="og:description"]', 'content', m.desc);
+    setMetaTag('meta[property="og:url"]', 'content', origin + m.path);
+    setMetaTag('meta[name="twitter:title"]', 'content', m.title);
+    setMetaTag('meta[name="twitter:description"]', 'content', m.desc);
+    setCanonical(origin + m.path);
+  }, [page]);
+
   const pages = { home: Home, about: About, services: Services, industries: Industries, tools: Tools, careers: Careers, contact: Contact };
   const Page = pages[page] || Home;
   return (
