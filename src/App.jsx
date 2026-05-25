@@ -207,6 +207,49 @@ const Styles = () => (
     /* ── Hero: responsive height ────────────────────────────── */
     .hero-section { position: relative; height: 100vh; min-height: 720px; display: flex; align-items: center; overflow: hidden; }
 
+    /* ── Brand cards (service tiles) ────────────────────────── */
+    .brand-card-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+    .brand-card {
+      display: block;
+      overflow: hidden;
+      transition: transform 0.45s cubic-bezier(0.4,0,0.2,1), box-shadow 0.45s;
+    }
+    .brand-card img {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.6s cubic-bezier(0.4,0,0.2,1);
+    }
+    .brand-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 20px 48px -16px rgba(10,22,40,0.35);
+    }
+    .brand-card:hover img { transform: scale(1.03); }
+
+    /* ── Service detail row (Services page) ─────────────────── */
+    .service-detail {
+      display: grid;
+      grid-template-columns: 1fr 1.1fr;
+      gap: 64px;
+      align-items: center;
+      padding: 72px 0;
+      border-bottom: 1px solid ${T.line};
+    }
+    .service-detail:last-child { border-bottom: none; }
+    .service-detail.reverse { direction: rtl; }
+    .service-detail.reverse > * { direction: ltr; }
+    .service-detail img {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+      display: block;
+    }
+
     /* ── Careers job row: 3-col on desktop, stacked on phone ─ */
     .job-row { padding: 32px 36px; display: grid; grid-template-columns: 1fr auto auto; gap: 32px; align-items: center; transition: background 0.3s; }
 
@@ -225,6 +268,9 @@ const Styles = () => (
       .grid-4 { grid-template-columns: repeat(2, 1fr); gap: 24px; }
       .service-row { grid-template-columns: 60px 1fr; gap: 20px; padding: 32px 0; }
       .service-row > div:nth-child(3), .service-row > div:nth-child(4) { display: none; }
+      .brand-card-grid { grid-template-columns: repeat(2, 1fr); gap: 18px; }
+      .service-detail { grid-template-columns: 1fr; gap: 32px; padding: 56px 0; }
+      .service-detail.reverse { direction: ltr; }
     }
 
     /* ── Mobile (≤720px) ────────────────────────────────────── */
@@ -259,6 +305,10 @@ const Styles = () => (
       /* Floating actions: tighter to corner on phone */
       .fab-wrap { bottom: 18px !important; right: 18px !important; }
 
+      /* Brand cards: single column on phone */
+      .brand-card-grid { grid-template-columns: 1fr; gap: 16px; }
+      .service-detail { padding: 48px 0; gap: 24px; }
+
       /* Reduce extreme display sizes */
       .display-xl { font-size: clamp(40px, 11vw, 72px) !important; }
       .display-lg { font-size: clamp(32px, 8vw, 48px) !important; }
@@ -282,7 +332,7 @@ const Logo = ({ inverted = false, size = 'md' }) => {
   const sizes = {
     sm: { mark: 38, nhb: 15, sub: 8,  gap: 10 },
     md: { mark: 52, nhb: 19, sub: 9,  gap: 14 },
-    lg: { mark: 68, nhb: 26, sub: 11, gap: 16 },
+    lg: { mark: 72, nhb: 30, sub: 12, gap: 18 },
   };
   const s = sizes[size];
   const fg = inverted ? T.white : T.ink;
@@ -416,7 +466,7 @@ const Nav = ({ page, setPage }) => {
         style={{ maxWidth: 1280, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 96 }}
       >
         <div onClick={() => setPage('home')} style={{ cursor: 'pointer' }}>
-          <Logo inverted={onHero && !menuOpen} size="md" />
+          <Logo inverted={onHero && !menuOpen} size="lg" />
         </div>
 
         {/* Desktop links */}
@@ -468,10 +518,12 @@ const Nav = ({ page, setPage }) => {
 // ════════════════════════════════════════════════════════════════════════════
 const Home = ({ setPage }) => {
   const services = [
-    { num: '01', icon: 'strategy', title: 'HR Consultancy', desc: 'Strategic HR architecture, UAE Labour Law compliance and organisational design tailored for sustainable performance.' },
-    { num: '02', icon: 'search', title: 'Recruitment & Executive Search', desc: 'End-to-end talent acquisition, mapping and headhunting across senior, specialist and operational mandates.' },
-    { num: '03', icon: 'network', title: 'Outsourced HR Services', desc: 'Fractional HR partnership for SMEs — payroll, PRO services, documentation and on-demand expertise.' },
-    { num: '04', icon: 'building', title: 'Hospitality Management', desc: 'Full-spectrum staffing, pre-opening team builds, SOP development and service excellence frameworks.' },
+    { image: '/brand/card-executive-search.jpg',          title: 'Executive Search' },
+    { image: '/brand/card-talent-acquisition.jpg',        title: 'Talent Acquisition' },
+    { image: '/brand/card-hr-outsourcing.jpg',            title: 'HR Outsourcing' },
+    { image: '/brand/card-organisational-development.jpg', title: 'Organisational Development' },
+    { image: '/brand/card-hospitality-hr-advisory.jpg',   title: 'Hospitality HR Advisory' },
+    { image: '/brand/card-hr-consultancy.jpg',            title: 'HR Consultancy' },
   ];
 
   const stats = [
@@ -485,13 +537,14 @@ const Home = ({ setPage }) => {
     <div className="page-enter">
 
       {/* ═══ HERO ═══════════════════════════════════════════════════════════ */}
-      <section className="hero-section">
-        <video autoPlay muted loop playsInline
-          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
-          onError={e => e.target.style.display = 'none'}>
-          <source src="https://nhb-consultancy.com/wp-content/uploads/2025/11/slide.mp4" type="video/mp4" />
-        </video>
-        <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(135deg, rgba(10,22,40,0.85) 0%, rgba(10,22,40,0.55) 60%, rgba(10,22,40,0.7) 100%)` }} />
+      <section className="hero-section" style={{ background: T.ink }}>
+        <img
+          src="/brand/cover.jpg"
+          alt=""
+          aria-hidden="true"
+          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: 0.45 }}
+        />
+        <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(135deg, rgba(10,22,40,0.55) 0%, rgba(10,22,40,0.35) 60%, rgba(10,22,40,0.65) 100%)` }} />
 
         <div className="container" style={{ position: 'relative', zIndex: 2, width: '100%' }}>
           <div style={{ maxWidth: 760 }}>
@@ -583,33 +636,35 @@ const Home = ({ setPage }) => {
       {/* ═══ SERVICES ═══════════════════════════════════════════════════════ */}
       <section className="pad-xl" style={{ background: T.white, borderTop: `1px solid ${T.line}` }}>
         <div className="container">
-          <div className="grid-2" style={{ gap: 80, marginBottom: 80, alignItems: 'end' }}>
+          <div className="grid-2" style={{ gap: 80, marginBottom: 64, alignItems: 'end' }}>
             <div>
               <span className="gold-rule" style={{ marginBottom: 24 }} />
               <p className="eyebrow" style={{ marginBottom: 24 }}>Capabilities</p>
-              <h2 className="display-lg">Four practices.<br />One advisory partner.</h2>
+              <h2 className="display-lg">Six practices.<br />One advisory partner.</h2>
             </div>
             <p className="body-md" style={{ maxWidth: 440 }}>
-              Our integrated model serves SME and enterprise clients across the GCC — delivering strategic HR, executive search and operational excellence under one roof.
+              Our integrated model serves SME and enterprise clients across the UAE, MENA, Europe and APAC — delivering strategic HR, executive search and operational excellence under one roof.
             </p>
           </div>
 
-          <div>
+          <div className="brand-card-grid">
             {services.map((s, i) => (
-              <div key={i} className="service-row" onClick={() => setPage(i === 3 ? 'industries' : 'services')} style={{ cursor: 'pointer' }}>
-                <div className="service-num">{s.num}</div>
-                <div>
-                  <h3 className="display-sm" style={{ marginBottom: 12 }}>{s.title}</h3>
-                  <p className="body-sm" style={{ maxWidth: 380 }}>{s.desc}</p>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'center' }}>
-                  <Icon name={s.icon} size={40} color={T.gold} strokeWidth={1.25} />
-                </div>
-                <div className="service-arrow" style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                  <Icon name="arrow" size={20} color={T.ink} />
-                </div>
-              </div>
+              <button
+                key={i}
+                onClick={() => setPage('services')}
+                aria-label={s.title}
+                className="brand-card"
+                style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}
+              >
+                <img src={s.image} alt={s.title} loading="lazy" />
+              </button>
             ))}
+          </div>
+
+          <div style={{ textAlign: 'center', marginTop: 60 }}>
+            <button onClick={() => setPage('services')} className="link-underline">
+              Explore all services <Icon name="arrow" size={16} color={T.gold} />
+            </button>
           </div>
         </div>
       </section>
@@ -766,27 +821,42 @@ const About = ({ setPage }) => (
               We serve SME and enterprise clients across the GCC with high-impact HR strategies, executive search and outsourced services — operating as a true partner, not a transactional vendor.
             </p>
           </div>
-          <div style={{ background: T.bg, padding: 56, borderLeft: `3px solid ${T.gold}` }}>
-            <div style={{ marginBottom: 32 }}>
-              <p className="eyebrow" style={{ marginBottom: 14 }}>Leadership</p>
-              <h3 style={{ fontFamily: 'Playfair Display,serif', fontSize: 32, fontWeight: 600, color: T.ink, marginBottom: 6 }}>Nihel Hassen Busman</h3>
-              <p style={{ fontSize: 14, color: T.gold, fontWeight: 500, letterSpacing: '0.05em' }}>Chartered MCIPD · Founder & Principal Advisor</p>
+          <div>
+            <img
+              src="/brand/card-founder.jpg"
+              alt="Nihel Hassen Busman, Co-Founder and Principal Consultant of NHB Consultancy"
+              loading="lazy"
+              style={{ width: '100%', aspectRatio: '1 / 1', objectFit: 'cover', display: 'block', boxShadow: '0 24px 60px -20px rgba(10,22,40,0.25)' }}
+            />
+            <div style={{ marginTop: 28, paddingTop: 24, borderTop: `1px solid ${T.line}` }}>
+              <p className="body-sm" style={{ marginBottom: 20, color: T.ink2, fontSize: 15, lineHeight: 1.75 }}>
+                Nihel brings 15+ years of HR leadership across multinational organisations, most recently in <strong style={{ color: T.ink, fontWeight: 600 }}>Director of Human Resources</strong> roles within global hotel groups. Her career spans HR strategy, executive search, pre-opening team builds and large-scale workforce transformation across diverse sectors.
+              </p>
+              <p className="body-sm" style={{ marginBottom: 24, color: T.ink2, fontSize: 15, lineHeight: 1.75 }}>
+                She holds Chartered MCIPD status — one of the most respected HR qualifications globally — and has been featured in <em>Inspiring Women Leadership</em>'s spotlight on senior HR practitioners shaping the regional industry.
+              </p>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 24 }}>
+                {['Chartered MCIPD', 'UAE Labour Law', 'Executive Search', 'Pre-Opening', 'Hospitality', 'HR Strategy'].map((t, i) => (
+                  <span key={i} style={{ padding: '6px 14px', border: `1px solid ${T.border}`, color: T.ink, fontSize: 11, fontWeight: 500, letterSpacing: '0.05em', background: T.white }}>{t}</span>
+                ))}
+              </div>
+              <a href="https://www.linkedin.com/in/nihelhassenbusman/" target="_blank" rel="noreferrer" className="link-underline">
+                View LinkedIn Profile <Icon name="arrow" size={14} color={T.gold} />
+              </a>
             </div>
-            <p className="body-sm" style={{ marginBottom: 24, color: T.ink2, fontSize: 15, lineHeight: 1.75 }}>
-              Nihel brings 15+ years of HR leadership across multinational organisations, most recently in <strong style={{ color: T.ink, fontWeight: 600 }}>Director of Human Resources</strong> roles within global hotel groups. Her career spans HR strategy, executive search, pre-opening team builds and large-scale workforce transformation across diverse sectors.
-            </p>
-            <p className="body-sm" style={{ marginBottom: 32, color: T.ink2, fontSize: 15, lineHeight: 1.75 }}>
-              She holds Chartered MCIPD status — one of the most respected HR qualifications globally — and has been featured in <em>Inspiring Women Leadership</em>'s spotlight on senior HR practitioners shaping the regional industry.
-            </p>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-              {['Chartered MCIPD', 'UAE Labour Law', 'Executive Search', 'Pre-Opening', 'Hospitality', 'HR Strategy'].map((t, i) => (
-                <span key={i} style={{ padding: '6px 14px', border: `1px solid ${T.border}`, color: T.ink, fontSize: 11, fontWeight: 500, letterSpacing: '0.05em', background: T.white }}>{t}</span>
-              ))}
-            </div>
-            <a href="https://www.linkedin.com/in/nihelhassenbusman/" target="_blank" rel="noreferrer" className="link-underline" style={{ marginTop: 28 }}>
-              View LinkedIn Profile <Icon name="arrow" size={14} color={T.gold} />
-            </a>
           </div>
+        </div>
+
+        {/* Foundation — featured credentials card */}
+        <div style={{ marginBottom: 100, textAlign: 'center' }}>
+          <p className="eyebrow" style={{ marginBottom: 16 }}>The Foundation</p>
+          <h2 className="display-md" style={{ marginBottom: 40 }}>Credentials that earn trust.</h2>
+          <img
+            src="/brand/card-foundation.jpg"
+            alt="The Foundation: CIPD Chartered Member · Meydan Free Zone Licensed · 15+ Years of International HR Leadership"
+            loading="lazy"
+            style={{ width: '100%', maxWidth: 560, aspectRatio: '1 / 1', objectFit: 'cover', display: 'block', margin: '0 auto', boxShadow: '0 24px 60px -20px rgba(10,22,40,0.25)' }}
+          />
         </div>
 
         {/* Values — refined typography only */}
@@ -834,14 +904,36 @@ const About = ({ setPage }) => (
 // ════════════════════════════════════════════════════════════════════════════
 const Services = ({ setPage }) => {
   const services = [
-    { num: '01', icon: 'strategy', title: 'HR Consultancy', desc: 'Strategic HR architecture for organisations entering or scaling in the UAE.',
-      items: ['UAE Labour Law compliance audits', 'Policy frameworks & employee handbooks', 'Organisational design & workforce planning', 'Performance management systems', 'Compensation & benefits structuring', 'Change management programmes'] },
-    { num: '02', icon: 'search', title: 'Recruitment & Executive Search', desc: 'End-to-end talent acquisition — from operational to C-suite.',
-      items: ['Executive & senior leadership search', 'Mid-level professional recruitment', 'Headhunting & talent mapping', 'Candidate assessment & screening', 'Pre-opening team builds', 'Onboarding & integration support'] },
-    { num: '03', icon: 'network', title: 'Outsourced HR Services', desc: 'Fractional HR partnership for businesses without an internal function.',
-      items: ['Payroll administration', 'PRO services & visa processing', 'Leave & attendance management', 'Employee documentation & contracts', 'Day-to-day HR support', 'Exit management & offboarding'] },
-    { num: '04', icon: 'building', title: 'Hospitality Management', desc: 'Specialist services for hotels, F&B groups and hospitality operators.',
-      items: ['Pre-opening recruitment packages', 'SOP & service standard development', 'FOH and BOH staffing', 'Hospitality executive search', 'Training programme design', 'Operational HR support'] },
+    { image: '/brand/card-executive-search.jpg',
+      title: 'Executive Search',
+      tag: 'Confidential · Senior-led · International',
+      desc: 'Retained search for C-suite, board-level and senior leadership appointments across the UAE, MENA, Europe and APAC.',
+      items: ['CEO and CXO mandates', 'Board-level appointments', 'Senior leadership search', 'Confidential succession', 'Cross-border sourcing', 'Discreet candidate assessment'] },
+    { image: '/brand/card-talent-acquisition.jpg',
+      title: 'Talent Acquisition',
+      tag: 'Strategic · Discreet · Results-driven',
+      desc: 'End-to-end recruitment for senior and mid-senior roles across hospitality and corporate.',
+      items: ['Senior & mid-senior recruitment', 'Headhunting & talent mapping', 'Candidate assessment & screening', 'Hospitality and corporate roles', 'Pre-opening team builds', 'Onboarding & integration support'] },
+    { image: '/brand/card-hr-outsourcing.jpg',
+      title: 'HR Outsourcing',
+      tag: 'For growing businesses · Senior-led',
+      desc: 'Outsourced HR operations, policy frameworks and UAE labour law compliance for businesses without an internal HR function.',
+      items: ['Outsourced HR operations', 'Policy frameworks & handbooks', 'UAE labour law compliance', 'Payroll & PRO support', 'Employee documentation', 'On-demand senior HR expertise'] },
+    { image: '/brand/card-organisational-development.jpg',
+      title: 'Organisational Development',
+      tag: 'Aligned with business strategy',
+      desc: 'HR transformation, workforce planning, succession and leadership development — designed in service of your commercial goals.',
+      items: ['HR transformation programmes', 'Workforce & succession planning', 'Leadership development', 'Organisational design', 'Performance management systems', 'Change management'] },
+    { image: '/brand/card-hospitality-hr-advisory.jpg',
+      title: 'Hospitality HR Advisory',
+      tag: 'International · Operations expertise',
+      desc: 'Pre-opening HR mobilisation and workforce planning for hotels and hospitality groups, drawn from senior in-house hospitality leadership.',
+      items: ['Pre-opening HR mobilisation', 'Hotel & hospitality workforce planning', 'FOH and BOH staffing', 'SOP & service standard development', 'Hospitality executive search', 'Training programme design'] },
+    { image: '/brand/card-hr-consultancy.jpg',
+      title: 'HR Consultancy',
+      tag: 'For senior teams · Tangible outcomes',
+      desc: 'Strategic HR advisory on engagement, retention, culture and leadership effectiveness — tailored for senior teams seeking tangible outcomes.',
+      items: ['Engagement & retention strategy', 'Culture diagnostics', 'Leadership effectiveness', 'Employee experience design', 'HR analytics & reporting', 'Compensation & benefits review'] },
   ];
 
   return (
@@ -850,32 +942,40 @@ const Services = ({ setPage }) => {
         <div className="container">
           <span className="gold-rule" style={{ marginBottom: 24 }} />
           <p className="eyebrow" style={{ marginBottom: 24 }}>Capabilities</p>
-          <h1 className="display-lg" style={{ color: T.white, maxWidth: 800 }}>Four practices.<br /><span style={{ color: T.goldL }}>One advisory partner.</span></h1>
+          <h1 className="display-lg" style={{ color: T.white, maxWidth: 800 }}>Six practices.<br /><span style={{ color: T.goldL }}>One advisory partner.</span></h1>
+          <p style={{ color: 'rgba(255,255,255,0.65)', fontSize: 17, lineHeight: 1.65, marginTop: 28, maxWidth: 620 }}>
+            From confidential executive search to outsourced HR for growing teams — our integrated practices are delivered by senior, CIPD-chartered advisors.
+          </p>
         </div>
       </section>
 
       <section className="pad-lg" style={{ background: T.white }}>
         <div className="container">
-          <div className="grid-2" style={{ gap: 64 }}>
-            {services.map((s, i) => (
-              <div key={i} style={{ padding: 48, background: T.bg, borderTop: `2px solid ${T.gold}`, position: 'relative' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 28 }}>
-                  <Icon name={s.icon} size={36} color={T.gold} strokeWidth={1.25} />
-                  <span style={{ fontFamily: 'Playfair Display,serif', fontSize: 28, color: T.faded, fontStyle: 'italic', fontWeight: 400 }}>{s.num}</span>
-                </div>
-                <h3 className="display-sm" style={{ marginBottom: 14 }}>{s.title}</h3>
-                <p className="body-md" style={{ marginBottom: 28, fontSize: 15 }}>{s.desc}</p>
+          {services.map((s, i) => (
+            <div key={i} className={`service-detail ${i % 2 === 1 ? 'reverse' : ''}`}>
+              <div>
+                <img src={s.image} alt={s.title} loading="lazy" />
+              </div>
+              <div>
+                <span className="gold-rule" style={{ marginBottom: 20 }} />
+                <p className="eyebrow" style={{ marginBottom: 16 }}>{String(i + 1).padStart(2, '0')} · Service</p>
+                <h2 className="display-md" style={{ marginBottom: 14 }}>{s.title}</h2>
+                <p style={{ fontFamily: 'Playfair Display,serif', fontSize: 15, color: T.gold, fontStyle: 'italic', marginBottom: 22 }}>{s.tag}</p>
+                <p className="body-md" style={{ marginBottom: 28, fontSize: 16 }}>{s.desc}</p>
                 <div>
                   {s.items.map((item, j) => (
-                    <div key={j} style={{ display: 'flex', alignItems: 'flex-start', gap: 12, padding: '11px 0', borderBottom: j < s.items.length - 1 ? `1px solid ${T.line}` : 'none' }}>
+                    <div key={j} style={{ display: 'flex', alignItems: 'flex-start', gap: 12, padding: '10px 0', borderBottom: j < s.items.length - 1 ? `1px solid ${T.line}` : 'none' }}>
                       <div style={{ width: 4, height: 4, background: T.gold, marginTop: 8, flexShrink: 0 }} />
                       <span style={{ fontSize: 14, color: T.ink2, lineHeight: 1.5 }}>{item}</span>
                     </div>
                   ))}
                 </div>
+                <button onClick={() => setPage('contact')} className="link-underline" style={{ marginTop: 28 }}>
+                  Discuss this service <Icon name="arrow" size={16} color={T.gold} />
+                </button>
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
         </div>
       </section>
 
