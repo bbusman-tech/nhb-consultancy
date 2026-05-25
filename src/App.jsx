@@ -512,13 +512,14 @@ const Nav = ({ page, setPage }) => {
   const textC = menuOpen ? T.ink : (onHero ? T.white : T.ink);
 
   return (
+    <>
     <nav
       className="nav-outer"
       style={{
         position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100,
         transition: 'all 0.5s cubic-bezier(0.4,0,0.2,1)',
         background: (scrolled || menuOpen) ? 'rgba(250,250,247,0.95)' : 'transparent',
-        backdropFilter: (scrolled || menuOpen) ? 'blur(20px)' : 'none',
+        backdropFilter: (scrolled && !menuOpen) ? 'blur(20px)' : 'none',
         borderBottom: (scrolled || menuOpen) ? `1px solid ${T.line}` : '1px solid transparent',
         padding: '0 48px',
       }}
@@ -555,23 +556,24 @@ const Nav = ({ page, setPage }) => {
           <span /><span /><span />
         </button>
       </div>
-
-      {/* Mobile slide-in menu panel */}
-      <div className={`nav-mobile-panel ${menuOpen ? 'open' : ''}`}>
-        {links.map(l => (
-          <button
-            key={l.id}
-            onClick={() => setPage(l.id)}
-            className={`nav-link-mobile ${page === l.id ? 'active' : ''}`}
-          >
-            {l.label}
-          </button>
-        ))}
-        <button onClick={() => setPage('contact')} className="nav-mobile-cta">
-          Book Consultation
-        </button>
-      </div>
     </nav>
+
+    {/* Mobile slide-in menu panel — outside <nav> to avoid backdrop-filter containing-block issue */}
+    <div className={`nav-mobile-panel ${menuOpen ? 'open' : ''}`}>
+      {links.map(l => (
+        <button
+          key={l.id}
+          onClick={() => setPage(l.id)}
+          className={`nav-link-mobile ${page === l.id ? 'active' : ''}`}
+        >
+          {l.label}
+        </button>
+      ))}
+      <button onClick={() => setPage('contact')} className="nav-mobile-cta">
+        Book Consultation
+      </button>
+    </div>
+    </>
   );
 };
 
