@@ -156,48 +156,159 @@ const Styles = () => (
     .float-btn{width:56px;height:56px;background:${T.ink};border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 12px 32px rgba(10,22,40,0.25);transition:all 0.3s}
     .float-btn:hover{background:${T.gold};transform:translateY(-2px) scale(1.05)}
 
-    /* ── Responsive ─────────────────────────────────────────── */
-    @media(max-width:900px){
-      .container,.container-narrow{padding:0 24px}
-      .service-row{grid-template-columns:60px 1fr;gap:20px;padding:32px 0}
-      .service-row > div:nth-child(3),.service-row > div:nth-child(4){display:none}
+    /* ── Responsive grid utility classes ────────────────────── */
+    /* Use these via className instead of inline gridTemplateColumns so
+       they can respond to viewport size. */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; }
+    .grid-2-narrow { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .grid-2-asym { display: grid; grid-template-columns: 1fr 1.5fr; gap: 100px; }
+    .grid-2-form { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .grid-2-contact { display: grid; grid-template-columns: 1fr 1.6fr; gap: 80px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .grid-3-values { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: ${T.border}; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; }
+    .grid-footer { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 64px; }
+
+    /* ── Section padding utilities ──────────────────────────── */
+    .pad-xl { padding: 140px 48px; }      /* hero-adjacent sections */
+    .pad-lg { padding: 120px 48px; }      /* standard page sections */
+    .pad-md { padding: 100px 48px; }      /* secondary sections */
+    .pad-sm { padding: 80px 48px; }       /* tight sections */
+
+    /* ── Mobile nav (hamburger) ─────────────────────────────── */
+    .nav-desktop { display: flex; align-items: center; gap: 36px; }
+    .nav-mobile-btn { display: none; background: none; border: none; cursor: pointer; padding: 8px; }
+    .nav-mobile-btn span { display: block; width: 22px; height: 1.5px; background: currentColor; margin: 5px 0; transition: all 0.3s; }
+    .nav-mobile-btn.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+    .nav-mobile-btn.open span:nth-child(2) { opacity: 0; }
+    .nav-mobile-btn.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+    .nav-mobile-panel {
+      position: fixed; top: 64px; left: 0; right: 0; bottom: 0;
+      background: ${T.white}; z-index: 99; padding: 32px 24px;
+      display: flex; flex-direction: column; gap: 4px;
+      transform: translateX(100%); transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
+      overflow-y: auto;
+    }
+    .nav-mobile-panel.open { transform: translateX(0); }
+    .nav-mobile-panel button.nav-link-mobile {
+      font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 500;
+      color: ${T.ink}; background: none; border: none; cursor: pointer;
+      text-align: left; padding: 16px 0; border-bottom: 1px solid ${T.line};
+      transition: color 0.3s;
+    }
+    .nav-mobile-panel button.nav-link-mobile.active { color: ${T.gold}; }
+    .nav-mobile-panel button.nav-link-mobile:hover { color: ${T.gold}; }
+    .nav-mobile-cta {
+      margin-top: 28px; padding: 16px 24px; background: ${T.gold}; color: ${T.white};
+      border: none; cursor: pointer; font-size: 13px; font-weight: 500;
+      letter-spacing: 0.04em; display: inline-flex; align-items: center; gap: 10px;
+    }
+
+    /* ── Hero: responsive height ────────────────────────────── */
+    .hero-section { position: relative; height: 100vh; min-height: 720px; display: flex; align-items: center; overflow: hidden; }
+
+    /* ── Careers job row: 3-col on desktop, stacked on phone ─ */
+    .job-row { padding: 32px 36px; display: grid; grid-template-columns: 1fr auto auto; gap: 32px; align-items: center; transition: background 0.3s; }
+
+    /* ── Tablet (≤960px) ────────────────────────────────────── */
+    @media (max-width: 960px) {
+      .container, .container-narrow { padding: 0 32px; }
+      .pad-xl { padding: 100px 32px; }
+      .pad-lg { padding: 90px 32px; }
+      .pad-md { padding: 80px 32px; }
+      .pad-sm { padding: 60px 32px; }
+      .grid-2-asym { grid-template-columns: 1fr; gap: 48px; }
+      .grid-2-contact { grid-template-columns: 1fr; gap: 56px; }
+      .grid-footer { grid-template-columns: 1fr 1fr; gap: 48px; }
+      .grid-3 { grid-template-columns: repeat(2, 1fr); }
+      .grid-3-values { grid-template-columns: repeat(2, 1fr); }
+      .grid-4 { grid-template-columns: repeat(2, 1fr); gap: 24px; }
+      .service-row { grid-template-columns: 60px 1fr; gap: 20px; padding: 32px 0; }
+      .service-row > div:nth-child(3), .service-row > div:nth-child(4) { display: none; }
+    }
+
+    /* ── Mobile (≤720px) ────────────────────────────────────── */
+    @media (max-width: 720px) {
+      .container, .container-narrow { padding: 0 20px; }
+      .pad-xl { padding: 72px 20px; }
+      .pad-lg { padding: 64px 20px; }
+      .pad-md { padding: 56px 20px; }
+      .pad-sm { padding: 48px 20px; }
+      .grid-2 { grid-template-columns: 1fr; gap: 32px; }
+      .grid-2-narrow { grid-template-columns: 1fr; gap: 16px; }
+      .grid-2-form { grid-template-columns: 1fr; gap: 0; }
+      .grid-3, .grid-3-values { grid-template-columns: 1fr; gap: 1px; }
+      .grid-4 { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+      .grid-footer { grid-template-columns: 1fr; gap: 40px; }
+
+      /* Nav: hide desktop links, show hamburger */
+      .nav-desktop { display: none; }
+      .nav-mobile-btn { display: block; }
+      .nav-bar { height: 64px !important; padding: 0 !important; }
+      .nav-outer { padding: 0 20px !important; }
+
+      /* Hero: shorter on phones */
+      .hero-section { min-height: 560px; height: auto; padding: 120px 0 80px; }
+
+      /* Stats: tighter on phone */
+      .stat { padding: 20px 0; }
+
+      /* Careers job row: stack title + salary + button on phone */
+      .job-row { grid-template-columns: 1fr; gap: 16px; padding: 24px 20px; }
+
+      /* Floating actions: tighter to corner on phone */
+      .fab-wrap { bottom: 18px !important; right: 18px !important; }
+
+      /* Reduce extreme display sizes */
+      .display-xl { font-size: clamp(40px, 11vw, 72px) !important; }
+      .display-lg { font-size: clamp(32px, 8vw, 48px) !important; }
+      .display-md { font-size: clamp(26px, 6vw, 36px) !important; }
+    }
+
+    /* ── Small phone (≤420px) ──────────────────────────────── */
+    @media (max-width: 420px) {
+      .grid-4 { grid-template-columns: 1fr 1fr; gap: 12px; }
+      .container, .container-narrow { padding: 0 16px; }
     }
   `}</style>
 );
 
-// ── BRAND LOGO — elegant text wordmark, always reliable ─────────────────────
+// ── BRAND LOGO ───────────────────────────────────────────────────────────
+// Uses the real NHB hexagonal mark (cropped square JPEG with navy background
+// baked in). On dark sections the navy blends seamlessly; on light sections
+// the navy mark sits as a deliberate "stamp" — intentional, on-brand.
+// File location: /public/NHB_mark.jpg (served at https://.../NHB_mark.jpg)
 const Logo = ({ inverted = false, size = 'md' }) => {
   const sizes = {
-    sm: { mark: 38, nhb: 16, sub: 8, gap: 12 },
-    md: { mark: 54, nhb: 24, sub: 10, gap: 14 },
-    lg: { mark: 64, nhb: 30, sub: 11, gap: 16 },
+    sm: { mark: 38, nhb: 15, sub: 8,  gap: 10 },
+    md: { mark: 52, nhb: 19, sub: 9,  gap: 14 },
+    lg: { mark: 68, nhb: 26, sub: 11, gap: 16 },
   };
   const s = sizes[size];
   const fg = inverted ? T.white : T.ink;
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: s.gap, transition: 'all 0.4s' }}>
-      <div style={{
-        width: s.mark, height: s.mark,
-        border: `1.5px solid ${T.gold}`,
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        position: 'relative', flexShrink: 0,
-      }}>
-        <span style={{
-          fontFamily: "'Playfair Display',serif",
-          fontSize: s.mark * 0.5,
-          fontWeight: 600,
-          color: T.gold,
-          fontStyle: 'italic',
-          lineHeight: 1,
-        }}>N</span>
-      </div>
-      <div>
+      <img
+        src="/NHB_mark.jpg"
+        alt="NHB Consultancy"
+        width={s.mark}
+        height={s.mark}
+        style={{
+          display: 'block',
+          width: s.mark, height: s.mark,
+          objectFit: 'cover',
+          objectPosition: 'center',
+          flexShrink: 0,
+          /* Subtle gold hairline ties the mark to the brand on light backgrounds */
+          boxShadow: inverted ? 'none' : `0 0 0 1px rgba(169,139,92,0.25)`,
+        }}
+      />
+      <div style={{ lineHeight: 1 }}>
         <div style={{
           fontFamily: "'Playfair Display',serif",
           fontSize: s.nhb,
           fontWeight: 600,
           color: fg,
-          lineHeight: 1,
           letterSpacing: '0.02em',
         }}>NHB</div>
         <div style={{
@@ -254,15 +365,26 @@ const Icon = ({ name, size = 24, color = T.ink, strokeWidth = 1.5 }) => {
 };
 
 // ════════════════════════════════════════════════════════════════════════════
-//  NAVIGATION
+//  NAVIGATION — desktop horizontal links + mobile hamburger panel
 // ════════════════════════════════════════════════════════════════════════════
 const Nav = ({ page, setPage }) => {
   const [scrolled, setScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+
   useEffect(() => {
     const fn = () => setScrolled(window.scrollY > 40);
     window.addEventListener('scroll', fn);
     return () => window.removeEventListener('scroll', fn);
   }, []);
+
+  // Close the mobile menu whenever the page changes
+  useEffect(() => { setMenuOpen(false); }, [page]);
+
+  // Prevent body scroll while the mobile menu is open
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [menuOpen]);
 
   const links = [
     { id: 'home', label: 'Home' },
@@ -274,22 +396,31 @@ const Nav = ({ page, setPage }) => {
   ];
 
   const onHero = page === 'home' && !scrolled;
-  const textC = onHero ? T.white : T.ink;
+  // When the mobile menu is open we always want dark text on white panel
+  const textC = menuOpen ? T.ink : (onHero ? T.white : T.ink);
 
   return (
-    <nav style={{
-      position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100,
-      transition: 'all 0.5s cubic-bezier(0.4,0,0.2,1)',
-      background: scrolled ? 'rgba(250,250,247,0.92)' : 'transparent',
-      backdropFilter: scrolled ? 'blur(20px)' : 'none',
-      borderBottom: scrolled ? `1px solid ${T.line}` : '1px solid transparent',
-      padding: '0 48px',
-    }}>
-      <div style={{ maxWidth: 1280, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 96 }}>
+    <nav
+      className="nav-outer"
+      style={{
+        position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100,
+        transition: 'all 0.5s cubic-bezier(0.4,0,0.2,1)',
+        background: (scrolled || menuOpen) ? 'rgba(250,250,247,0.95)' : 'transparent',
+        backdropFilter: (scrolled || menuOpen) ? 'blur(20px)' : 'none',
+        borderBottom: (scrolled || menuOpen) ? `1px solid ${T.line}` : '1px solid transparent',
+        padding: '0 48px',
+      }}
+    >
+      <div
+        className="nav-bar"
+        style={{ maxWidth: 1280, margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: 96 }}
+      >
         <div onClick={() => setPage('home')} style={{ cursor: 'pointer' }}>
-          <Logo inverted={onHero} size="md" />
+          <Logo inverted={onHero && !menuOpen} size="md" />
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 36 }}>
+
+        {/* Desktop links */}
+        <div className="nav-desktop">
           {links.map(l => (
             <button key={l.id} onClick={() => setPage(l.id)} className={`nav-link ${page === l.id ? 'active' : ''}`}
               style={{ color: page === l.id ? T.gold : textC }}>
@@ -300,6 +431,33 @@ const Nav = ({ page, setPage }) => {
             Book Consultation
           </button>
         </div>
+
+        {/* Mobile hamburger button */}
+        <button
+          className={`nav-mobile-btn ${menuOpen ? 'open' : ''}`}
+          aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+          aria-expanded={menuOpen}
+          onClick={() => setMenuOpen(v => !v)}
+          style={{ color: textC }}
+        >
+          <span /><span /><span />
+        </button>
+      </div>
+
+      {/* Mobile slide-in menu panel */}
+      <div className={`nav-mobile-panel ${menuOpen ? 'open' : ''}`}>
+        {links.map(l => (
+          <button
+            key={l.id}
+            onClick={() => setPage(l.id)}
+            className={`nav-link-mobile ${page === l.id ? 'active' : ''}`}
+          >
+            {l.label}
+          </button>
+        ))}
+        <button onClick={() => setPage('contact')} className="nav-mobile-cta">
+          Book Consultation
+        </button>
       </div>
     </nav>
   );
@@ -327,7 +485,7 @@ const Home = ({ setPage }) => {
     <div className="page-enter">
 
       {/* ═══ HERO ═══════════════════════════════════════════════════════════ */}
-      <section style={{ position: 'relative', height: '100vh', minHeight: 720, display: 'flex', alignItems: 'center', overflow: 'hidden' }}>
+      <section className="hero-section">
         <video autoPlay muted loop playsInline
           style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
           onError={e => e.target.style.display = 'none'}>
@@ -366,7 +524,7 @@ const Home = ({ setPage }) => {
       </section>
 
       {/* ═══ CREDENTIALS STRIP ══════════════════════════════════════════════ */}
-      <section style={{ background: T.ink, padding: '40px 48px', borderTop: `1px solid rgba(255,255,255,0.08)` }}>
+      <section style={{ background: T.ink, padding: '40px 24px', borderTop: `1px solid rgba(255,255,255,0.08)` }}>
         <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 48, flexWrap: 'wrap' }}>
           {[
             { label: 'Chartered Expertise' },
@@ -383,9 +541,9 @@ const Home = ({ setPage }) => {
       </section>
 
       {/* ═══ INTRO MANIFESTO ════════════════════════════════════════════════ */}
-      <section style={{ background: T.bg, padding: '140px 48px' }}>
+      <section className="pad-xl" style={{ background: T.bg }}>
         <div className="container">
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.5fr', gap: 100, alignItems: 'start' }}>
+          <div className="grid-2-asym" style={{ alignItems: 'start' }}>
             <div>
               <span className="gold-rule" style={{ marginBottom: 24 }} />
               <p className="eyebrow" style={{ marginBottom: 24 }}>The NHB Approach</p>
@@ -408,7 +566,7 @@ const Home = ({ setPage }) => {
           </div>
 
           {/* Stats row */}
-          <div style={{ marginTop: 120, display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 32 }}>
+          <div className="grid-4" style={{ marginTop: 120 }}>
             {stats.map((s, i) => (
               <div key={i} className="stat">
                 <div>
@@ -423,9 +581,9 @@ const Home = ({ setPage }) => {
       </section>
 
       {/* ═══ SERVICES ═══════════════════════════════════════════════════════ */}
-      <section style={{ background: T.white, padding: '140px 48px', borderTop: `1px solid ${T.line}` }}>
+      <section className="pad-xl" style={{ background: T.white, borderTop: `1px solid ${T.line}` }}>
         <div className="container">
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 80, marginBottom: 80, alignItems: 'end' }}>
+          <div className="grid-2" style={{ gap: 80, marginBottom: 80, alignItems: 'end' }}>
             <div>
               <span className="gold-rule" style={{ marginBottom: 24 }} />
               <p className="eyebrow" style={{ marginBottom: 24 }}>Capabilities</p>
@@ -457,7 +615,7 @@ const Home = ({ setPage }) => {
       </section>
 
       {/* ═══ TESTIMONIAL — Featured quote ═══════════════════════════════════ */}
-      <section style={{ background: T.ink, padding: '140px 48px', position: 'relative' }}>
+      <section className="pad-xl" style={{ background: T.ink, position: 'relative' }}>
         <div className="container-narrow" style={{ textAlign: 'center' }}>
           <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 40 }}>
             <Icon name="quote" size={48} color={T.gold} />
@@ -477,7 +635,7 @@ const Home = ({ setPage }) => {
       </section>
 
       {/* ═══ INDUSTRIES PREVIEW ═════════════════════════════════════════════ */}
-      <section style={{ background: T.bg, padding: '140px 48px' }}>
+      <section className="pad-xl" style={{ background: T.bg }}>
         <div className="container">
           <div style={{ textAlign: 'center', marginBottom: 80 }}>
             <span className="gold-rule" style={{ margin: '0 auto 24px' }} />
@@ -488,7 +646,7 @@ const Home = ({ setPage }) => {
             </p>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 24 }}>
+          <div className="grid-3">
             {[
               { icon: 'shield', name: 'Corporate & Professional', desc: 'C-suite, executive support and corporate functions' },
               { icon: 'data', name: 'Data Centres & Technology', desc: 'Technical, project and executive mandates' },
@@ -514,9 +672,9 @@ const Home = ({ setPage }) => {
       </section>
 
       {/* ═══ AI ADVISORY TOOLS ══════════════════════════════════════════════ */}
-      <section style={{ background: T.white, padding: '140px 48px', borderTop: `1px solid ${T.line}` }}>
+      <section className="pad-xl" style={{ background: T.white, borderTop: `1px solid ${T.line}` }}>
         <div className="container">
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 100, alignItems: 'start' }}>
+          <div className="grid-2" style={{ gap: 100, alignItems: 'start' }}>
             <div>
               <span className="gold-rule" style={{ marginBottom: 24 }} />
               <p className="eyebrow" style={{ marginBottom: 24 }}>Intelligent Advisory</p>
@@ -551,7 +709,7 @@ const Home = ({ setPage }) => {
       </section>
 
       {/* ═══ FINAL CTA ══════════════════════════════════════════════════════ */}
-      <section style={{ position: 'relative', background: T.ink, padding: '140px 48px', overflow: 'hidden' }}>
+      <section className="pad-xl" style={{ position: 'relative', background: T.ink, overflow: 'hidden' }}>
         <div style={{ position: 'absolute', top: 0, right: 0, width: 500, height: 500, border: `1px solid rgba(169,139,92,0.1)`, borderRadius: '50%', transform: 'translate(40%, -40%)' }} />
         <div style={{ position: 'absolute', bottom: 0, left: 0, width: 300, height: 300, border: `1px solid rgba(169,139,92,0.08)`, borderRadius: '50%', transform: 'translate(-30%, 30%)' }} />
         <div className="container-narrow" style={{ position: 'relative', zIndex: 2, textAlign: 'center' }}>
@@ -577,7 +735,7 @@ const Home = ({ setPage }) => {
 // ════════════════════════════════════════════════════════════════════════════
 const About = ({ setPage }) => (
   <div className="page-enter" style={{ paddingTop: 96 }}>
-    <section style={{ background: T.ink, padding: '120px 48px 100px' }}>
+    <section className="pad-lg" style={{ background: T.ink, paddingBottom: 100 }}>
       <div className="container">
         <span className="gold-rule" style={{ marginBottom: 24 }} />
         <p className="eyebrow" style={{ marginBottom: 24 }}>About NHB Consultancy</p>
@@ -588,9 +746,9 @@ const About = ({ setPage }) => (
       </div>
     </section>
 
-    <section style={{ background: T.white, padding: '120px 48px' }}>
+    <section className="pad-lg" style={{ background: T.white }}>
       <div className="container">
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 100, alignItems: 'start', marginBottom: 120 }}>
+        <div className="grid-2" style={{ gap: 100, alignItems: 'start', marginBottom: 120 }}>
           <div>
             <span className="gold-rule" style={{ marginBottom: 24 }} />
             <p className="eyebrow" style={{ marginBottom: 24 }}>Our Story</p>
@@ -637,7 +795,7 @@ const About = ({ setPage }) => (
             <p className="eyebrow" style={{ marginBottom: 16 }}>What We Stand For</p>
             <h2 className="display-md">Our principles.</h2>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 1, background: T.border }}>
+          <div className="grid-3-values">
             {[
               { v: 'Integrity', d: 'Transparent counsel, even when it isn\'t what you want to hear.' },
               { v: 'Excellence', d: 'Uncompromising standards across every engagement and placement.' },
@@ -657,7 +815,7 @@ const About = ({ setPage }) => (
       </div>
     </section>
 
-    <section style={{ background: T.ink, padding: '100px 48px', textAlign: 'center' }}>
+    <section className="pad-md" style={{ background: T.ink, textAlign: 'center' }}>
       <div className="container-narrow">
         <h2 className="display-md" style={{ color: T.white, marginBottom: 28 }}>Work with us.</h2>
         <p className="body-lg" style={{ color: 'rgba(255,255,255,0.7)', marginBottom: 40 }}>
@@ -688,7 +846,7 @@ const Services = ({ setPage }) => {
 
   return (
     <div className="page-enter" style={{ paddingTop: 96 }}>
-      <section style={{ background: T.ink, padding: '120px 48px 100px' }}>
+      <section className="pad-lg" style={{ background: T.ink, paddingBottom: 100 }}>
         <div className="container">
           <span className="gold-rule" style={{ marginBottom: 24 }} />
           <p className="eyebrow" style={{ marginBottom: 24 }}>Capabilities</p>
@@ -696,9 +854,9 @@ const Services = ({ setPage }) => {
         </div>
       </section>
 
-      <section style={{ background: T.white, padding: '120px 48px' }}>
+      <section className="pad-lg" style={{ background: T.white }}>
         <div className="container">
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 64 }}>
+          <div className="grid-2" style={{ gap: 64 }}>
             {services.map((s, i) => (
               <div key={i} style={{ padding: 48, background: T.bg, borderTop: `2px solid ${T.gold}`, position: 'relative' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 28 }}>
@@ -721,7 +879,7 @@ const Services = ({ setPage }) => {
         </div>
       </section>
 
-      <section style={{ background: T.ink, padding: '100px 48px', textAlign: 'center' }}>
+      <section className="pad-md" style={{ background: T.ink, textAlign: 'center' }}>
         <div className="container-narrow">
           <h2 className="display-md" style={{ color: T.white, marginBottom: 28 }}>Bespoke engagements only.</h2>
           <p className="body-lg" style={{ color: 'rgba(255,255,255,0.7)', marginBottom: 40 }}>
@@ -752,7 +910,7 @@ const Industries = ({ setPage }) => {
 
   return (
     <div className="page-enter" style={{ paddingTop: 96 }}>
-      <section style={{ background: T.ink, padding: '120px 48px 100px' }}>
+      <section className="pad-lg" style={{ background: T.ink, paddingBottom: 100 }}>
         <div className="container">
           <span className="gold-rule" style={{ marginBottom: 24 }} />
           <p className="eyebrow" style={{ marginBottom: 24 }}>Sectors</p>
@@ -760,9 +918,9 @@ const Industries = ({ setPage }) => {
         </div>
       </section>
 
-      <section style={{ background: T.bg, padding: '120px 48px' }}>
+      <section className="pad-lg" style={{ background: T.bg }}>
         <div className="container">
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 32 }}>
+          <div className="grid-2" style={{ gap: 32 }}>
             {sectors.map((s, i) => (
               <div key={i} style={{ background: T.white, padding: 48, border: `1px solid ${T.line}`, transition: 'all 0.4s', position: 'relative', overflow: 'hidden' }}
                 onMouseOver={e => { e.currentTarget.style.borderColor = T.gold; e.currentTarget.style.transform = 'translateY(-3px)'; }}
@@ -870,7 +1028,7 @@ const Tools = () => {
 
   return (
     <div className="page-enter" style={{ paddingTop: 96 }}>
-      <section style={{ background: T.ink, padding: '120px 48px 100px' }}>
+      <section className="pad-lg" style={{ background: T.ink, paddingBottom: 100 }}>
         <div className="container">
           <span className="gold-rule" style={{ marginBottom: 24 }} />
           <p className="eyebrow" style={{ marginBottom: 24 }}>Advisory Tools</p>
@@ -881,7 +1039,7 @@ const Tools = () => {
         </div>
       </section>
 
-      <section style={{ background: T.bg, padding: '80px 48px 120px' }}>
+      <section className="pad-sm" style={{ background: T.bg, paddingTop: 80, paddingBottom: 120 }}>
         <div className="container" style={{ maxWidth: 980 }}>
           <div style={{ display: 'flex', gap: 0, marginBottom: 40, borderBottom: `1px solid ${T.border}` }}>
             {tabs.map(t => (
@@ -964,7 +1122,7 @@ const Tools = () => {
                     <div style={{ fontFamily: 'Playfair Display,serif', fontSize: 24, fontWeight: 500, color: T.gold, marginTop: 8 }}>Grade · {hResult.grade}</div>
                     <p style={{ color: T.muted, fontSize: 15, marginTop: 24, maxWidth: 520, margin: '24px auto 0', lineHeight: 1.75 }}>{hResult.summary}</p>
                   </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 32 }}>
+                  <div className="grid-3" style={{ gap: 32 }}>
                     {[{ label: 'Strengths', items: hResult.strengths }, { label: 'Gaps', items: hResult.gaps }, { label: 'Recommendations', items: hResult.recommendations }].map((col, i) => (
                       <div key={i}>
                         <p className="micro" style={{ marginBottom: 16, color: T.gold, fontSize: 10 }}>{String(i + 1).padStart(2, '0')} · {col.label}</p>
@@ -983,7 +1141,7 @@ const Tools = () => {
             <div className="scale-in" style={{ background: T.white, border: `1px solid ${T.line}`, padding: 56 }}>
               <h2 className="display-sm" style={{ marginBottom: 12 }}>Compensation Benchmarker</h2>
               <p className="body-md" style={{ marginBottom: 40, fontSize: 15 }}>Salary intelligence across professional roles in the UAE market (AED monthly).</p>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, marginBottom: 28 }}>
+              <div className="grid-2-form" style={{ gap: 24, marginBottom: 28 }}>
                 <div className="field">
                   <label className="label">Role</label>
                   <select value={sRole} onChange={e => { setSRole(e.target.value); setSResult(null); }} className="input">
@@ -1057,7 +1215,7 @@ const Careers = ({ setPage }) => {
 
   return (
     <div className="page-enter" style={{ paddingTop: 96 }}>
-      <section style={{ background: T.ink, padding: '120px 48px 100px' }}>
+      <section className="pad-lg" style={{ background: T.ink, paddingBottom: 100 }}>
         <div className="container">
           <span className="gold-rule" style={{ marginBottom: 24 }} />
           <p className="eyebrow" style={{ marginBottom: 24 }}>Careers</p>
@@ -1065,7 +1223,7 @@ const Careers = ({ setPage }) => {
         </div>
       </section>
 
-      <section style={{ background: T.bg, padding: '80px 48px 120px' }}>
+      <section className="pad-sm" style={{ background: T.bg, paddingTop: 80, paddingBottom: 120 }}>
         <div className="container" style={{ maxWidth: 980 }}>
           <div style={{ display: 'flex', gap: 0, marginBottom: 48, borderBottom: `1px solid ${T.border}`, flexWrap: 'wrap' }}>
             {sectors.map(s => (
@@ -1077,7 +1235,7 @@ const Careers = ({ setPage }) => {
           {loading ? <p style={{ textAlign: 'center', padding: '60px 0', color: T.muted }}>Loading opportunities...</p> : (
             <div style={{ background: T.white }}>
               {filtered.map((job, i) => (
-                <div key={i} style={{ padding: '32px 36px', borderBottom: i < filtered.length - 1 ? `1px solid ${T.line}` : 'none', display: 'grid', gridTemplateColumns: '1fr auto auto', gap: 32, alignItems: 'center', transition: 'background 0.3s' }}
+                <div key={i} className="job-row" style={{ borderBottom: i < filtered.length - 1 ? `1px solid ${T.line}` : 'none' }}
                   onMouseOver={e => e.currentTarget.style.background = T.bg}
                   onMouseOut={e => e.currentTarget.style.background = T.white}>
                   <div>
@@ -1168,7 +1326,7 @@ const Contact = () => {
 
   return (
     <div className="page-enter" style={{ paddingTop: 96 }}>
-      <section style={{ background: T.ink, padding: '120px 48px 100px' }}>
+      <section className="pad-lg" style={{ background: T.ink, paddingBottom: 100 }}>
         <div className="container">
           <span className="gold-rule" style={{ marginBottom: 24 }} />
           <p className="eyebrow" style={{ marginBottom: 24 }}>Contact</p>
@@ -1176,9 +1334,9 @@ const Contact = () => {
         </div>
       </section>
 
-      <section style={{ background: T.bg, padding: '120px 48px' }}>
+      <section className="pad-lg" style={{ background: T.bg }}>
         <div className="container">
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.6fr', gap: 80 }}>
+          <div className="grid-2-contact">
             <div>
               <p className="eyebrow" style={{ marginBottom: 18 }}>Direct Contact</p>
               <h3 className="display-sm" style={{ marginBottom: 40 }}>For new enquiries, advisory engagements, or media.</h3>
@@ -1223,7 +1381,7 @@ const Contact = () => {
                 <div>
                   <p className="eyebrow" style={{ marginBottom: 12 }}>Send a Message</p>
                   <h3 className="display-sm" style={{ marginBottom: 36 }}>Tell us about your needs.</h3>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
+                  <div className="grid-2-form">
                     {[{ label: 'Full Name', k: 'name', ph: 'Your name' }, { label: 'Email', k: 'email', ph: 'you@email.com' }].map(f => (
                       <div key={f.k} className="field">
                         <label className="label">{f.label} <span style={{ color: T.gold }}>*</span></label>
@@ -1273,9 +1431,9 @@ const Contact = () => {
 //  FOOTER
 // ════════════════════════════════════════════════════════════════════════════
 const Footer = ({ setPage }) => (
-  <footer style={{ background: T.ink, padding: '80px 48px 40px' }}>
+  <footer className="pad-sm" style={{ background: T.ink, paddingTop: 80, paddingBottom: 40 }}>
     <div className="container">
-      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr', gap: 64, marginBottom: 64, paddingBottom: 64, borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+      <div className="grid-footer" style={{ marginBottom: 64, paddingBottom: 64, borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
         <div>
           <div style={{ marginBottom: 28 }}>
             <Logo inverted={true} size="lg" />
@@ -1351,9 +1509,9 @@ const FloatingActions = () => {
   };
 
   return (
-    <div style={{ position: 'fixed', bottom: 28, right: 28, zIndex: 1000, display: 'flex', flexDirection: 'column', gap: 12, alignItems: 'flex-end' }}>
+    <div className="fab-wrap" style={{ position: 'fixed', bottom: 28, right: 28, zIndex: 1000, display: 'flex', flexDirection: 'column', gap: 12, alignItems: 'flex-end' }}>
       {open && (
-        <div className="scale-in" style={{ width: 380, background: T.white, boxShadow: '0 30px 80px rgba(10,22,40,0.25)', display: 'flex', flexDirection: 'column', border: `1px solid ${T.line}` }}>
+        <div className="scale-in fab-panel" style={{ width: 'min(380px, calc(100vw - 56px))', background: T.white, boxShadow: '0 30px 80px rgba(10,22,40,0.25)', display: 'flex', flexDirection: 'column', border: `1px solid ${T.line}` }}>
           <div style={{ background: T.ink, padding: '18px 22px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
               <div style={{ width: 34, height: 34, background: T.gold, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
