@@ -170,10 +170,10 @@ const Styles = () => (
     .grid-footer { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 64px; }
 
     /* ── Section padding utilities ──────────────────────────── */
-    .pad-xl { padding: 140px 48px; }      /* hero-adjacent sections */
-    .pad-lg { padding: 120px 48px; }      /* standard page sections */
-    .pad-md { padding: 100px 48px; }      /* secondary sections */
-    .pad-sm { padding: 80px 48px; }       /* tight sections */
+    .pad-xl { padding: 88px 48px; }       /* hero-adjacent sections */
+    .pad-lg { padding: 76px 48px; }       /* standard page sections */
+    .pad-md { padding: 64px 48px; }       /* secondary sections */
+    .pad-sm { padding: 48px 48px; }       /* tight sections */
 
     /* ── Mobile nav (hamburger) ─────────────────────────────── */
     .nav-desktop { display: flex; align-items: center; gap: 36px; }
@@ -207,7 +207,56 @@ const Styles = () => (
     /* ── Hero: responsive height ────────────────────────────── */
     .hero-section { position: relative; height: 100vh; min-height: 720px; display: flex; align-items: center; overflow: hidden; }
 
-    /* ── Brand cards (service tiles) ────────────────────────── */
+    /* ── Service tiles (Home preview, text-based) ──────────── */
+    .svc-tile-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: ${T.line};
+    }
+    .svc-tile {
+      position: relative;
+      background: ${T.white};
+      border: none;
+      padding: 36px 32px 32px;
+      text-align: left;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .svc-tile:hover { background: ${T.bg}; }
+    .svc-tile-num {
+      display: block;
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 16px;
+      color: ${T.gold};
+      margin-bottom: 16px;
+    }
+    .svc-tile-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      font-weight: 600;
+      color: ${T.ink};
+      line-height: 1.2;
+      margin-bottom: 10px;
+    }
+    .svc-tile-tag {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 14px;
+      color: ${T.muted};
+      line-height: 1.45;
+    }
+    .svc-tile-arrow {
+      position: absolute;
+      top: 36px;
+      right: 28px;
+      opacity: 0.5;
+      transition: opacity 0.3s, transform 0.3s;
+    }
+    .svc-tile:hover .svc-tile-arrow { opacity: 1; transform: translateX(4px); }
+
+    /* ── Brand cards (kept for Services page) ────────────────── */
     .brand-card-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -256,10 +305,10 @@ const Styles = () => (
     /* ── Tablet (≤960px) ────────────────────────────────────── */
     @media (max-width: 960px) {
       .container, .container-narrow { padding: 0 32px; }
-      .pad-xl { padding: 100px 32px; }
-      .pad-lg { padding: 90px 32px; }
-      .pad-md { padding: 80px 32px; }
-      .pad-sm { padding: 60px 32px; }
+      .pad-xl { padding: 72px 32px; }
+      .pad-lg { padding: 60px 32px; }
+      .pad-md { padding: 52px 32px; }
+      .pad-sm { padding: 40px 32px; }
       .grid-2-asym { grid-template-columns: 1fr; gap: 48px; }
       .grid-2-contact { grid-template-columns: 1fr; gap: 56px; }
       .grid-footer { grid-template-columns: 1fr 1fr; gap: 48px; }
@@ -269,17 +318,19 @@ const Styles = () => (
       .service-row { grid-template-columns: 60px 1fr; gap: 20px; padding: 32px 0; }
       .service-row > div:nth-child(3), .service-row > div:nth-child(4) { display: none; }
       .brand-card-grid { grid-template-columns: repeat(2, 1fr); gap: 18px; }
+      .svc-tile-grid { grid-template-columns: repeat(2, 1fr); }
       .service-detail { grid-template-columns: 1fr; gap: 32px; padding: 56px 0; }
       .service-detail.reverse { direction: ltr; }
+      .service-detail img { max-height: 420px; }
     }
 
     /* ── Mobile (≤720px) ────────────────────────────────────── */
     @media (max-width: 720px) {
       .container, .container-narrow { padding: 0 20px; }
-      .pad-xl { padding: 72px 20px; }
-      .pad-lg { padding: 64px 20px; }
-      .pad-md { padding: 56px 20px; }
-      .pad-sm { padding: 48px 20px; }
+      .pad-xl { padding: 44px 20px; }
+      .pad-lg { padding: 40px 20px; }
+      .pad-md { padding: 36px 20px; }
+      .pad-sm { padding: 28px 20px; }
       .grid-2 { grid-template-columns: 1fr; gap: 32px; }
       .grid-2-narrow { grid-template-columns: 1fr; gap: 16px; }
       .grid-2-form { grid-template-columns: 1fr; gap: 0; }
@@ -298,6 +349,7 @@ const Styles = () => (
 
       /* Stats: tighter on phone */
       .stat { padding: 20px 0; }
+      .stats-row { margin-top: 36px !important; }
 
       /* Careers job row: stack title + salary + button on phone */
       .job-row { grid-template-columns: 1fr; gap: 16px; padding: 24px 20px; }
@@ -307,12 +359,22 @@ const Styles = () => (
 
       /* Brand cards: single column on phone */
       .brand-card-grid { grid-template-columns: 1fr; gap: 16px; }
-      .service-detail { padding: 48px 0; gap: 24px; }
+      .svc-tile-grid { grid-template-columns: 1fr; }
+      .svc-tile { padding: 24px 20px 22px; }
+      .svc-tile-arrow { top: 24px; right: 20px; }
+      .service-detail { padding: 32px 0; gap: 20px; }
+      .service-detail img { max-height: 320px; object-position: center; }
+      /* Polish: brand card max-width on phone so it doesn't dominate */
+      .service-detail > div:first-child img {
+        max-width: 300px !important;
+        margin: 0 auto !important;
+      }
+      .principle-card { padding: 24px 20px !important; }
 
       /* Reduce extreme display sizes */
-      .display-xl { font-size: clamp(40px, 11vw, 72px) !important; }
-      .display-lg { font-size: clamp(32px, 8vw, 48px) !important; }
-      .display-md { font-size: clamp(26px, 6vw, 36px) !important; }
+      .display-xl { font-size: clamp(36px, 10vw, 64px) !important; }
+      .display-lg { font-size: clamp(26px, 7vw, 40px) !important; }
+      .display-md { font-size: clamp(22px, 5.5vw, 32px) !important; }
     }
 
     /* ── Small phone (≤420px) ──────────────────────────────── */
@@ -518,12 +580,12 @@ const Nav = ({ page, setPage }) => {
 // ════════════════════════════════════════════════════════════════════════════
 const Home = ({ setPage }) => {
   const services = [
-    { image: '/brand/card-executive-search.jpg',          title: 'Executive Search' },
-    { image: '/brand/card-talent-acquisition.jpg',        title: 'Talent Acquisition' },
-    { image: '/brand/card-hr-outsourcing.jpg',            title: 'HR Outsourcing' },
-    { image: '/brand/card-organisational-development.jpg', title: 'Organisational Development' },
-    { image: '/brand/card-hospitality-hr-advisory.jpg',   title: 'Hospitality HR Advisory' },
-    { image: '/brand/card-hr-consultancy.jpg',            title: 'HR Consultancy' },
+    { title: 'Executive Search',           tag: 'C-suite · Board-level' },
+    { title: 'Talent Acquisition',         tag: 'Senior & mid-senior recruitment' },
+    { title: 'HR Outsourcing',             tag: 'Operations · Compliance' },
+    { title: 'Organisational Development', tag: 'Transformation · Succession' },
+    { title: 'Hospitality HR Advisory',    tag: 'Pre-opening · Workforce planning' },
+    { title: 'HR Consultancy',             tag: 'Strategy · Engagement · Culture' },
   ];
 
   const stats = [
@@ -537,14 +599,9 @@ const Home = ({ setPage }) => {
     <div className="page-enter">
 
       {/* ═══ HERO ═══════════════════════════════════════════════════════════ */}
-      <section className="hero-section" style={{ background: T.ink }}>
-        <img
-          src="/brand/cover.jpg"
-          alt=""
-          aria-hidden="true"
-          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: 0.45 }}
-        />
-        <div style={{ position: 'absolute', inset: 0, background: `linear-gradient(135deg, rgba(10,22,40,0.55) 0%, rgba(10,22,40,0.35) 60%, rgba(10,22,40,0.65) 100%)` }} />
+      <section className="hero-section" style={{ background: T.ink, position: 'relative' }}>
+        {/* Subtle radial vignette for depth — no image, no text behind text */}
+        <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at 30% 40%, rgba(169,139,92,0.10) 0%, rgba(10,22,40,0) 55%), radial-gradient(ellipse at 80% 90%, rgba(10,22,40,0.6) 0%, rgba(10,22,40,0) 60%)', pointerEvents: 'none' }} />
 
         <div className="container" style={{ position: 'relative', zIndex: 2, width: '100%' }}>
           <div style={{ maxWidth: 760 }}>
@@ -619,7 +676,7 @@ const Home = ({ setPage }) => {
           </div>
 
           {/* Stats row */}
-          <div className="grid-4" style={{ marginTop: 120 }}>
+          <div className="grid-4 stats-row" style={{ marginTop: 56 }}>
             {stats.map((s, i) => (
               <div key={i} className="stat">
                 <div>
@@ -636,7 +693,7 @@ const Home = ({ setPage }) => {
       {/* ═══ SERVICES ═══════════════════════════════════════════════════════ */}
       <section className="pad-xl" style={{ background: T.white, borderTop: `1px solid ${T.line}` }}>
         <div className="container">
-          <div className="grid-2" style={{ gap: 80, marginBottom: 64, alignItems: 'end' }}>
+          <div className="grid-2" style={{ gap: 56, marginBottom: 48, alignItems: 'end' }}>
             <div>
               <span className="gold-rule" style={{ marginBottom: 24 }} />
               <p className="eyebrow" style={{ marginBottom: 24 }}>Capabilities</p>
@@ -647,21 +704,23 @@ const Home = ({ setPage }) => {
             </p>
           </div>
 
-          <div className="brand-card-grid">
+          <div className="svc-tile-grid">
             {services.map((s, i) => (
               <button
                 key={i}
                 onClick={() => setPage('services')}
-                aria-label={s.title}
-                className="brand-card"
-                style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}
+                className="svc-tile"
+                aria-label={`Learn more about ${s.title}`}
               >
-                <img src={s.image} alt={s.title} loading="lazy" />
+                <span className="svc-tile-num">{String(i + 1).padStart(2, '0')}</span>
+                <h3 className="svc-tile-title">{s.title}</h3>
+                <p className="svc-tile-tag">{s.tag}</p>
+                <span className="svc-tile-arrow"><Icon name="arrow" size={16} color={T.gold} /></span>
               </button>
             ))}
           </div>
 
-          <div style={{ textAlign: 'center', marginTop: 60 }}>
+          <div style={{ textAlign: 'center', marginTop: 40 }}>
             <button onClick={() => setPage('services')} className="link-underline">
               Explore all services <Icon name="arrow" size={16} color={T.gold} />
             </button>
@@ -790,7 +849,7 @@ const Home = ({ setPage }) => {
 // ════════════════════════════════════════════════════════════════════════════
 const About = ({ setPage }) => (
   <div className="page-enter" style={{ paddingTop: 96 }}>
-    <section className="pad-lg" style={{ background: T.ink, paddingBottom: 100 }}>
+    <section className="pad-lg" style={{ background: T.ink, paddingBottom: 56 }}>
       <div className="container">
         <span className="gold-rule" style={{ marginBottom: 24 }} />
         <p className="eyebrow" style={{ marginBottom: 24 }}>About NHB Consultancy</p>
@@ -803,7 +862,7 @@ const About = ({ setPage }) => (
 
     <section className="pad-lg" style={{ background: T.white }}>
       <div className="container">
-        <div className="grid-2" style={{ gap: 100, alignItems: 'start', marginBottom: 120 }}>
+        <div className="grid-2" style={{ gap: 100, alignItems: 'start', marginBottom: 56 }}>
           <div>
             <span className="gold-rule" style={{ marginBottom: 24 }} />
             <p className="eyebrow" style={{ marginBottom: 24 }}>Our Story</p>
@@ -830,10 +889,10 @@ const About = ({ setPage }) => (
             />
             <div style={{ marginTop: 28, paddingTop: 24, borderTop: `1px solid ${T.line}` }}>
               <p className="body-sm" style={{ marginBottom: 20, color: T.ink2, fontSize: 15, lineHeight: 1.75 }}>
-                Nihel brings 15+ years of HR leadership across multinational organisations, most recently in <strong style={{ color: T.ink, fontWeight: 600 }}>Director of Human Resources</strong> roles within global hotel groups. Her career spans HR strategy, executive search, pre-opening team builds and large-scale workforce transformation across diverse sectors.
+                Most recently, Nihel held <strong style={{ color: T.ink, fontWeight: 600 }}>Director of Human Resources</strong> roles within global hotel groups. Her career spans HR strategy, executive search, pre-opening team builds and large-scale workforce transformation across diverse sectors.
               </p>
               <p className="body-sm" style={{ marginBottom: 24, color: T.ink2, fontSize: 15, lineHeight: 1.75 }}>
-                She holds Chartered MCIPD status — one of the most respected HR qualifications globally — and has been featured in <em>Inspiring Women Leadership</em>'s spotlight on senior HR practitioners shaping the regional industry.
+                She has been featured in <em>Inspiring Women Leadership</em>'s spotlight on senior HR practitioners shaping the regional industry.
               </p>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 24 }}>
                 {['Chartered MCIPD', 'UAE Labour Law', 'Executive Search', 'Pre-Opening', 'Hospitality', 'HR Strategy'].map((t, i) => (
@@ -848,9 +907,9 @@ const About = ({ setPage }) => (
         </div>
 
         {/* Foundation — featured credentials card */}
-        <div style={{ marginBottom: 100, textAlign: 'center' }}>
+        <div style={{ marginBottom: 56, textAlign: 'center' }}>
           <p className="eyebrow" style={{ marginBottom: 16 }}>The Foundation</p>
-          <h2 className="display-md" style={{ marginBottom: 40 }}>Credentials that earn trust.</h2>
+          <h2 className="display-md" style={{ marginBottom: 28 }}>Credentials that earn trust.</h2>
           <img
             src="/brand/card-foundation.jpg"
             alt="The Foundation: CIPD Chartered Member · Meydan Free Zone Licensed · 15+ Years of International HR Leadership"
@@ -860,8 +919,8 @@ const About = ({ setPage }) => (
         </div>
 
         {/* Values — refined typography only */}
-        <div style={{ borderTop: `1px solid ${T.border}`, paddingTop: 80 }}>
-          <div style={{ textAlign: 'center', marginBottom: 64 }}>
+        <div style={{ borderTop: `1px solid ${T.border}`, paddingTop: 56 }}>
+          <div style={{ textAlign: 'center', marginBottom: 36 }}>
             <p className="eyebrow" style={{ marginBottom: 16 }}>What We Stand For</p>
             <h2 className="display-md">Our principles.</h2>
           </div>
@@ -874,7 +933,7 @@ const About = ({ setPage }) => (
               { v: 'Confidentiality', d: 'Discretion in every client and candidate matter.' },
               { v: 'Impact', d: 'Measured outcomes that move the commercial dial.' },
             ].map((val, i) => (
-              <div key={i} style={{ background: T.white, padding: '40px 32px' }}>
+              <div key={i} className="principle-card" style={{ background: T.white, padding: '32px 28px' }}>
                 <span style={{ fontFamily: 'Playfair Display,serif', fontSize: 14, color: T.gold, fontStyle: 'italic' }}>{String(i + 1).padStart(2, '0')}</span>
                 <h4 style={{ fontFamily: 'Playfair Display,serif', fontSize: 22, fontWeight: 600, color: T.ink, margin: '12px 0 10px' }}>{val.v}</h4>
                 <p style={{ fontSize: 14, color: T.muted, lineHeight: 1.65 }}>{val.d}</p>
@@ -938,7 +997,7 @@ const Services = ({ setPage }) => {
 
   return (
     <div className="page-enter" style={{ paddingTop: 96 }}>
-      <section className="pad-lg" style={{ background: T.ink, paddingBottom: 100 }}>
+      <section className="pad-lg" style={{ background: T.ink, paddingBottom: 56 }}>
         <div className="container">
           <span className="gold-rule" style={{ marginBottom: 24 }} />
           <p className="eyebrow" style={{ marginBottom: 24 }}>Capabilities</p>
@@ -1010,7 +1069,7 @@ const Industries = ({ setPage }) => {
 
   return (
     <div className="page-enter" style={{ paddingTop: 96 }}>
-      <section className="pad-lg" style={{ background: T.ink, paddingBottom: 100 }}>
+      <section className="pad-lg" style={{ background: T.ink, paddingBottom: 56 }}>
         <div className="container">
           <span className="gold-rule" style={{ marginBottom: 24 }} />
           <p className="eyebrow" style={{ marginBottom: 24 }}>Sectors</p>
@@ -1128,7 +1187,7 @@ const Tools = () => {
 
   return (
     <div className="page-enter" style={{ paddingTop: 96 }}>
-      <section className="pad-lg" style={{ background: T.ink, paddingBottom: 100 }}>
+      <section className="pad-lg" style={{ background: T.ink, paddingBottom: 56 }}>
         <div className="container">
           <span className="gold-rule" style={{ marginBottom: 24 }} />
           <p className="eyebrow" style={{ marginBottom: 24 }}>Advisory Tools</p>
@@ -1139,7 +1198,7 @@ const Tools = () => {
         </div>
       </section>
 
-      <section className="pad-sm" style={{ background: T.bg, paddingTop: 80, paddingBottom: 120 }}>
+      <section className="pad-sm" style={{ background: T.bg, paddingTop: 56, paddingBottom: 72 }}>
         <div className="container" style={{ maxWidth: 980 }}>
           <div style={{ display: 'flex', gap: 0, marginBottom: 40, borderBottom: `1px solid ${T.border}` }}>
             {tabs.map(t => (
@@ -1315,7 +1374,7 @@ const Careers = ({ setPage }) => {
 
   return (
     <div className="page-enter" style={{ paddingTop: 96 }}>
-      <section className="pad-lg" style={{ background: T.ink, paddingBottom: 100 }}>
+      <section className="pad-lg" style={{ background: T.ink, paddingBottom: 56 }}>
         <div className="container">
           <span className="gold-rule" style={{ marginBottom: 24 }} />
           <p className="eyebrow" style={{ marginBottom: 24 }}>Careers</p>
@@ -1323,7 +1382,7 @@ const Careers = ({ setPage }) => {
         </div>
       </section>
 
-      <section className="pad-sm" style={{ background: T.bg, paddingTop: 80, paddingBottom: 120 }}>
+      <section className="pad-sm" style={{ background: T.bg, paddingTop: 56, paddingBottom: 72 }}>
         <div className="container" style={{ maxWidth: 980 }}>
           <div style={{ display: 'flex', gap: 0, marginBottom: 48, borderBottom: `1px solid ${T.border}`, flexWrap: 'wrap' }}>
             {sectors.map(s => (
@@ -1426,7 +1485,7 @@ const Contact = () => {
 
   return (
     <div className="page-enter" style={{ paddingTop: 96 }}>
-      <section className="pad-lg" style={{ background: T.ink, paddingBottom: 100 }}>
+      <section className="pad-lg" style={{ background: T.ink, paddingBottom: 56 }}>
         <div className="container">
           <span className="gold-rule" style={{ marginBottom: 24 }} />
           <p className="eyebrow" style={{ marginBottom: 24 }}>Contact</p>
