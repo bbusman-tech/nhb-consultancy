@@ -635,23 +635,6 @@ const Home = ({ setPage }) => {
         </div>
       </section>
 
-      {/* ═══ CREDENTIALS STRIP ══════════════════════════════════════════════ */}
-      <section style={{ background: T.ink, padding: '40px 24px', borderTop: `1px solid rgba(255,255,255,0.08)` }}>
-        <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 48, flexWrap: 'wrap' }}>
-          {[
-            { label: 'Chartered Expertise' },
-            { label: 'Boutique by Design' },
-            { label: 'UAE Labour Law Specialists' },
-            { label: 'GCC Coverage' },
-          ].map((c, i) => (
-            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-              <Icon name="check" size={16} color={T.gold} strokeWidth={2} />
-              <span style={{ color: 'rgba(255,255,255,0.85)', fontSize: 13, fontWeight: 500, letterSpacing: '0.02em' }}>{c.label}</span>
-            </div>
-          ))}
-        </div>
-      </section>
-
       {/* ═══ INTRO MANIFESTO ════════════════════════════════════════════════ */}
       <section className="pad-xl" style={{ background: T.bg }}>
         <div className="container">
@@ -885,7 +868,7 @@ const About = ({ setPage }) => (
           <div>
             <img
               src="/brand/card-founder.jpg"
-              alt="Nihel Hassen Busman, Co-Founder and Principal Consultant of NHB Consultancy"
+              alt="Nihel Hassen Busman, Founder and Principal Consultant of NHB Consultancy"
               loading="lazy"
               style={{ width: '100%', aspectRatio: '1 / 1', objectFit: 'cover', display: 'block', boxShadow: '0 24px 60px -20px rgba(10,22,40,0.25)' }}
             />
