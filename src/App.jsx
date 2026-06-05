@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import { submitContact, submitApplication, saveHealthCheck, fetchJobs } from "./lib/supabase";
 
 // ════════════════════════════════════════════════════════════════════════════
@@ -1754,11 +1755,28 @@ const setCanonical = (href) => {
   link.setAttribute('href', href);
 };
 
-export default function App() {
-  const [page, setPage] = useState('home');
-  useEffect(() => { window.scrollTo(0, 0); }, [page]);
+// Reverse map: URL path -> page id (PAGE_META is the single source of truth)
+const PAGE_BY_PATH = Object.fromEntries(
+  Object.entries(PAGE_META).map(([id, m]) => [m.path, id])
+);
 
-  // Per-page SEO metadata sync
+export default function App() {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // Derive the current page id from the URL
+  const page = PAGE_BY_PATH[location.pathname] || 'home';
+
+  // Navigate by page id — keeps every existing setPage('about') call working unchanged
+  const setPage = (id) => {
+    const path = (PAGE_META[id] || PAGE_META.home).path;
+    if (path !== location.pathname) navigate(path);
+  };
+
+  // Scroll to top whenever the route changes
+  useEffect(() => { window.scrollTo(0, 0); }, [location.pathname]);
+
+  // Per-page SEO metadata sync (keyed off the page derived from the URL)
   useEffect(() => {
     const m = PAGE_META[page] || PAGE_META.home;
     const origin = 'https://nhb-consultancy.com';
@@ -1772,13 +1790,20 @@ export default function App() {
     setCanonical(origin + m.path);
   }, [page]);
 
-  const pages = { home: Home, about: About, services: Services, industries: Industries, tools: Tools, careers: Careers, contact: Contact };
-  const Page = pages[page] || Home;
   return (
     <div style={{ minHeight: '100vh', background: T.bg }}>
       <Styles />
       <Nav page={page} setPage={setPage} />
-      <Page setPage={setPage} />
+      <Routes>
+        <Route path="/" element={<Home setPage={setPage} />} />
+        <Route path="/about" element={<About setPage={setPage} />} />
+        <Route path="/services" element={<Services setPage={setPage} />} />
+        <Route path="/industries" element={<Industries setPage={setPage} />} />
+        <Route path="/tools" element={<Tools setPage={setPage} />} />
+        <Route path="/careers" element={<Careers setPage={setPage} />} />
+        <Route path="/contact" element={<Contact setPage={setPage} />} />
+        <Route path="*" element={<Home setPage={setPage} />} />
+      </Routes>
       <Footer setPage={setPage} />
       <FloatingActions />
     </div>
