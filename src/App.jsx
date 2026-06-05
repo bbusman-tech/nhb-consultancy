@@ -603,7 +603,9 @@ const Home = ({ setPage }) => {
 
       {/* ═══ HERO ═══════════════════════════════════════════════════════════ */}
       <section className="hero-section" style={{ background: T.ink, position: 'relative' }}>
-        {/* Subtle radial vignette for depth — no image, no text behind text */}
+        {/* Texture base — deep-navy depth + soft gold bloom (procedural, on-brand) */}
+        <div style={{ position: 'absolute', inset: 0, backgroundImage: 'url(/textures/tex1_hero_depth.jpg)', backgroundSize: 'cover', backgroundPosition: 'center', opacity: 0.7, pointerEvents: 'none' }} />
+        {/* Subtle radial vignette for depth — no text behind text */}
         <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at 30% 40%, rgba(169,139,92,0.10) 0%, rgba(10,22,40,0) 55%), radial-gradient(ellipse at 80% 90%, rgba(10,22,40,0.6) 0%, rgba(10,22,40,0) 60%)', pointerEvents: 'none' }} />
 
         <div className="container" style={{ position: 'relative', zIndex: 2, width: '100%' }}>
@@ -810,6 +812,8 @@ const Home = ({ setPage }) => {
 
       {/* ═══ FINAL CTA ══════════════════════════════════════════════════════ */}
       <section className="pad-xl" style={{ position: 'relative', background: T.ink, overflow: 'hidden' }}>
+        {/* Contour-line texture — "mapping the path" (procedural, on-brand) */}
+        <div style={{ position: 'absolute', inset: 0, backgroundImage: 'url(/textures/tex3_contours.jpg)', backgroundSize: 'cover', backgroundPosition: 'center', opacity: 0.55, pointerEvents: 'none' }} />
         <div style={{ position: 'absolute', top: 0, right: 0, width: 500, height: 500, border: `1px solid rgba(169,139,92,0.1)`, borderRadius: '50%', transform: 'translate(40%, -40%)' }} />
         <div style={{ position: 'absolute', bottom: 0, left: 0, width: 300, height: 300, border: `1px solid rgba(169,139,92,0.08)`, borderRadius: '50%', transform: 'translate(-30%, 30%)' }} />
         <div className="container-narrow" style={{ position: 'relative', zIndex: 2, textAlign: 'center' }}>
