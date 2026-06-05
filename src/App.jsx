@@ -840,7 +840,7 @@ const About = ({ setPage }) => (
         <p className="eyebrow" style={{ marginBottom: 24 }}>About NHB Consultancy</p>
         <h1 className="display-lg" style={{ color: T.white, maxWidth: 800 }}>
           Strategic HR advisory.<br />
-          <span style={{ color: T.goldL }}>People-led, business-focused.</span>
+          <span style={{ color: T.goldL }}>People-led,<br />Business-focused.</span>
         </h1>
       </div>
     </section>
