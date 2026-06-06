@@ -603,10 +603,10 @@ const Home = ({ setPage }) => {
 
       {/* ═══ HERO ═══════════════════════════════════════════════════════════ */}
       <section className="hero-section" style={{ background: T.ink, position: 'relative' }}>
-        {/* Texture base — deep-navy depth + soft gold bloom (procedural, on-brand) */}
-        <div style={{ position: 'absolute', inset: 0, backgroundImage: 'url(/textures/tex1_hero_depth.jpg)', backgroundSize: 'cover', backgroundPosition: 'center', opacity: 0.7, pointerEvents: 'none' }} />
-        {/* Subtle radial vignette for depth — no text behind text */}
-        <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at 30% 40%, rgba(169,139,92,0.10) 0%, rgba(10,22,40,0) 55%), radial-gradient(ellipse at 80% 90%, rgba(10,22,40,0.6) 0%, rgba(10,22,40,0) 60%)', pointerEvents: 'none' }} />
+        {/* Hero photograph — graded to brand navy/gold */}
+        <div style={{ position: 'absolute', inset: 0, backgroundImage: 'url(/hero-atmosphere.jpg)', backgroundSize: 'cover', backgroundPosition: 'center', pointerEvents: 'none' }} />
+        {/* Navy scrim — darkens the left so the headline stays crisp, lets the light breathe on the right */}
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg, rgba(10,22,40,0.95) 0%, rgba(10,22,40,0.82) 32%, rgba(10,22,40,0.5) 62%, rgba(10,22,40,0.22) 100%), linear-gradient(to top, rgba(10,22,40,0.55) 0%, rgba(10,22,40,0) 38%)', pointerEvents: 'none' }} />
 
         <div className="container" style={{ position: 'relative', zIndex: 2, width: '100%' }}>
           <div style={{ maxWidth: 760 }}>
