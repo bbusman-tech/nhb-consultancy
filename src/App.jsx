@@ -1000,8 +1000,12 @@ const Services = ({ setPage }) => {
 
   return (
     <div className="page-enter" style={{ paddingTop: 96 }}>
-      <section className="pad-lg" style={{ background: T.ink, paddingBottom: 56 }}>
-        <div className="container">
+      <section className="pad-lg" style={{ background: T.ink, paddingBottom: 56, position: 'relative', overflow: 'hidden' }}>
+        {/* Confidential meeting-room banner */}
+        <div style={{ position: 'absolute', inset: 0, backgroundImage: 'url(/services-banner.jpg)', backgroundSize: 'cover', backgroundPosition: 'center 35%', pointerEvents: 'none' }} />
+        {/* navy scrim — dark on the left for text legibility, fading to the right */}
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg, rgba(10,22,40,0.92) 0%, rgba(10,22,40,0.78) 38%, rgba(10,22,40,0.45) 72%, rgba(10,22,40,0.30) 100%)', pointerEvents: 'none' }} />
+        <div className="container" style={{ position: 'relative', zIndex: 2 }}>
           <span className="gold-rule" style={{ marginBottom: 24 }} />
           <p className="eyebrow" style={{ marginBottom: 24 }}>Capabilities</p>
           <h1 className="display-lg" style={{ color: T.white, maxWidth: 800 }}>Six practices.<br /><span style={{ color: T.goldL }}>One advisory partner.</span></h1>
