@@ -605,12 +605,16 @@ const Home = ({ setPage }) => {
       <section className="hero-section" style={{ background: T.ink, position: 'relative' }}>
         {/* Hero photograph — graded to brand navy/gold */}
         <div style={{ position: 'absolute', inset: 0, backgroundImage: 'url(/hero-atmosphere.jpg)', backgroundSize: 'cover', backgroundPosition: 'center', pointerEvents: 'none' }} />
-        {/* Navy scrim — holds dark across the left (hides wall seams, keeps headline crisp), lets the light + vase breathe on the right */}
-        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg, rgba(10,22,40,0.98) 0%, rgba(10,22,40,0.95) 42%, rgba(10,22,40,0.5) 62%, rgba(10,22,40,0.14) 100%), linear-gradient(to top, rgba(10,22,40,0.55) 0%, rgba(10,22,40,0) 38%)', pointerEvents: 'none' }} />
+        {/* Navy scrim — darkens the left so the headline stays crisp, lets the light breathe on the right */}
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg, rgba(10,22,40,0.95) 0%, rgba(10,22,40,0.82) 32%, rgba(10,22,40,0.5) 62%, rgba(10,22,40,0.22) 100%), linear-gradient(to top, rgba(10,22,40,0.55) 0%, rgba(10,22,40,0) 38%)', pointerEvents: 'none' }} />
 
         <div className="container" style={{ position: 'relative', zIndex: 2, width: '100%' }}>
           <div style={{ maxWidth: 760 }}>
-            <h1 className="display-xl fade-up" style={{ color: T.white, marginBottom: 32, animationDelay: '0s', animationFillMode: 'both' }}>
+            <div className="fade-up" style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 32 }}>
+              <span className="gold-rule" />
+              <span className="eyebrow" style={{ color: T.goldL }}>Boutique HR Advisory · Dubai</span>
+            </div>
+            <h1 className="display-xl fade-up" style={{ color: T.white, marginBottom: 32, animationDelay: '0.1s', animationFillMode: 'both' }}>
               Plan.<br />
               <span style={{ color: T.goldL }}>Launch.</span><br />
               Grow.
@@ -804,6 +808,19 @@ const Home = ({ setPage }) => {
             </div>
           </div>
         </div>
+      </section>
+
+      {/* ═══ FOUNDED IN DUBAI — skyline band ════════════════════════════════ */}
+      <section style={{ position: 'relative', background: T.ink, overflow: 'hidden', lineHeight: 0 }} aria-hidden="true">
+        <div style={{
+          height: 'clamp(170px, 22vw, 300px)',
+          backgroundImage: 'url(/dubai-band.jpg)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center 70%',
+          backgroundRepeat: 'no-repeat',
+        }} />
+        {/* melt the bottom of the band into the dark section below */}
+        <div style={{ position: 'absolute', left: 0, right: 0, bottom: 0, height: 90, background: `linear-gradient(to bottom, rgba(10,22,40,0), ${T.ink})`, pointerEvents: 'none' }} />
       </section>
 
       {/* ═══ FINAL CTA ══════════════════════════════════════════════════════ */}
