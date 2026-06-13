@@ -713,7 +713,9 @@ const Home = ({ setPage }) => {
       </section>
 
       {/* ═══ TESTIMONIAL — Featured quote ═══════════════════════════════════ */}
-      <section className="pad-xl" style={{ background: T.ink }}>
+      <section className="pad-xl" style={{ background: T.ink, position: 'relative', overflow: 'hidden' }}>
+        <div style={{ position: 'absolute', inset: 0, backgroundImage: 'url(/meydan-grandstand.jpg)', backgroundSize: 'cover', backgroundPosition: 'center', pointerEvents: 'none' }} />
+        <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse 85% 95% at 50% 50%, rgba(10,22,40,0.82) 0%, rgba(10,22,40,0.58) 50%, rgba(10,22,40,0.34) 100%)', pointerEvents: 'none' }} />
         <div className="container-narrow" style={{ textAlign: 'center', position: 'relative', zIndex: 2 }}>
           <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 40 }}>
             <Icon name="quote" size={48} color={T.gold} />
@@ -848,7 +850,9 @@ const Home = ({ setPage }) => {
 // ════════════════════════════════════════════════════════════════════════════
 const About = ({ setPage }) => (
   <div className="page-enter" style={{ paddingTop: 96 }}>
-    <section className="pad-lg" style={{ background: T.ink, paddingBottom: 56 }}>
+    <section className="pad-lg" style={{ background: T.ink, paddingBottom: 56, position: 'relative', overflow: 'hidden' }}>
+      <div style={{ position: 'absolute', inset: 0, backgroundImage: 'url(/meydan-grandstand.jpg)', backgroundSize: 'cover', backgroundPosition: 'center', pointerEvents: 'none' }} />
+      <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg, rgba(10,22,40,0.90) 0%, rgba(10,22,40,0.72) 40%, rgba(10,22,40,0.42) 72%, rgba(10,22,40,0.20) 100%)', pointerEvents: 'none' }} />
       <div className="container" style={{ position: 'relative', zIndex: 2 }}>
         <span className="gold-rule" style={{ marginBottom: 24 }} />
         <p className="eyebrow" style={{ marginBottom: 24 }}>About NHB Consultancy</p>
@@ -943,7 +947,9 @@ const About = ({ setPage }) => (
       </div>
     </section>
 
-    <section className="pad-md" style={{ background: T.ink, textAlign: 'center' }}>
+    <section className="pad-md" style={{ background: T.ink, textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+      <div style={{ position: 'absolute', inset: 0, backgroundImage: 'url(/meydan-track.jpg)', backgroundSize: 'cover', backgroundPosition: 'center', pointerEvents: 'none' }} />
+      <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse 85% 95% at 50% 50%, rgba(10,22,40,0.82) 0%, rgba(10,22,40,0.58) 50%, rgba(10,22,40,0.34) 100%)', pointerEvents: 'none' }} />
       <div className="container-narrow" style={{ position: 'relative', zIndex: 2 }}>
         <h2 className="display-md" style={{ color: T.white, marginBottom: 28 }}>Work with us.</h2>
         <p className="body-lg" style={{ color: 'rgba(255,255,255,0.7)', marginBottom: 40 }}>
@@ -1072,8 +1078,9 @@ const Industries = ({ setPage }) => {
 
   return (
     <div className="page-enter" style={{ paddingTop: 96 }}>
-      <section className="pad-lg" style={{ background: T.ink, paddingBottom: 56 }}>
-        {/* industries-header */}
+      <section className="pad-lg" style={{ background: T.ink, paddingBottom: 56, position: 'relative', overflow: 'hidden' }}>
+        <div style={{ position: 'absolute', inset: 0, backgroundImage: 'url(/meydan-skyline.jpg)', backgroundSize: 'cover', backgroundPosition: 'center', pointerEvents: 'none' }} />
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg, rgba(10,22,40,0.90) 0%, rgba(10,22,40,0.72) 40%, rgba(10,22,40,0.42) 72%, rgba(10,22,40,0.20) 100%)', pointerEvents: 'none' }} />
         <div className="container" style={{ position: 'relative', zIndex: 2 }}>
           <span className="gold-rule" style={{ marginBottom: 24 }} />
           <p className="eyebrow" style={{ marginBottom: 24 }}>Sectors</p>
@@ -1404,8 +1411,9 @@ const Careers = ({ setPage }) => {
 
   return (
     <div className="page-enter" style={{ paddingTop: 96 }}>
-      <section className="pad-lg" style={{ background: T.ink, paddingBottom: 56 }}>
-        {/* careers-header */}
+      <section className="pad-lg" style={{ background: T.ink, paddingBottom: 56, position: 'relative', overflow: 'hidden' }}>
+        <div style={{ position: 'absolute', inset: 0, backgroundImage: 'url(/meydan-track.jpg)', backgroundSize: 'cover', backgroundPosition: 'center', pointerEvents: 'none' }} />
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg, rgba(10,22,40,0.90) 0%, rgba(10,22,40,0.72) 40%, rgba(10,22,40,0.42) 72%, rgba(10,22,40,0.20) 100%)', pointerEvents: 'none' }} />
         <div className="container" style={{ position: 'relative', zIndex: 2 }}>
           <span className="gold-rule" style={{ marginBottom: 24 }} />
           <p className="eyebrow" style={{ marginBottom: 24 }}>Careers</p>
@@ -1548,8 +1556,9 @@ const Contact = () => {
 
   return (
     <div className="page-enter" style={{ paddingTop: 96 }}>
-      <section className="pad-lg" style={{ background: T.ink, paddingBottom: 56 }}>
-        {/* contact-header */}
+      <section className="pad-lg" style={{ background: T.ink, paddingBottom: 56, position: 'relative', overflow: 'hidden' }}>
+        <div style={{ position: 'absolute', inset: 0, backgroundImage: 'url(/meydan-palms.jpg)', backgroundSize: 'cover', backgroundPosition: 'center', pointerEvents: 'none' }} />
+        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg, rgba(10,22,40,0.90) 0%, rgba(10,22,40,0.72) 40%, rgba(10,22,40,0.42) 72%, rgba(10,22,40,0.20) 100%)', pointerEvents: 'none' }} />
         <div className="container" style={{ position: 'relative', zIndex: 2 }}>
           <span className="gold-rule" style={{ marginBottom: 24 }} />
           <p className="eyebrow" style={{ marginBottom: 24 }}>Contact</p>
