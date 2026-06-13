@@ -37,9 +37,9 @@ const T = {
   faded:   '#9CA3AF',   // tertiary
   border:  '#E5E2DA',   // warm border
   line:    '#EFEDE6',   // hairline
-  gold:    '#A98B5C',   // refined warm gold
-  goldD:   '#8A6F44',   // gold hover
-  goldL:   '#D4BB8A',   // light gold
+  gold:    '#9C8A62',   // master bronze
+  goldD:   '#7E6D48',   // bronze hover
+  goldL:   '#C9B68C',   // light bronze (highlight on navy only)
 };
 
 const Styles = () => (
