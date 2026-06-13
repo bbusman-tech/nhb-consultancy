@@ -37,20 +37,20 @@ const T = {
   faded:   '#9CA3AF',   // tertiary
   border:  '#E5E2DA',   // warm border
   line:    '#EFEDE6',   // hairline
-  gold:    '#9C8A62',   // master bronze
-  goldD:   '#7E6D48',   // bronze hover
-  goldL:   '#C9B68C',   // light bronze (highlight on navy only)
+  gold:    '#A98B5C',   // refined warm gold
+  goldD:   '#8A6F44',   // gold hover
+  goldL:   '#D4BB8A',   // light gold
 };
 
 const Styles = () => (
   <style>{`
-    @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600;700;800&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400&family=Inter:wght@300;400;500;600;700;800&display=swap');
     *{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
     html{scroll-behavior:smooth}
-    body{font-family:'Montserrat',-apple-system,sans-serif;color:${T.ink2};background:${T.bg};overflow-x:hidden;font-feature-settings:'ss01','cv11'}
-    h1,h2,h3,h4,h5{font-family:'Cormorant Garamond',serif;font-weight:600;color:${T.ink};letter-spacing:-0.01em;line-height:1.1}
+    body{font-family:'Inter',-apple-system,sans-serif;color:${T.ink2};background:${T.bg};overflow-x:hidden;font-feature-settings:'ss01','cv11'}
+    h1,h2,h3,h4,h5{font-family:'Playfair Display',serif;font-weight:600;color:${T.ink};letter-spacing:-0.01em;line-height:1.1}
     a{text-decoration:none;color:inherit}
-    input,textarea,select{font-family:'Montserrat',sans-serif}
+    input,textarea,select{font-family:'Inter',sans-serif}
     select{-webkit-appearance:none;appearance:none;cursor:pointer}
     ::-webkit-scrollbar{width:5px;height:5px}
     ::-webkit-scrollbar-track{background:transparent}
@@ -59,18 +59,18 @@ const Styles = () => (
     ::selection{background:${T.gold};color:${T.white}}
 
     /* ── Typography utilities ───────────────────────────────── */
-    .eyebrow{font-family:'Montserrat',sans-serif;font-size:11px;font-weight:600;letter-spacing:0.22em;text-transform:uppercase;color:${T.gold}}
-    .display-xl{font-family:'Cormorant Garamond',serif;font-size:clamp(56px,8vw,108px);font-weight:600;line-height:0.95;letter-spacing:-0.025em}
-    .display-lg{font-family:'Cormorant Garamond',serif;font-size:clamp(40px,5vw,64px);font-weight:600;line-height:1.05;letter-spacing:-0.02em}
-    .display-md{font-family:'Cormorant Garamond',serif;font-size:clamp(28px,3.5vw,44px);font-weight:600;line-height:1.15;letter-spacing:-0.015em}
-    .display-sm{font-family:'Cormorant Garamond',serif;font-size:clamp(22px,2.5vw,30px);font-weight:600;line-height:1.25;letter-spacing:-0.01em}
+    .eyebrow{font-family:'Inter',sans-serif;font-size:11px;font-weight:600;letter-spacing:0.22em;text-transform:uppercase;color:${T.gold}}
+    .display-xl{font-family:'Playfair Display',serif;font-size:clamp(56px,8vw,108px);font-weight:600;line-height:0.95;letter-spacing:-0.025em}
+    .display-lg{font-family:'Playfair Display',serif;font-size:clamp(40px,5vw,64px);font-weight:600;line-height:1.05;letter-spacing:-0.02em}
+    .display-md{font-family:'Playfair Display',serif;font-size:clamp(28px,3.5vw,44px);font-weight:600;line-height:1.15;letter-spacing:-0.015em}
+    .display-sm{font-family:'Playfair Display',serif;font-size:clamp(22px,2.5vw,30px);font-weight:600;line-height:1.25;letter-spacing:-0.01em}
     .body-lg{font-size:18px;line-height:1.7;color:${T.ink2};font-weight:400}
     .body-md{font-size:16px;line-height:1.7;color:${T.muted};font-weight:400}
     .body-sm{font-size:14px;line-height:1.65;color:${T.muted};font-weight:400}
-    .micro{font-family:'Montserrat',sans-serif;font-size:11px;font-weight:500;letter-spacing:0.16em;text-transform:uppercase;color:${T.muted}}
+    .micro{font-family:'Inter',sans-serif;font-size:11px;font-weight:500;letter-spacing:0.16em;text-transform:uppercase;color:${T.muted}}
 
     /* ── Buttons ────────────────────────────────────────────── */
-    .btn{display:inline-flex;align-items:center;gap:10px;font-family:'Montserrat',sans-serif;font-size:13px;font-weight:500;letter-spacing:0.04em;cursor:pointer;border:none;transition:all 0.35s cubic-bezier(0.4,0,0.2,1);padding:16px 30px;text-transform:none;white-space:nowrap}
+    .btn{display:inline-flex;align-items:center;gap:10px;font-family:'Inter',sans-serif;font-size:13px;font-weight:500;letter-spacing:0.04em;cursor:pointer;border:none;transition:all 0.35s cubic-bezier(0.4,0,0.2,1);padding:16px 30px;text-transform:none;white-space:nowrap}
     .btn-primary{background:${T.ink};color:${T.white}}
     .btn-primary:hover{background:${T.gold};transform:translateY(-1px)}
     .btn-gold{background:${T.gold};color:${T.white}}
@@ -95,13 +95,13 @@ const Styles = () => (
     .link-underline:hover::after{width:100%}
 
     /* ── Navigation ─────────────────────────────────────────── */
-    .nav-link{font-family:'Montserrat',sans-serif;font-size:13px;font-weight:500;letter-spacing:0.02em;cursor:pointer;background:none;border:none;color:inherit;padding:8px 0;position:relative;transition:color 0.3s}
+    .nav-link{font-family:'Inter',sans-serif;font-size:13px;font-weight:500;letter-spacing:0.02em;cursor:pointer;background:none;border:none;color:inherit;padding:8px 0;position:relative;transition:color 0.3s}
     .nav-link::after{content:'';position:absolute;bottom:-2px;left:0;width:0;height:1px;background:${T.gold};transition:width 0.35s ease}
     .nav-link:hover::after,.nav-link.active::after{width:100%}
 
     /* ── Forms ──────────────────────────────────────────────── */
     .field{margin-bottom:20px}
-    .label{display:block;font-family:'Montserrat',sans-serif;font-size:11px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:${T.ink};margin-bottom:8px}
+    .label{display:block;font-family:'Inter',sans-serif;font-size:11px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:${T.ink};margin-bottom:8px}
     .input{width:100%;padding:14px 16px;border:1px solid ${T.border};font-size:14px;color:${T.ink};outline:none;background:${T.white};transition:all 0.3s;font-weight:400}
     .input:focus{border-color:${T.ink};box-shadow:0 0 0 3px rgba(10,22,40,0.05)}
     .input::placeholder{color:${T.faded}}
@@ -131,14 +131,14 @@ const Styles = () => (
     .service-row:hover{padding-left:8px}
     .service-row:hover .service-num{color:${T.gold}}
     .service-row:hover .service-arrow{transform:translateX(6px)}
-    .service-num{font-family:'Cormorant Garamond',serif;font-size:48px;font-weight:300;color:${T.faded};font-style:italic;transition:color 0.3s}
+    .service-num{font-family:'Playfair Display',serif;font-size:48px;font-weight:300;color:${T.faded};font-style:italic;transition:color 0.3s}
     .service-arrow{transition:transform 0.3s}
 
     /* ── Stat counters ──────────────────────────────────────── */
     .stat{padding:32px 0;border-top:1px solid ${T.border}}
-    .stat-num{font-family:'Cormorant Garamond',serif;font-size:clamp(48px,5vw,64px);font-weight:500;color:${T.ink};line-height:1;letter-spacing:-0.02em}
-    .stat-suffix{font-family:'Cormorant Garamond',serif;font-size:32px;color:${T.gold};font-weight:400;vertical-align:top;margin-left:2px}
-    .stat-label{font-family:'Montserrat',sans-serif;font-size:12px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:${T.muted};margin-top:14px}
+    .stat-num{font-family:'Playfair Display',serif;font-size:clamp(48px,5vw,64px);font-weight:500;color:${T.ink};line-height:1;letter-spacing:-0.02em}
+    .stat-suffix{font-family:'Playfair Display',serif;font-size:32px;color:${T.gold};font-weight:400;vertical-align:top;margin-left:2px}
+    .stat-label{font-family:'Inter',sans-serif;font-size:12px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:${T.muted};margin-top:14px}
 
     /* ── Industry cards ─────────────────────────────────────── */
     .industry-card{padding:36px 28px;background:${T.white};border:1px solid ${T.line};transition:all 0.4s;cursor:default;position:relative;overflow:hidden}
@@ -192,7 +192,7 @@ const Styles = () => (
     }
     .nav-mobile-panel.open { transform: translateX(0); }
     .nav-mobile-panel button.nav-link-mobile {
-      font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 500;
+      font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 500;
       color: ${T.ink}; background: none; border: none; cursor: pointer;
       text-align: left; padding: 16px 0; border-bottom: 1px solid ${T.line};
       transition: color 0.3s;
@@ -227,14 +227,14 @@ const Styles = () => (
     .svc-tile:hover { background: ${T.bg}; }
     .svc-tile-num {
       display: block;
-      font-family: 'Cormorant Garamond', serif;
+      font-family: 'Playfair Display', serif;
       font-style: italic;
       font-size: 16px;
       color: ${T.gold};
       margin-bottom: 16px;
     }
     .svc-tile-title {
-      font-family: 'Cormorant Garamond', serif;
+      font-family: 'Playfair Display', serif;
       font-size: 22px;
       font-weight: 600;
       color: ${T.ink};
@@ -242,7 +242,7 @@ const Styles = () => (
       margin-bottom: 10px;
     }
     .svc-tile-tag {
-      font-family: 'Cormorant Garamond', serif;
+      font-family: 'Playfair Display', serif;
       font-style: italic;
       font-size: 14px;
       color: ${T.muted};
@@ -418,14 +418,14 @@ const Logo = ({ inverted = false, size = 'md' }) => {
       />
       <div style={{ lineHeight: 1 }}>
         <div style={{
-          fontFamily: "'Cormorant Garamond',serif",
+          fontFamily: "'Playfair Display',serif",
           fontSize: s.nhb,
           fontWeight: 600,
           color: fg,
           letterSpacing: '0.02em',
         }}>NHB</div>
         <div style={{
-          fontFamily: "'Montserrat',sans-serif",
+          fontFamily: "'Inter',sans-serif",
           fontSize: s.sub,
           fontWeight: 600,
           color: T.gold,
@@ -713,14 +713,12 @@ const Home = ({ setPage }) => {
       </section>
 
       {/* ═══ TESTIMONIAL — Featured quote ═══════════════════════════════════ */}
-      <section className="pad-xl" style={{ background: T.ink, position: 'relative', overflow: 'hidden' }}>
-        <div style={{ position: 'absolute', inset: 0, backgroundImage: 'url(/testimonial-band.jpg)', backgroundSize: 'cover', backgroundPosition: 'center', pointerEvents: 'none' }} />
-        <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse 85% 95% at 50% 50%, rgba(10,22,40,0.80) 0%, rgba(10,22,40,0.55) 50%, rgba(10,22,40,0.34) 100%)', pointerEvents: 'none' }} />
+      <section className="pad-xl" style={{ background: T.ink }}>
         <div className="container-narrow" style={{ textAlign: 'center', position: 'relative', zIndex: 2 }}>
           <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 40 }}>
             <Icon name="quote" size={48} color={T.gold} />
           </div>
-          <blockquote style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: 'clamp(24px,3vw,36px)', lineHeight: 1.4, color: T.white, fontWeight: 400, marginBottom: 48, fontStyle: 'italic', letterSpacing: '-0.01em' }}>
+          <blockquote style={{ fontFamily: 'Playfair Display, serif', fontSize: 'clamp(24px,3vw,36px)', lineHeight: 1.4, color: T.white, fontWeight: 400, marginBottom: 48, fontStyle: 'italic', letterSpacing: '-0.01em' }}>
             "What sets Nihel apart is her ability to align HR strategy with business goals while fostering a culture of growth, collaboration and accountability. A strong example of leadership, adaptability and continuous professional growth."
           </blockquote>
           <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 16 }}>
@@ -757,7 +755,7 @@ const Home = ({ setPage }) => {
             ].map((ind, i) => (
               <div key={i} className="industry-card">
                 <Icon name={ind.icon} size={32} color={T.gold} strokeWidth={1.25} />
-                <h4 style={{ fontFamily: 'Cormorant Garamond, serif', fontSize: 22, fontWeight: 600, color: T.ink, margin: '20px 0 8px' }}>{ind.name}</h4>
+                <h4 style={{ fontFamily: 'Playfair Display, serif', fontSize: 22, fontWeight: 600, color: T.ink, margin: '20px 0 8px' }}>{ind.name}</h4>
                 <p style={{ fontSize: 14, color: T.muted, lineHeight: 1.6 }}>{ind.desc}</p>
               </div>
             ))}
@@ -795,9 +793,9 @@ const Home = ({ setPage }) => {
                 <div key={i} onClick={() => setPage('tools')} style={{ padding: '28px 0', borderBottom: i < 2 ? `1px solid ${T.line}` : 'none', cursor: 'pointer', display: 'grid', gridTemplateColumns: '60px 1fr 30px', gap: 20, alignItems: 'start', transition: 'all 0.3s' }}
                   onMouseOver={e => e.currentTarget.style.paddingLeft = '8px'}
                   onMouseOut={e => e.currentTarget.style.paddingLeft = '0'}>
-                  <span style={{ fontFamily: 'Cormorant Garamond,serif', fontSize: 18, color: T.gold, fontStyle: 'italic' }}>{t.num}</span>
+                  <span style={{ fontFamily: 'Playfair Display,serif', fontSize: 18, color: T.gold, fontStyle: 'italic' }}>{t.num}</span>
                   <div>
-                    <h4 style={{ fontFamily: 'Cormorant Garamond,serif', fontSize: 20, fontWeight: 600, color: T.ink, marginBottom: 6 }}>{t.title}</h4>
+                    <h4 style={{ fontFamily: 'Playfair Display,serif', fontSize: 20, fontWeight: 600, color: T.ink, marginBottom: 6 }}>{t.title}</h4>
                     <p style={{ fontSize: 14, color: T.muted, lineHeight: 1.6 }}>{t.desc}</p>
                   </div>
                   <Icon name="arrow" size={16} color={T.muted} />
@@ -850,9 +848,7 @@ const Home = ({ setPage }) => {
 // ════════════════════════════════════════════════════════════════════════════
 const About = ({ setPage }) => (
   <div className="page-enter" style={{ paddingTop: 96 }}>
-    <section className="pad-lg" style={{ background: T.ink, paddingBottom: 56, position: 'relative', overflow: 'hidden' }}>
-      <div style={{ position: 'absolute', inset: 0, backgroundImage: 'url(/about-banner.jpg)', backgroundSize: 'cover', backgroundPosition: 'center', pointerEvents: 'none' }} />
-      <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg, rgba(10,22,40,0.90) 0%, rgba(10,22,40,0.72) 40%, rgba(10,22,40,0.42) 72%, rgba(10,22,40,0.20) 100%)', pointerEvents: 'none' }} />
+    <section className="pad-lg" style={{ background: T.ink, paddingBottom: 56 }}>
       <div className="container" style={{ position: 'relative', zIndex: 2 }}>
         <span className="gold-rule" style={{ marginBottom: 24 }} />
         <p className="eyebrow" style={{ marginBottom: 24 }}>About NHB Consultancy</p>
@@ -937,8 +933,8 @@ const About = ({ setPage }) => (
               { v: 'Impact', d: 'Measured outcomes that move the commercial dial.' },
             ].map((val, i) => (
               <div key={i} className="principle-card" style={{ background: T.white, padding: '32px 28px' }}>
-                <span style={{ fontFamily: 'Cormorant Garamond,serif', fontSize: 14, color: T.gold, fontStyle: 'italic' }}>{String(i + 1).padStart(2, '0')}</span>
-                <h4 style={{ fontFamily: 'Cormorant Garamond,serif', fontSize: 22, fontWeight: 600, color: T.ink, margin: '12px 0 10px' }}>{val.v}</h4>
+                <span style={{ fontFamily: 'Playfair Display,serif', fontSize: 14, color: T.gold, fontStyle: 'italic' }}>{String(i + 1).padStart(2, '0')}</span>
+                <h4 style={{ fontFamily: 'Playfair Display,serif', fontSize: 22, fontWeight: 600, color: T.ink, margin: '12px 0 10px' }}>{val.v}</h4>
                 <p style={{ fontSize: 14, color: T.muted, lineHeight: 1.65 }}>{val.d}</p>
               </div>
             ))}
@@ -947,9 +943,7 @@ const About = ({ setPage }) => (
       </div>
     </section>
 
-    <section className="pad-md" style={{ background: T.ink, textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
-      <div style={{ position: 'absolute', inset: 0, backgroundImage: 'url(/about-cta.jpg)', backgroundSize: 'cover', backgroundPosition: 'center', pointerEvents: 'none' }} />
-      <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse 85% 95% at 50% 50%, rgba(10,22,40,0.80) 0%, rgba(10,22,40,0.55) 50%, rgba(10,22,40,0.34) 100%)', pointerEvents: 'none' }} />
+    <section className="pad-md" style={{ background: T.ink, textAlign: 'center' }}>
       <div className="container-narrow" style={{ position: 'relative', zIndex: 2 }}>
         <h2 className="display-md" style={{ color: T.white, marginBottom: 28 }}>Work with us.</h2>
         <p className="body-lg" style={{ color: 'rgba(255,255,255,0.7)', marginBottom: 40 }}>
@@ -1028,7 +1022,7 @@ const Services = ({ setPage }) => {
                 <span className="gold-rule" style={{ marginBottom: 20 }} />
                 <p className="eyebrow" style={{ marginBottom: 16 }}>{String(i + 1).padStart(2, '0')} · Service</p>
                 <h2 className="display-md" style={{ marginBottom: 14 }}>{s.title}</h2>
-                <p style={{ fontFamily: 'Cormorant Garamond,serif', fontSize: 15, color: T.gold, fontStyle: 'italic', marginBottom: 22 }}>{s.tag}</p>
+                <p style={{ fontFamily: 'Playfair Display,serif', fontSize: 15, color: T.gold, fontStyle: 'italic', marginBottom: 22 }}>{s.tag}</p>
                 <p className="body-md" style={{ marginBottom: 28, fontSize: 16 }}>{s.desc}</p>
                 <div>
                   {s.items.map((item, j) => (
@@ -1078,9 +1072,8 @@ const Industries = ({ setPage }) => {
 
   return (
     <div className="page-enter" style={{ paddingTop: 96 }}>
-      <section className="pad-lg" style={{ background: T.ink, paddingBottom: 56, position: 'relative', overflow: 'hidden' }}>
-        <div style={{ position: 'absolute', inset: 0, backgroundImage: 'url(/industries-banner.jpg)', backgroundSize: 'cover', backgroundPosition: 'center', pointerEvents: 'none' }} />
-        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg, rgba(10,22,40,0.90) 0%, rgba(10,22,40,0.72) 40%, rgba(10,22,40,0.42) 72%, rgba(10,22,40,0.20) 100%)', pointerEvents: 'none' }} />
+      <section className="pad-lg" style={{ background: T.ink, paddingBottom: 56 }}>
+        {/* industries-header */}
         <div className="container" style={{ position: 'relative', zIndex: 2 }}>
           <span className="gold-rule" style={{ marginBottom: 24 }} />
           <p className="eyebrow" style={{ marginBottom: 24 }}>Sectors</p>
@@ -1097,7 +1090,7 @@ const Industries = ({ setPage }) => {
                 onMouseOut={e => { e.currentTarget.style.borderColor = T.line; e.currentTarget.style.transform = 'translateY(0)'; }}>
                 <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 28 }}>
                   <Icon name={s.icon} size={36} color={T.gold} strokeWidth={1.25} />
-                  <span style={{ fontFamily: 'Cormorant Garamond,serif', fontSize: 24, color: T.faded, fontStyle: 'italic' }}>{String(i + 1).padStart(2, '0')}</span>
+                  <span style={{ fontFamily: 'Playfair Display,serif', fontSize: 24, color: T.faded, fontStyle: 'italic' }}>{String(i + 1).padStart(2, '0')}</span>
                 </div>
                 <h3 className="display-sm" style={{ marginBottom: 14 }}>{s.name}</h3>
                 <p className="body-sm" style={{ marginBottom: 28, fontSize: 14 }}>{s.desc}</p>
@@ -1216,7 +1209,7 @@ const Tools = () => {
           <div style={{ display: 'flex', gap: 0, marginBottom: 40, borderBottom: `1px solid ${T.border}` }}>
             {tabs.map(t => (
               <button key={t.id} onClick={() => setTab(t.id)}
-                style={{ padding: '16px 28px', background: 'transparent', border: 'none', borderBottom: tab === t.id ? `2px solid ${T.gold}` : '2px solid transparent', fontFamily: 'Montserrat,sans-serif', fontSize: 13, fontWeight: 500, color: tab === t.id ? T.ink : T.muted, cursor: 'pointer', transition: 'all 0.3s', marginBottom: -1 }}>
+                style={{ padding: '16px 28px', background: 'transparent', border: 'none', borderBottom: tab === t.id ? `2px solid ${T.gold}` : '2px solid transparent', fontFamily: 'Inter,sans-serif', fontSize: 13, fontWeight: 500, color: tab === t.id ? T.ink : T.muted, cursor: 'pointer', transition: 'all 0.3s', marginBottom: -1 }}>
                 {t.label}
               </button>
             ))}
@@ -1230,7 +1223,7 @@ const Tools = () => {
                   <Icon name="chat" size={20} color={T.gold} />
                 </div>
                 <div>
-                  <div style={{ fontFamily: 'Cormorant Garamond,serif', fontSize: 18, fontWeight: 600, color: T.ink }}>HR Advisor</div>
+                  <div style={{ fontFamily: 'Playfair Display,serif', fontSize: 18, fontWeight: 600, color: T.ink }}>HR Advisor</div>
                   <div style={{ fontSize: 12, color: T.muted }}>Powered by Claude · Calibrated for GCC market</div>
                 </div>
               </div>
@@ -1276,7 +1269,7 @@ const Tools = () => {
                         <div style={{ display: 'flex', gap: 8 }}>
                           {['Yes', 'Partially', 'No'].map(opt => (
                             <button key={opt} onClick={() => setHAnswers(p => ({ ...p, [q.k]: opt }))}
-                              style={{ padding: '8px 20px', border: `1px solid ${hAnswers[q.k] === opt ? T.gold : T.border}`, background: hAnswers[q.k] === opt ? T.gold : T.white, color: hAnswers[q.k] === opt ? T.white : T.muted, cursor: 'pointer', fontSize: 13, fontWeight: 500, fontFamily: 'Montserrat,sans-serif', transition: 'all 0.2s' }}>{opt}</button>
+                              style={{ padding: '8px 20px', border: `1px solid ${hAnswers[q.k] === opt ? T.gold : T.border}`, background: hAnswers[q.k] === opt ? T.gold : T.white, color: hAnswers[q.k] === opt ? T.white : T.muted, cursor: 'pointer', fontSize: 13, fontWeight: 500, fontFamily: 'Inter,sans-serif', transition: 'all 0.2s' }}>{opt}</button>
                           ))}
                         </div>
                       </div>
@@ -1290,8 +1283,8 @@ const Tools = () => {
                 <div className="fade-in">
                   <div style={{ textAlign: 'center', padding: '40px 0', borderBottom: `1px solid ${T.border}`, marginBottom: 48 }}>
                     <p className="eyebrow" style={{ marginBottom: 20 }}>Your HR Maturity Score</p>
-                    <div style={{ fontFamily: 'Cormorant Garamond,serif', fontSize: 120, fontWeight: 500, color: T.ink, lineHeight: 1, letterSpacing: '-0.03em' }}>{hResult.score}</div>
-                    <div style={{ fontFamily: 'Cormorant Garamond,serif', fontSize: 24, fontWeight: 500, color: T.gold, marginTop: 8 }}>Grade · {hResult.grade}</div>
+                    <div style={{ fontFamily: 'Playfair Display,serif', fontSize: 120, fontWeight: 500, color: T.ink, lineHeight: 1, letterSpacing: '-0.03em' }}>{hResult.score}</div>
+                    <div style={{ fontFamily: 'Playfair Display,serif', fontSize: 24, fontWeight: 500, color: T.gold, marginTop: 8 }}>Grade · {hResult.grade}</div>
                     <p style={{ color: T.muted, fontSize: 15, marginTop: 24, maxWidth: 520, margin: '24px auto 0', lineHeight: 1.75 }}>{hResult.summary}</p>
                   </div>
                   <div className="grid-3" style={{ gap: 32 }}>
@@ -1337,7 +1330,7 @@ const Tools = () => {
               {sResult && (
                 <div className="fade-in" style={{ marginTop: 48, background: T.ink, padding: '56px 48px', textAlign: 'center' }}>
                   <p className="eyebrow" style={{ marginBottom: 18, color: T.goldL }}>Estimated Monthly · AED</p>
-                  <div style={{ fontFamily: 'Cormorant Garamond,serif', fontSize: 56, fontWeight: 500, color: T.white, letterSpacing: '-0.02em', lineHeight: 1.1 }}>{sResult}</div>
+                  <div style={{ fontFamily: 'Playfair Display,serif', fontSize: 56, fontWeight: 500, color: T.white, letterSpacing: '-0.02em', lineHeight: 1.1 }}>{sResult}</div>
                   <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: 14, marginTop: 18 }}>{sRole} · {sExp === 'j' ? '0–3 years' : sExp === 'm' ? '3–7 years' : '7+ years'}</p>
                   <div style={{ height: 1, background: 'rgba(255,255,255,0.1)', margin: '32px auto', maxWidth: 200 }} />
                   <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: 12, lineHeight: 1.7, maxWidth: 440, margin: '0 auto' }}>Indicative range based on current UAE market intelligence. Actual packages vary by employer, total compensation structure and individual experience. Contact NHB for tailored benchmarking.</p>
@@ -1359,7 +1352,10 @@ const Careers = ({ setPage }) => {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [applyJob, setApplyJob] = useState(null);
-  const [appForm, setAppForm] = useState({ name: '', email: '', message: '' });
+  const blankApp = { name: '', email: '', phone: '', linkedin: '', position: '', currentTitle: '', currentCompany: '', seniority: '', location: '', message: '' };
+  const [appForm, setAppForm] = useState(blankApp);
+  const [cvFile, setCvFile] = useState(null);
+  const [appError, setAppError] = useState('');
   const [appSent, setAppSent] = useState(false);
   const [appLoading, setAppLoading] = useState(false);
 
@@ -1377,19 +1373,39 @@ const Careers = ({ setPage }) => {
   const sectors = ['All', 'Hospitality', 'Corporate', 'F&B', 'Events', 'Energy', 'Insurance'];
   const filtered = filter === 'All' ? jobs : jobs.filter(j => j.sector === filter);
 
+  const roleTitles = Array.from(new Set((jobs.length ? jobs : fallback).map(j => j.title)));
+  const positionOptions = Array.from(new Set([applyJob && applyJob.title, ...roleTitles, 'General / Confidential interest'].filter(Boolean)));
+
+  const handleCvChange = (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    const okType = /\.(pdf|docx?)$/i.test(file.name);
+    if (!okType) { setAppError('Please upload a PDF or Word (.doc/.docx) file.'); return; }
+    if (file.size > 8 * 1024 * 1024) { setAppError('That file is over 8 MB — please upload a smaller CV.'); return; }
+    setAppError('');
+    setCvFile(file);
+  };
+
   const handleApply = async () => {
-    if (!appForm.name || !appForm.email) return;
+    if (!appForm.name || !appForm.email || !appForm.phone || !appForm.position || !cvFile) {
+      setAppError('Please complete the required fields (marked *) and attach your CV.');
+      return;
+    }
+    setAppError('');
     setAppLoading(true);
-    try { await submitApplication({ name: appForm.name, email: appForm.email, jobTitle: applyJob?.title, message: appForm.message }); setAppSent(true); }
-    catch { alert('Something went wrong. Please email admin@nhb-consultancy.com directly.'); }
+    try {
+      await submitApplication({ ...appForm, jobTitle: applyJob?.title, cvFile });
+      setAppSent(true);
+    } catch {
+      setAppError('Something went wrong sending your application. Please email admin@nhb-consultancy.com directly.');
+    }
     setAppLoading(false);
   };
 
   return (
     <div className="page-enter" style={{ paddingTop: 96 }}>
-      <section className="pad-lg" style={{ background: T.ink, paddingBottom: 56, position: 'relative', overflow: 'hidden' }}>
-        <div style={{ position: 'absolute', inset: 0, backgroundImage: 'url(/careers-banner.jpg)', backgroundSize: 'cover', backgroundPosition: 'center', pointerEvents: 'none' }} />
-        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg, rgba(10,22,40,0.90) 0%, rgba(10,22,40,0.72) 40%, rgba(10,22,40,0.42) 72%, rgba(10,22,40,0.20) 100%)', pointerEvents: 'none' }} />
+      <section className="pad-lg" style={{ background: T.ink, paddingBottom: 56 }}>
+        {/* careers-header */}
         <div className="container" style={{ position: 'relative', zIndex: 2 }}>
           <span className="gold-rule" style={{ marginBottom: 24 }} />
           <p className="eyebrow" style={{ marginBottom: 24 }}>Careers</p>
@@ -1402,7 +1418,7 @@ const Careers = ({ setPage }) => {
           <div style={{ display: 'flex', gap: 0, marginBottom: 48, borderBottom: `1px solid ${T.border}`, flexWrap: 'wrap' }}>
             {sectors.map(s => (
               <button key={s} onClick={() => setFilter(s)}
-                style={{ padding: '14px 24px', background: 'transparent', border: 'none', borderBottom: filter === s ? `2px solid ${T.gold}` : '2px solid transparent', fontFamily: 'Montserrat,sans-serif', fontSize: 13, fontWeight: 500, color: filter === s ? T.ink : T.muted, cursor: 'pointer', marginBottom: -1, transition: 'all 0.3s' }}>{s}</button>
+                style={{ padding: '14px 24px', background: 'transparent', border: 'none', borderBottom: filter === s ? `2px solid ${T.gold}` : '2px solid transparent', fontFamily: 'Inter,sans-serif', fontSize: 13, fontWeight: 500, color: filter === s ? T.ink : T.muted, cursor: 'pointer', marginBottom: -1, transition: 'all 0.3s' }}>{s}</button>
             ))}
           </div>
 
@@ -1413,7 +1429,7 @@ const Careers = ({ setPage }) => {
                   onMouseOver={e => e.currentTarget.style.background = T.bg}
                   onMouseOut={e => e.currentTarget.style.background = T.white}>
                   <div>
-                    <h3 style={{ fontFamily: 'Cormorant Garamond,serif', fontSize: 20, fontWeight: 600, color: T.ink, marginBottom: 6 }}>{job.title}</h3>
+                    <h3 style={{ fontFamily: 'Playfair Display,serif', fontSize: 20, fontWeight: 600, color: T.ink, marginBottom: 6 }}>{job.title}</h3>
                     <div style={{ display: 'flex', gap: 14, color: T.muted, fontSize: 13 }}>
                       <span>{job.location}</span>
                       <span>·</span><span style={{ color: T.gold, fontWeight: 500 }}>{job.sector}</span>
@@ -1421,7 +1437,7 @@ const Careers = ({ setPage }) => {
                     </div>
                   </div>
                   <div style={{ fontSize: 13, color: T.ink2, fontWeight: 500 }}>{job.salary || '—'}</div>
-                  <button onClick={() => { setApplyJob(job); setAppSent(false); setAppForm({ name: '', email: '', message: '' }); }} className="btn btn-outline" style={{ padding: '10px 22px', fontSize: 12 }}>
+                  <button onClick={() => { setApplyJob(job); setAppSent(false); setAppForm({ ...blankApp, position: job.title }); setCvFile(null); setAppError(''); }} className="btn btn-outline" style={{ padding: '10px 22px', fontSize: 12 }}>
                     Apply <Icon name="arrow" size={14} color={T.ink} />
                   </button>
                 </div>
@@ -1440,7 +1456,7 @@ const Careers = ({ setPage }) => {
 
       {applyJob && (
         <div className="modal-overlay">
-          <div className="modal-box" style={{ padding: 56 }}>
+          <div className="modal-box" style={{ padding: 56, maxHeight: '88vh', overflowY: 'auto' }}>
             <button onClick={() => setApplyJob(null)} style={{ position: 'absolute', top: 20, right: 20, background: 'none', border: 'none', cursor: 'pointer', padding: 4 }}>
               <Icon name="x" size={20} color={T.muted} />
             </button>
@@ -1448,19 +1464,51 @@ const Careers = ({ setPage }) => {
               <div>
                 <p className="eyebrow" style={{ marginBottom: 12 }}>Apply</p>
                 <h3 className="display-sm" style={{ marginBottom: 8 }}>{applyJob.title}</h3>
-                <p style={{ color: T.muted, fontSize: 14, marginBottom: 32 }}>We'll be in touch within 24 hours.</p>
-                {[{ label: 'Full Name', k: 'name', ph: 'Your full name' }, { label: 'Email', k: 'email', ph: 'you@email.com' }].map(f => (
+                <p style={{ color: T.muted, fontSize: 14, marginBottom: 28 }}>Attach your CV and we'll be in touch within 24 hours.</p>
+                {[{ label: 'Full Name', k: 'name', ph: 'Your full name' }, { label: 'Email', k: 'email', ph: 'you@email.com' }, { label: 'Phone / WhatsApp', k: 'phone', ph: '+971 …' }].map(f => (
                   <div key={f.k} className="field">
-                    <label className="label">{f.label}</label>
+                    <label className="label">{f.label}<span style={{ color: T.gold }}> *</span></label>
                     <input value={appForm[f.k]} onChange={e => setAppForm(p => ({ ...p, [f.k]: e.target.value }))} placeholder={f.ph} className="input" />
                   </div>
                 ))}
                 <div className="field">
+                  <label className="label">Position of Interest<span style={{ color: T.gold }}> *</span></label>
+                  <select value={appForm.position} onChange={e => setAppForm(p => ({ ...p, position: e.target.value }))} className="input">
+                    {positionOptions.map(o => <option key={o} value={o}>{o}</option>)}
+                  </select>
+                </div>
+                {[{ label: 'LinkedIn', k: 'linkedin', ph: 'linkedin.com/in/…' }, { label: 'Current Title', k: 'currentTitle', ph: 'e.g. Executive Assistant' }, { label: 'Current Company', k: 'currentCompany', ph: 'e.g. ABC Group' }, { label: 'Location', k: 'location', ph: 'e.g. Dubai, UAE' }].map(f => (
+                  <div key={f.k} className="field">
+                    <label className="label">{f.label} <span style={{ color: T.faded, fontWeight: 400, textTransform: 'none', letterSpacing: 'normal' }}>(optional)</span></label>
+                    <input value={appForm[f.k]} onChange={e => setAppForm(p => ({ ...p, [f.k]: e.target.value }))} placeholder={f.ph} className="input" />
+                  </div>
+                ))}
+                <div className="field">
+                  <label className="label">Seniority <span style={{ color: T.faded, fontWeight: 400, textTransform: 'none', letterSpacing: 'normal' }}>(optional)</span></label>
+                  <select value={appForm.seniority} onChange={e => setAppForm(p => ({ ...p, seniority: e.target.value }))} className="input">
+                    <option value="">Select…</option>
+                    <option>Entry / Junior</option>
+                    <option>Mid-level</option>
+                    <option>Senior</option>
+                    <option>Director / Head</option>
+                    <option>C-suite / Board</option>
+                  </select>
+                </div>
+                <div className="field">
+                  <label className="label">CV / Résumé<span style={{ color: T.gold }}> *</span> <span style={{ color: T.faded, fontWeight: 400, textTransform: 'none', letterSpacing: 'normal' }}>(PDF or Word)</span></label>
+                  <input id="cv-upload" type="file" accept=".pdf,.doc,.docx" onChange={handleCvChange} style={{ display: 'none' }} />
+                  <label htmlFor="cv-upload" className="input" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer' }}>
+                    <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color: cvFile ? T.ink : T.faded }}>{cvFile ? cvFile.name : 'Choose file…'}</span>
+                    <span style={{ color: T.gold, fontWeight: 600, fontSize: 12, letterSpacing: '0.06em', textTransform: 'uppercase', flexShrink: 0, marginLeft: 12 }}>{cvFile ? 'Change' : 'Browse'}</span>
+                  </label>
+                </div>
+                <div className="field">
                   <label className="label">Brief Note <span style={{ color: T.faded, fontWeight: 400, textTransform: 'none', letterSpacing: 'normal' }}>(optional)</span></label>
                   <textarea value={appForm.message} onChange={e => setAppForm(p => ({ ...p, message: e.target.value }))} rows={3} className="input" />
                 </div>
-                <button onClick={handleApply} disabled={!appForm.name || !appForm.email || appLoading} className="btn btn-primary" style={{ width: '100%', marginTop: 8 }}>
-                  {appLoading ? 'Submitting...' : 'Submit Application'} <Icon name="arrow" size={16} color={T.white} />
+                {appError && <p style={{ color: '#B4452F', fontSize: 13, marginBottom: 14 }}>{appError}</p>}
+                <button onClick={handleApply} disabled={appLoading} className="btn btn-gold" style={{ width: '100%', marginTop: 8 }}>
+                  {appLoading ? 'Submitting…' : 'Submit Application'} <Icon name="arrow" size={16} color={T.white} />
                 </button>
               </div>
             ) : (
@@ -1500,9 +1548,8 @@ const Contact = () => {
 
   return (
     <div className="page-enter" style={{ paddingTop: 96 }}>
-      <section className="pad-lg" style={{ background: T.ink, paddingBottom: 56, position: 'relative', overflow: 'hidden' }}>
-        <div style={{ position: 'absolute', inset: 0, backgroundImage: 'url(/contact-banner.jpg)', backgroundSize: 'cover', backgroundPosition: 'center', pointerEvents: 'none' }} />
-        <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg, rgba(10,22,40,0.90) 0%, rgba(10,22,40,0.72) 40%, rgba(10,22,40,0.42) 72%, rgba(10,22,40,0.20) 100%)', pointerEvents: 'none' }} />
+      <section className="pad-lg" style={{ background: T.ink, paddingBottom: 56 }}>
+        {/* contact-header */}
         <div className="container" style={{ position: 'relative', zIndex: 2 }}>
           <span className="gold-rule" style={{ marginBottom: 24 }} />
           <p className="eyebrow" style={{ marginBottom: 24 }}>Contact</p>
@@ -1694,7 +1741,7 @@ const FloatingActions = () => {
                 <Icon name="chat" size={16} color={T.white} />
               </div>
               <div>
-                <div style={{ color: T.white, fontSize: 13, fontFamily: 'Montserrat,sans-serif', fontWeight: 600 }}>NHB Advisor</div>
+                <div style={{ color: T.white, fontSize: 13, fontFamily: 'Inter,sans-serif', fontWeight: 600 }}>NHB Advisor</div>
                 <div style={{ color: T.goldL, fontSize: 11 }}>Online · Confidential</div>
               </div>
             </div>
