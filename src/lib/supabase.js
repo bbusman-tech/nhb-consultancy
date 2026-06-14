@@ -1,6 +1,11 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+// Defensive: if VITE_SUPABASE_URL was pasted as the full REST URL
+// (…supabase.co/rest/v1), the client doubles it to …/rest/v1/rest/v1/ and every
+// request 404s. Strip any trailing /rest/v1 and trailing slashes so we always
+// pass the clean project URL (…supabase.co).
+const rawUrl = import.meta.env.VITE_SUPABASE_URL || '';
+const supabaseUrl = rawUrl.replace(/\/rest\/v1\/?$/i, '').replace(/\/+$/, '');
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 if (!supabaseUrl || !supabaseAnonKey) {
@@ -25,12 +30,41 @@ export const submitContact = async (data) => {
 };
 
 // ─── JOB APPLICATIONS ────────────────────────────────────────────────────────
+// Uploads the CV to the private "cvs" bucket, then saves the full candidate row.
 export const submitApplication = async (data) => {
+  let cv_path = null;
+
+  if (data.cvFile) {
+    const ext = (data.cvFile.name.split('.').pop() || 'pdf').toLowerCase();
+    const mimeByExt = {
+      pdf: 'application/pdf',
+      doc: 'application/msword',
+      docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    };
+    const safeName = data.cvFile.name.replace(/[^a-zA-Z0-9.\-_]/g, '_');
+    cv_path = `${Date.now()}_${safeName}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from('cvs')
+      .upload(cv_path, data.cvFile, {
+        contentType: mimeByExt[ext] || data.cvFile.type || 'application/octet-stream',
+        upsert: false,
+      });
+    if (uploadError) throw uploadError;
+  }
+
   const { error } = await supabase.from('applications').insert([{
     name: data.name,
     email: data.email,
-    job_title: data.jobTitle || null,
+    phone: data.phone || null,
+    job_title: data.jobTitle || data.position || null,
+    linkedin: data.linkedin || null,
+    current_title: data.currentTitle || null,
+    current_company: data.currentCompany || null,
+    seniority: data.seniority || null,
+    location: data.location || null,
     message: data.message || null,
+    cv_path,
   }]);
   if (error) throw error;
 };
