@@ -46,6 +46,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+    <link rel="preload" as="image" href="/hero-skyline.jpg" fetchpriority="high" />
 
     <!-- Structured Data: Organization + LocalBusiness (combined ProfessionalService) -->
     <script type="application/ld+json">
@@ -67,7 +68,7 @@
         "@type": "Person",
         "@id": "https://nhb-consultancy.com/#founder",
         "name": "Nihel Hassen Busman",
-        "jobTitle": "Founder & Principal Consultant",
+        "jobTitle": "Founder",
         "description": "Senior HR executive and executive search consultant with 15+ years of international experience. Chartered Member of CIPD (MCIPD).",
         "hasCredential": [
           {
@@ -161,6 +162,10 @@
       "inLanguage": "en-AE"
     }
     </script>
+    <!-- Privacy-friendly analytics — Cloudflare Web Analytics (free, cookieless, no consent banner needed).
+         Setup (3 min): dash.cloudflare.com → Web Analytics → "Add a site" → enter nhb-consultancy.com →
+         copy the token it gives you → replace YOUR_TOKEN below. No DNS / nameserver change required. -->
+    <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "YOUR_TOKEN"}'></script>
   </head>
   <body>
     <div id="root"></div>
