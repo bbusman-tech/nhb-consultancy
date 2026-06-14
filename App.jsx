@@ -116,6 +116,8 @@ const Styles = () => (
     /* Cinematic hero drift — slow, almost-imperceptible zoom toward the skyline */
     @keyframes heroZoom{from{transform:scale(1)}to{transform:scale(1.10)}}
     .hero-bg-anim{animation:heroZoom 28s ease-in-out infinite alternate;transform-origin:60% 50%;will-change:transform}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .spin{animation:spin .7s linear infinite}
     /* Scroll reveal — gated by .reveal-ready so content is ALWAYS visible if JS is off or fails */
     .reveal-ready [data-reveal]{opacity:0;transform:translateY(28px);transition:opacity .85s cubic-bezier(.16,1,.3,1),transform .85s cubic-bezier(.16,1,.3,1)}
     .reveal-ready [data-reveal].is-visible{opacity:1;transform:none}
@@ -1374,6 +1376,8 @@ const Careers = ({ setPage }) => {
   const blankApp = { name: '', email: '', phone: '', linkedin: '', position: '', currentTitle: '', currentCompany: '', seniority: '', location: '', message: '' };
   const [appForm, setAppForm] = useState(blankApp);
   const [cvFile, setCvFile] = useState(null);
+  const [parsing, setParsing] = useState(false);
+  const [parsedNote, setParsedNote] = useState('');
   const [appError, setAppError] = useState('');
   const [appSent, setAppSent] = useState(false);
   const [appLoading, setAppLoading] = useState(false);
@@ -1402,7 +1406,50 @@ const Careers = ({ setPage }) => {
     if (!okType) { setAppError('Please upload a PDF or Word (.doc/.docx) file.'); return; }
     if (file.size > 8 * 1024 * 1024) { setAppError('That file is over 8 MB — please upload a smaller CV.'); return; }
     setAppError('');
+    setParsedNote('');
     setCvFile(file);
+    // Smart auto-fill — read text-based PDFs and pre-fill empty fields. Best-effort: never blocks the form.
+    if (file.type === 'application/pdf' && file.size < 4.5 * 1024 * 1024) {
+      autofillFromCv(file);
+    }
+  };
+
+  const autofillFromCv = async (file) => {
+    setParsing(true);
+    try {
+      const dataBase64 = await new Promise((resolve, reject) => {
+        const r = new FileReader();
+        r.onload = () => resolve(String(r.result).split(',')[1] || '');
+        r.onerror = reject;
+        r.readAsDataURL(file);
+      });
+      const resp = await fetch('/.netlify/functions/parse-cv', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ dataBase64, mediaType: file.type }),
+      });
+      const out = await resp.json().catch(() => ({}));
+      const f = out && out.fields;
+      if (f && typeof f === 'object') {
+        const seniorityOptions = ['Entry / Junior', 'Mid-level', 'Senior', 'Director / Head', 'C-suite / Board'];
+        setAppForm(prev => {
+          const m = { ...prev };
+          if (f.name && !m.name) m.name = String(f.name);
+          if (f.email && !m.email) m.email = String(f.email);
+          if (f.phone && !m.phone) m.phone = String(f.phone);
+          if (f.linkedin && !m.linkedin) m.linkedin = String(f.linkedin);
+          if (f.currentTitle && !m.currentTitle) m.currentTitle = String(f.currentTitle);
+          if (f.currentCompany && !m.currentCompany) m.currentCompany = String(f.currentCompany);
+          if (f.location && !m.location) m.location = String(f.location);
+          if (f.seniority && !m.seniority && seniorityOptions.includes(f.seniority)) m.seniority = f.seniority;
+          return m;
+        });
+        setParsedNote('We filled in what we could from your CV — please review the fields below before submitting.');
+      }
+    } catch (err) {
+      /* silent — auto-fill is a bonus; the form still works manually */
+    }
+    setParsing(false);
   };
 
   const handleApply = async () => {
@@ -1457,7 +1504,7 @@ const Careers = ({ setPage }) => {
                     </div>
                   </div>
                   <div style={{ fontSize: 13, color: T.ink2, fontWeight: 500 }}>{job.salary || '—'}</div>
-                  <button onClick={() => { setApplyJob(job); setAppSent(false); setAppForm({ ...blankApp, position: job.title }); setCvFile(null); setAppError(''); }} className="btn btn-outline" style={{ padding: '10px 22px', fontSize: 12 }}>
+                  <button onClick={() => { setApplyJob(job); setAppSent(false); setAppForm({ ...blankApp, position: job.title }); setCvFile(null); setParsedNote(''); setParsing(false); setAppError(''); }} className="btn btn-outline" style={{ padding: '10px 22px', fontSize: 12 }}>
                     Apply <Icon name="arrow" size={14} color={T.ink} />
                   </button>
                 </div>
@@ -1484,7 +1531,24 @@ const Careers = ({ setPage }) => {
               <div>
                 <p className="eyebrow" style={{ marginBottom: 12 }}>Apply</p>
                 <h3 className="display-sm" style={{ marginBottom: 8 }}>{applyJob.title}</h3>
-                <p style={{ color: T.muted, fontSize: 14, marginBottom: 28 }}>Attach your CV and we'll be in touch within 24 hours.</p>
+                <p style={{ color: T.muted, fontSize: 14, marginBottom: 28 }}>Upload your CV and we'll fill in your details below — just review and submit. We respond within 24 hours.</p>
+                <div className="field">
+                  <label className="label">CV / Résumé<span style={{ color: T.gold }}> *</span> <span style={{ color: T.faded, fontWeight: 400, textTransform: 'none', letterSpacing: 'normal' }}>(PDF or Word)</span></label>
+                  <input id="cv-upload" type="file" accept=".pdf,.doc,.docx" onChange={handleCvChange} style={{ display: 'none' }} />
+                  <label htmlFor="cv-upload" className="input" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer' }}>
+                    <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color: cvFile ? T.ink : T.faded }}>{cvFile ? cvFile.name : 'Choose file…'}</span>
+                    <span style={{ color: T.gold, fontWeight: 600, fontSize: 12, letterSpacing: '0.06em', textTransform: 'uppercase', flexShrink: 0, marginLeft: 12 }}>{cvFile ? 'Change' : 'Browse'}</span>
+                  </label>
+                  {parsing && (
+                    <p style={{ color: T.muted, fontSize: 13, marginTop: 8, display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <span className="spin" style={{ width: 12, height: 12, border: `2px solid ${T.line}`, borderTopColor: T.gold, borderRadius: '50%', display: 'inline-block' }} />
+                      Reading your CV to fill in your details…
+                    </p>
+                  )}
+                  {!parsing && parsedNote && (
+                    <p style={{ color: T.gold, fontSize: 13, marginTop: 8 }}>{parsedNote}</p>
+                  )}
+                </div>
                 {[{ label: 'Full Name', k: 'name', ph: 'Your full name' }, { label: 'Email', k: 'email', ph: 'you@email.com' }, { label: 'Phone / WhatsApp', k: 'phone', ph: '+971 …' }].map(f => (
                   <div key={f.k} className="field">
                     <label className="label">{f.label}<span style={{ color: T.gold }}> *</span></label>
@@ -1513,14 +1577,6 @@ const Careers = ({ setPage }) => {
                     <option>Director / Head</option>
                     <option>C-suite / Board</option>
                   </select>
-                </div>
-                <div className="field">
-                  <label className="label">CV / Résumé<span style={{ color: T.gold }}> *</span> <span style={{ color: T.faded, fontWeight: 400, textTransform: 'none', letterSpacing: 'normal' }}>(PDF or Word)</span></label>
-                  <input id="cv-upload" type="file" accept=".pdf,.doc,.docx" onChange={handleCvChange} style={{ display: 'none' }} />
-                  <label htmlFor="cv-upload" className="input" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer' }}>
-                    <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color: cvFile ? T.ink : T.faded }}>{cvFile ? cvFile.name : 'Choose file…'}</span>
-                    <span style={{ color: T.gold, fontWeight: 600, fontSize: 12, letterSpacing: '0.06em', textTransform: 'uppercase', flexShrink: 0, marginLeft: 12 }}>{cvFile ? 'Change' : 'Browse'}</span>
-                  </label>
                 </div>
                 <div className="field">
                   <label className="label">Brief Note <span style={{ color: T.faded, fontWeight: 400, textTransform: 'none', letterSpacing: 'normal' }}>(optional)</span></label>
