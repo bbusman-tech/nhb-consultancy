@@ -1378,6 +1378,7 @@ const Careers = ({ setPage }) => {
   const [cvFile, setCvFile] = useState(null);
   const [parsing, setParsing] = useState(false);
   const [parsedNote, setParsedNote] = useState('');
+  const [appStep, setAppStep] = useState(1); // 1 = upload CV only · 2 = review pre-filled form
   const [appError, setAppError] = useState('');
   const [appSent, setAppSent] = useState(false);
   const [appLoading, setAppLoading] = useState(false);
@@ -1408,14 +1409,19 @@ const Careers = ({ setPage }) => {
     setAppError('');
     setParsedNote('');
     setCvFile(file);
-    // Smart auto-fill — read text-based PDFs and pre-fill empty fields. Best-effort: never blocks the form.
+    // Smart auto-fill: read text-based PDFs, pre-fill empty fields, then advance to the review step.
+    // Best-effort and never blocks — Word docs and large/scanned PDFs just advance for manual entry.
     if (file.type === 'application/pdf' && file.size < 4.5 * 1024 * 1024) {
       autofillFromCv(file);
+    } else {
+      setParsedNote('Please review and complete your details below.');
+      setAppStep(2);
     }
   };
 
   const autofillFromCv = async (file) => {
     setParsing(true);
+    let f = null;
     try {
       const dataBase64 = await new Promise((resolve, reject) => {
         const r = new FileReader();
@@ -1429,7 +1435,7 @@ const Careers = ({ setPage }) => {
         body: JSON.stringify({ dataBase64, mediaType: file.type }),
       });
       const out = await resp.json().catch(() => ({}));
-      const f = out && out.fields;
+      f = out && out.fields;
       if (f && typeof f === 'object') {
         const seniorityOptions = ['Entry / Junior', 'Mid-level', 'Senior', 'Director / Head', 'C-suite / Board'];
         setAppForm(prev => {
@@ -1444,12 +1450,16 @@ const Careers = ({ setPage }) => {
           if (f.seniority && !m.seniority && seniorityOptions.includes(f.seniority)) m.seniority = f.seniority;
           return m;
         });
-        setParsedNote('We filled in what we could from your CV — please review the fields below before submitting.');
       }
     } catch (err) {
       /* silent — auto-fill is a bonus; the form still works manually */
     }
+    // Always move to the review step, with a note that fits whether we read the CV or not.
+    setParsedNote(f && typeof f === 'object'
+      ? 'We filled in what we could from your CV — please review the fields below before submitting.'
+      : "We couldn't read that file automatically — please complete your details below.");
     setParsing(false);
+    setAppStep(2);
   };
 
   const handleApply = async () => {
@@ -1504,7 +1514,7 @@ const Careers = ({ setPage }) => {
                     </div>
                   </div>
                   <div style={{ fontSize: 13, color: T.ink2, fontWeight: 500 }}>{job.salary || '—'}</div>
-                  <button onClick={() => { setApplyJob(job); setAppSent(false); setAppForm({ ...blankApp, position: job.title }); setCvFile(null); setParsedNote(''); setParsing(false); setAppError(''); }} className="btn btn-outline" style={{ padding: '10px 22px', fontSize: 12 }}>
+                  <button onClick={() => { setApplyJob(job); setAppSent(false); setAppForm({ ...blankApp, position: job.title }); setCvFile(null); setParsedNote(''); setParsing(false); setAppError(''); setAppStep(1); }} className="btn btn-outline" style={{ padding: '10px 22px', fontSize: 12 }}>
                     Apply <Icon name="arrow" size={14} color={T.ink} />
                   </button>
                 </div>
@@ -1531,61 +1541,80 @@ const Careers = ({ setPage }) => {
               <div>
                 <p className="eyebrow" style={{ marginBottom: 12 }}>Apply</p>
                 <h3 className="display-sm" style={{ marginBottom: 8 }}>{applyJob.title}</h3>
-                <p style={{ color: T.muted, fontSize: 14, marginBottom: 28 }}>Upload your CV and we'll fill in your details below — just review and submit. We respond within 24 hours.</p>
-                <div className="field">
-                  <label className="label">CV / Résumé<span style={{ color: T.gold }}> *</span> <span style={{ color: T.faded, fontWeight: 400, textTransform: 'none', letterSpacing: 'normal' }}>(PDF or Word)</span></label>
-                  <input id="cv-upload" type="file" accept=".pdf,.doc,.docx" onChange={handleCvChange} style={{ display: 'none' }} />
-                  <label htmlFor="cv-upload" className="input" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer' }}>
-                    <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color: cvFile ? T.ink : T.faded }}>{cvFile ? cvFile.name : 'Choose file…'}</span>
-                    <span style={{ color: T.gold, fontWeight: 600, fontSize: 12, letterSpacing: '0.06em', textTransform: 'uppercase', flexShrink: 0, marginLeft: 12 }}>{cvFile ? 'Change' : 'Browse'}</span>
-                  </label>
-                  {parsing && (
-                    <p style={{ color: T.muted, fontSize: 13, marginTop: 8, display: 'flex', alignItems: 'center', gap: 8 }}>
-                      <span className="spin" style={{ width: 12, height: 12, border: `2px solid ${T.line}`, borderTopColor: T.gold, borderRadius: '50%', display: 'inline-block' }} />
-                      Reading your CV to fill in your details…
-                    </p>
-                  )}
-                  {!parsing && parsedNote && (
-                    <p style={{ color: T.gold, fontSize: 13, marginTop: 8 }}>{parsedNote}</p>
-                  )}
-                </div>
-                {[{ label: 'Full Name', k: 'name', ph: 'Your full name' }, { label: 'Email', k: 'email', ph: 'you@email.com' }, { label: 'Phone / WhatsApp', k: 'phone', ph: '+971 …' }].map(f => (
-                  <div key={f.k} className="field">
-                    <label className="label">{f.label}<span style={{ color: T.gold }}> *</span></label>
-                    <input value={appForm[f.k]} onChange={e => setAppForm(p => ({ ...p, [f.k]: e.target.value }))} placeholder={f.ph} className="input" />
-                  </div>
-                ))}
-                <div className="field">
-                  <label className="label">Position of Interest<span style={{ color: T.gold }}> *</span></label>
-                  <select value={appForm.position} onChange={e => setAppForm(p => ({ ...p, position: e.target.value }))} className="input">
-                    {positionOptions.map(o => <option key={o} value={o}>{o}</option>)}
-                  </select>
-                </div>
-                {[{ label: 'LinkedIn', k: 'linkedin', ph: 'linkedin.com/in/…' }, { label: 'Current Title', k: 'currentTitle', ph: 'e.g. Executive Assistant' }, { label: 'Current Company', k: 'currentCompany', ph: 'e.g. ABC Group' }, { label: 'Location', k: 'location', ph: 'e.g. Dubai, UAE' }].map(f => (
-                  <div key={f.k} className="field">
-                    <label className="label">{f.label} <span style={{ color: T.faded, fontWeight: 400, textTransform: 'none', letterSpacing: 'normal' }}>(optional)</span></label>
-                    <input value={appForm[f.k]} onChange={e => setAppForm(p => ({ ...p, [f.k]: e.target.value }))} placeholder={f.ph} className="input" />
-                  </div>
-                ))}
-                <div className="field">
-                  <label className="label">Seniority <span style={{ color: T.faded, fontWeight: 400, textTransform: 'none', letterSpacing: 'normal' }}>(optional)</span></label>
-                  <select value={appForm.seniority} onChange={e => setAppForm(p => ({ ...p, seniority: e.target.value }))} className="input">
-                    <option value="">Select…</option>
-                    <option>Entry / Junior</option>
-                    <option>Mid-level</option>
-                    <option>Senior</option>
-                    <option>Director / Head</option>
-                    <option>C-suite / Board</option>
-                  </select>
-                </div>
-                <div className="field">
-                  <label className="label">Brief Note <span style={{ color: T.faded, fontWeight: 400, textTransform: 'none', letterSpacing: 'normal' }}>(optional)</span></label>
-                  <textarea value={appForm.message} onChange={e => setAppForm(p => ({ ...p, message: e.target.value }))} rows={3} className="input" />
-                </div>
-                {appError && <p style={{ color: '#B4452F', fontSize: 13, marginBottom: 14 }}>{appError}</p>}
-                <button onClick={handleApply} disabled={appLoading} className="btn btn-gold" style={{ width: '100%', marginTop: 8 }}>
-                  {appLoading ? 'Submitting…' : 'Submit Application'} <Icon name="arrow" size={16} color={T.white} />
-                </button>
+                {appStep === 1 ? (
+                  <>
+                    <p style={{ color: T.muted, fontSize: 14, marginBottom: 28 }}>Upload your CV and we'll read it and fill in your details on the next step — you just review and submit. We respond within 24 hours.</p>
+                    <div className="field">
+                      <label className="label">CV / Résumé<span style={{ color: T.gold }}> *</span> <span style={{ color: T.faded, fontWeight: 400, textTransform: 'none', letterSpacing: 'normal' }}>(PDF or Word)</span></label>
+                      <input id="cv-upload" type="file" accept=".pdf,.doc,.docx" onChange={handleCvChange} style={{ display: 'none' }} />
+                      <label htmlFor="cv-upload" className="input" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer', padding: '20px 18px' }}>
+                        <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color: cvFile ? T.ink : T.faded }}>{cvFile ? cvFile.name : 'Choose a file…'}</span>
+                        <span style={{ color: T.gold, fontWeight: 600, fontSize: 12, letterSpacing: '0.06em', textTransform: 'uppercase', flexShrink: 0, marginLeft: 12 }}>{cvFile ? 'Change' : 'Browse'}</span>
+                      </label>
+                      {parsing && (
+                        <p style={{ color: T.muted, fontSize: 13, marginTop: 10, display: 'flex', alignItems: 'center', gap: 8 }}>
+                          <span className="spin" style={{ width: 12, height: 12, border: `2px solid ${T.line}`, borderTopColor: T.gold, borderRadius: '50%', display: 'inline-block' }} />
+                          Reading your CV to fill in your details…
+                        </p>
+                      )}
+                    </div>
+                    {appError && <p style={{ color: '#B4452F', fontSize: 13, marginBottom: 14 }}>{appError}</p>}
+                    <button onClick={() => { setAppError(''); setParsedNote(''); setAppStep(2); }} style={{ background: 'none', border: 'none', cursor: 'pointer', color: T.muted, fontSize: 13, textDecoration: 'underline', textUnderlineOffset: 3, padding: 0, marginTop: 6 }}>
+                      Prefer to fill it in yourself? Enter your details manually
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <p style={{ color: T.muted, fontSize: 14, marginBottom: 20 }}>Review your details and submit. We respond within 24 hours.</p>
+                    {parsedNote && (
+                      <p style={{ color: T.gold, fontSize: 13, marginBottom: 20, padding: '12px 16px', background: 'rgba(156,138,98,0.08)', borderLeft: `2px solid ${T.gold}`, lineHeight: 1.5 }}>{parsedNote}</p>
+                    )}
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, padding: '14px 16px', border: `1px solid ${T.line}`, marginBottom: 24 }}>
+                      <span style={{ display: 'flex', alignItems: 'center', gap: 10, overflow: 'hidden' }}>
+                        <Icon name="check" size={16} color={T.gold} strokeWidth={2} />
+                        <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: 14, color: cvFile ? T.ink : T.faded }}>{cvFile ? cvFile.name : 'No CV attached yet'}</span>
+                      </span>
+                      <button onClick={() => { setAppError(''); setAppStep(1); }} style={{ background: 'none', border: 'none', cursor: 'pointer', color: T.gold, fontWeight: 600, fontSize: 12, letterSpacing: '0.06em', textTransform: 'uppercase', flexShrink: 0 }}>{cvFile ? 'Change' : 'Upload'}</button>
+                    </div>
+                    {[{ label: 'Full Name', k: 'name', ph: 'Your full name' }, { label: 'Email', k: 'email', ph: 'you@email.com' }, { label: 'Phone / WhatsApp', k: 'phone', ph: '+971 …' }].map(f => (
+                      <div key={f.k} className="field">
+                        <label className="label">{f.label}<span style={{ color: T.gold }}> *</span></label>
+                        <input value={appForm[f.k]} onChange={e => setAppForm(p => ({ ...p, [f.k]: e.target.value }))} placeholder={f.ph} className="input" />
+                      </div>
+                    ))}
+                    <div className="field">
+                      <label className="label">Position of Interest<span style={{ color: T.gold }}> *</span></label>
+                      <select value={appForm.position} onChange={e => setAppForm(p => ({ ...p, position: e.target.value }))} className="input">
+                        {positionOptions.map(o => <option key={o} value={o}>{o}</option>)}
+                      </select>
+                    </div>
+                    {[{ label: 'LinkedIn', k: 'linkedin', ph: 'linkedin.com/in/…' }, { label: 'Current Title', k: 'currentTitle', ph: 'e.g. Executive Assistant' }, { label: 'Current Company', k: 'currentCompany', ph: 'e.g. ABC Group' }, { label: 'Location', k: 'location', ph: 'e.g. Dubai, UAE' }].map(f => (
+                      <div key={f.k} className="field">
+                        <label className="label">{f.label} <span style={{ color: T.faded, fontWeight: 400, textTransform: 'none', letterSpacing: 'normal' }}>(optional)</span></label>
+                        <input value={appForm[f.k]} onChange={e => setAppForm(p => ({ ...p, [f.k]: e.target.value }))} placeholder={f.ph} className="input" />
+                      </div>
+                    ))}
+                    <div className="field">
+                      <label className="label">Seniority <span style={{ color: T.faded, fontWeight: 400, textTransform: 'none', letterSpacing: 'normal' }}>(optional)</span></label>
+                      <select value={appForm.seniority} onChange={e => setAppForm(p => ({ ...p, seniority: e.target.value }))} className="input">
+                        <option value="">Select…</option>
+                        <option>Entry / Junior</option>
+                        <option>Mid-level</option>
+                        <option>Senior</option>
+                        <option>Director / Head</option>
+                        <option>C-suite / Board</option>
+                      </select>
+                    </div>
+                    <div className="field">
+                      <label className="label">Brief Note <span style={{ color: T.faded, fontWeight: 400, textTransform: 'none', letterSpacing: 'normal' }}>(optional)</span></label>
+                      <textarea value={appForm.message} onChange={e => setAppForm(p => ({ ...p, message: e.target.value }))} rows={3} className="input" />
+                    </div>
+                    {appError && <p style={{ color: '#B4452F', fontSize: 13, marginBottom: 14 }}>{appError}</p>}
+                    <button onClick={handleApply} disabled={appLoading} className="btn btn-gold" style={{ width: '100%', marginTop: 8 }}>
+                      {appLoading ? 'Submitting…' : 'Submit Application'} <Icon name="arrow" size={16} color={T.white} />
+                    </button>
+                  </>
+                )}
               </div>
             ) : (
               <div style={{ textAlign: 'center', padding: '40px 0' }}>
