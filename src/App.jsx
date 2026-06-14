@@ -1444,7 +1444,7 @@ const Careers = ({ setPage }) => {
           if (f.seniority && !m.seniority && seniorityOptions.includes(f.seniority)) m.seniority = f.seniority;
           return m;
         });
-        setParsedNote('We filled in what we could from your CV — please review the fields above before submitting.');
+        setParsedNote('We filled in what we could from your CV — please review the fields below before submitting.');
       }
     } catch (err) {
       /* silent — auto-fill is a bonus; the form still works manually */
@@ -1532,6 +1532,23 @@ const Careers = ({ setPage }) => {
                 <p className="eyebrow" style={{ marginBottom: 12 }}>Apply</p>
                 <h3 className="display-sm" style={{ marginBottom: 8 }}>{applyJob.title}</h3>
                 <p style={{ color: T.muted, fontSize: 14, marginBottom: 28 }}>Upload your CV and we'll fill in your details below — just review and submit. We respond within 24 hours.</p>
+                <div className="field">
+                  <label className="label">CV / Résumé<span style={{ color: T.gold }}> *</span> <span style={{ color: T.faded, fontWeight: 400, textTransform: 'none', letterSpacing: 'normal' }}>(PDF or Word)</span></label>
+                  <input id="cv-upload" type="file" accept=".pdf,.doc,.docx" onChange={handleCvChange} style={{ display: 'none' }} />
+                  <label htmlFor="cv-upload" className="input" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer' }}>
+                    <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color: cvFile ? T.ink : T.faded }}>{cvFile ? cvFile.name : 'Choose file…'}</span>
+                    <span style={{ color: T.gold, fontWeight: 600, fontSize: 12, letterSpacing: '0.06em', textTransform: 'uppercase', flexShrink: 0, marginLeft: 12 }}>{cvFile ? 'Change' : 'Browse'}</span>
+                  </label>
+                  {parsing && (
+                    <p style={{ color: T.muted, fontSize: 13, marginTop: 8, display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <span className="spin" style={{ width: 12, height: 12, border: `2px solid ${T.line}`, borderTopColor: T.gold, borderRadius: '50%', display: 'inline-block' }} />
+                      Reading your CV to fill in your details…
+                    </p>
+                  )}
+                  {!parsing && parsedNote && (
+                    <p style={{ color: T.gold, fontSize: 13, marginTop: 8 }}>{parsedNote}</p>
+                  )}
+                </div>
                 {[{ label: 'Full Name', k: 'name', ph: 'Your full name' }, { label: 'Email', k: 'email', ph: 'you@email.com' }, { label: 'Phone / WhatsApp', k: 'phone', ph: '+971 …' }].map(f => (
                   <div key={f.k} className="field">
                     <label className="label">{f.label}<span style={{ color: T.gold }}> *</span></label>
@@ -1560,23 +1577,6 @@ const Careers = ({ setPage }) => {
                     <option>Director / Head</option>
                     <option>C-suite / Board</option>
                   </select>
-                </div>
-                <div className="field">
-                  <label className="label">CV / Résumé<span style={{ color: T.gold }}> *</span> <span style={{ color: T.faded, fontWeight: 400, textTransform: 'none', letterSpacing: 'normal' }}>(PDF or Word)</span></label>
-                  <input id="cv-upload" type="file" accept=".pdf,.doc,.docx" onChange={handleCvChange} style={{ display: 'none' }} />
-                  <label htmlFor="cv-upload" className="input" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', cursor: 'pointer' }}>
-                    <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color: cvFile ? T.ink : T.faded }}>{cvFile ? cvFile.name : 'Choose file…'}</span>
-                    <span style={{ color: T.gold, fontWeight: 600, fontSize: 12, letterSpacing: '0.06em', textTransform: 'uppercase', flexShrink: 0, marginLeft: 12 }}>{cvFile ? 'Change' : 'Browse'}</span>
-                  </label>
-                  {parsing && (
-                    <p style={{ color: T.muted, fontSize: 13, marginTop: 8, display: 'flex', alignItems: 'center', gap: 8 }}>
-                      <span className="spin" style={{ width: 12, height: 12, border: `2px solid ${T.line}`, borderTopColor: T.gold, borderRadius: '50%', display: 'inline-block' }} />
-                      Reading your CV to fill in your details…
-                    </p>
-                  )}
-                  {!parsing && parsedNote && (
-                    <p style={{ color: T.gold, fontSize: 13, marginTop: 8 }}>{parsedNote}</p>
-                  )}
                 </div>
                 <div className="field">
                   <label className="label">Brief Note <span style={{ color: T.faded, fontWeight: 400, textTransform: 'none', letterSpacing: 'normal' }}>(optional)</span></label>
