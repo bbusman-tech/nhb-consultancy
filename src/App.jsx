@@ -37,9 +37,9 @@ const T = {
   faded:   '#9CA3AF',   // tertiary
   border:  '#E5E2DA',   // warm border
   line:    '#EFEDE6',   // hairline
-  gold:    '#A98B5C',   // refined warm gold
-  goldD:   '#8A6F44',   // gold hover
-  goldL:   '#D4BB8A',   // light gold
+  gold:    '#9C8A62',   // master bronze
+  goldD:   '#7E6D48',   // bronze dark hover
+  goldL:   '#C9B68C',   // light bronze
 };
 
 const Styles = () => (
@@ -112,7 +112,21 @@ const Styles = () => (
     @keyframes fadeIn{from{opacity:0}to{opacity:1}}
     @keyframes scaleIn{from{opacity:0;transform:scale(0.96)}to{opacity:1;transform:scale(1)}}
     @keyframes drawLine{from{transform:scaleX(0)}to{transform:scaleX(1)}}
-    @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(169,139,92,0.4)}50%{box-shadow:0 0 0 12px rgba(169,139,92,0)}}
+    @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(156,138,98,0.4)}50%{box-shadow:0 0 0 12px rgba(156,138,98,0)}}
+    /* Cinematic hero drift — slow, almost-imperceptible zoom toward the skyline */
+    @keyframes heroZoom{from{transform:scale(1)}to{transform:scale(1.10)}}
+    .hero-bg-anim{animation:heroZoom 28s ease-in-out infinite alternate;transform-origin:60% 50%;will-change:transform}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .spin{animation:spin .7s linear infinite}
+    /* Scroll reveal — gated by .reveal-ready so content is ALWAYS visible if JS is off or fails */
+    .reveal-ready [data-reveal]{opacity:0;transform:translateY(28px);transition:opacity .85s cubic-bezier(.16,1,.3,1),transform .85s cubic-bezier(.16,1,.3,1)}
+    .reveal-ready [data-reveal].is-visible{opacity:1;transform:none}
+    /* Honour the user's "reduce motion" device setting — turn everything off */
+    @media (prefers-reduced-motion: reduce){
+      .hero-bg-anim{animation:none}
+      .reveal-ready [data-reveal]{opacity:1 !important;transform:none !important;transition:none !important}
+      html{scroll-behavior:auto}
+    }
     .fade-up{animation:fadeUp 0.7s cubic-bezier(0.4,0,0.2,1) forwards}
     .fade-in{animation:fadeIn 0.5s ease forwards}
     .scale-in{animation:scaleIn 0.4s cubic-bezier(0.4,0,0.2,1) forwards}
@@ -413,7 +427,7 @@ const Logo = ({ inverted = false, size = 'md' }) => {
           objectPosition: 'center',
           flexShrink: 0,
           /* Subtle gold hairline ties the mark to the brand on light backgrounds */
-          boxShadow: inverted ? 'none' : `0 0 0 1px rgba(169,139,92,0.25)`,
+          boxShadow: inverted ? 'none' : `0 0 0 1px rgba(156,138,98,0.25)`,
         }}
       />
       <div style={{ lineHeight: 1 }}>
@@ -604,7 +618,7 @@ const Home = ({ setPage }) => {
       {/* ═══ HERO ═══════════════════════════════════════════════════════════ */}
       <section className="hero-section" style={{ background: T.ink, position: 'relative' }}>
         {/* Hero photograph — graded to brand navy/gold */}
-        <div style={{ position: 'absolute', inset: 0, backgroundImage: 'url(/hero-skyline.jpg)', backgroundSize: 'cover', backgroundPosition: '60% center', pointerEvents: 'none' }} />
+        <div className="hero-bg-anim" style={{ position: 'absolute', inset: 0, backgroundImage: 'url(/hero-skyline.jpg)', backgroundSize: 'cover', backgroundPosition: '60% center', pointerEvents: 'none' }} />
         {/* Navy scrim — darkens the left so the headline stays crisp, lets the light breathe on the right */}
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg, rgba(10,22,40,0.95) 0%, rgba(10,22,40,0.82) 32%, rgba(10,22,40,0.5) 62%, rgba(10,22,40,0.22) 100%), linear-gradient(to top, rgba(10,22,40,0.55) 0%, rgba(10,22,40,0) 38%)', pointerEvents: 'none' }} />
 
@@ -825,8 +839,8 @@ const Home = ({ setPage }) => {
       <section className="pad-xl" style={{ position: 'relative', background: T.ink, overflow: 'hidden' }}>
         {/* Contour-line texture — "mapping the path" (procedural, on-brand) */}
         <div style={{ position: 'absolute', inset: 0, backgroundImage: 'url(/textures/tex3_contours.jpg)', backgroundSize: 'cover', backgroundPosition: 'center', opacity: 0.55, pointerEvents: 'none' }} />
-        <div style={{ position: 'absolute', top: 0, right: 0, width: 500, height: 500, border: `1px solid rgba(169,139,92,0.1)`, borderRadius: '50%', transform: 'translate(40%, -40%)' }} />
-        <div style={{ position: 'absolute', bottom: 0, left: 0, width: 300, height: 300, border: `1px solid rgba(169,139,92,0.08)`, borderRadius: '50%', transform: 'translate(-30%, 30%)' }} />
+        <div style={{ position: 'absolute', top: 0, right: 0, width: 500, height: 500, border: `1px solid rgba(156,138,98,0.1)`, borderRadius: '50%', transform: 'translate(40%, -40%)' }} />
+        <div style={{ position: 'absolute', bottom: 0, left: 0, width: 300, height: 300, border: `1px solid rgba(156,138,98,0.08)`, borderRadius: '50%', transform: 'translate(-30%, 30%)' }} />
         <div className="container-narrow" style={{ position: 'relative', zIndex: 2, textAlign: 'center' }}>
           <span className="gold-rule" style={{ margin: '0 auto 32px' }} />
           <h2 className="display-lg" style={{ color: T.white, marginBottom: 28 }}>
@@ -886,7 +900,7 @@ const About = ({ setPage }) => (
           <div>
             <img
               src="/brand/card-founder.jpg"
-              alt="Nihel Hassen Busman, Founder and Principal Consultant of NHB Consultancy"
+              alt="Nihel Hassen Busman, Founder of NHB Consultancy"
               loading="lazy"
               style={{ width: '100%', aspectRatio: '1 / 1', objectFit: 'cover', display: 'block', boxShadow: '0 24px 60px -20px rgba(10,22,40,0.25)' }}
             />
@@ -1362,6 +1376,8 @@ const Careers = ({ setPage }) => {
   const blankApp = { name: '', email: '', phone: '', linkedin: '', position: '', currentTitle: '', currentCompany: '', seniority: '', location: '', message: '' };
   const [appForm, setAppForm] = useState(blankApp);
   const [cvFile, setCvFile] = useState(null);
+  const [parsing, setParsing] = useState(false);
+  const [parsedNote, setParsedNote] = useState('');
   const [appError, setAppError] = useState('');
   const [appSent, setAppSent] = useState(false);
   const [appLoading, setAppLoading] = useState(false);
@@ -1390,7 +1406,50 @@ const Careers = ({ setPage }) => {
     if (!okType) { setAppError('Please upload a PDF or Word (.doc/.docx) file.'); return; }
     if (file.size > 8 * 1024 * 1024) { setAppError('That file is over 8 MB — please upload a smaller CV.'); return; }
     setAppError('');
+    setParsedNote('');
     setCvFile(file);
+    // Smart auto-fill — read text-based PDFs and pre-fill empty fields. Best-effort: never blocks the form.
+    if (file.type === 'application/pdf' && file.size < 4.5 * 1024 * 1024) {
+      autofillFromCv(file);
+    }
+  };
+
+  const autofillFromCv = async (file) => {
+    setParsing(true);
+    try {
+      const dataBase64 = await new Promise((resolve, reject) => {
+        const r = new FileReader();
+        r.onload = () => resolve(String(r.result).split(',')[1] || '');
+        r.onerror = reject;
+        r.readAsDataURL(file);
+      });
+      const resp = await fetch('/.netlify/functions/parse-cv', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ dataBase64, mediaType: file.type }),
+      });
+      const out = await resp.json().catch(() => ({}));
+      const f = out && out.fields;
+      if (f && typeof f === 'object') {
+        const seniorityOptions = ['Entry / Junior', 'Mid-level', 'Senior', 'Director / Head', 'C-suite / Board'];
+        setAppForm(prev => {
+          const m = { ...prev };
+          if (f.name && !m.name) m.name = String(f.name);
+          if (f.email && !m.email) m.email = String(f.email);
+          if (f.phone && !m.phone) m.phone = String(f.phone);
+          if (f.linkedin && !m.linkedin) m.linkedin = String(f.linkedin);
+          if (f.currentTitle && !m.currentTitle) m.currentTitle = String(f.currentTitle);
+          if (f.currentCompany && !m.currentCompany) m.currentCompany = String(f.currentCompany);
+          if (f.location && !m.location) m.location = String(f.location);
+          if (f.seniority && !m.seniority && seniorityOptions.includes(f.seniority)) m.seniority = f.seniority;
+          return m;
+        });
+        setParsedNote('We filled in what we could from your CV — please review the fields above before submitting.');
+      }
+    } catch (err) {
+      /* silent — auto-fill is a bonus; the form still works manually */
+    }
+    setParsing(false);
   };
 
   const handleApply = async () => {
@@ -1445,7 +1504,7 @@ const Careers = ({ setPage }) => {
                     </div>
                   </div>
                   <div style={{ fontSize: 13, color: T.ink2, fontWeight: 500 }}>{job.salary || '—'}</div>
-                  <button onClick={() => { setApplyJob(job); setAppSent(false); setAppForm({ ...blankApp, position: job.title }); setCvFile(null); setAppError(''); }} className="btn btn-outline" style={{ padding: '10px 22px', fontSize: 12 }}>
+                  <button onClick={() => { setApplyJob(job); setAppSent(false); setAppForm({ ...blankApp, position: job.title }); setCvFile(null); setParsedNote(''); setParsing(false); setAppError(''); }} className="btn btn-outline" style={{ padding: '10px 22px', fontSize: 12 }}>
                     Apply <Icon name="arrow" size={14} color={T.ink} />
                   </button>
                 </div>
@@ -1472,7 +1531,7 @@ const Careers = ({ setPage }) => {
               <div>
                 <p className="eyebrow" style={{ marginBottom: 12 }}>Apply</p>
                 <h3 className="display-sm" style={{ marginBottom: 8 }}>{applyJob.title}</h3>
-                <p style={{ color: T.muted, fontSize: 14, marginBottom: 28 }}>Attach your CV and we'll be in touch within 24 hours.</p>
+                <p style={{ color: T.muted, fontSize: 14, marginBottom: 28 }}>Upload your CV and we'll fill in your details below — just review and submit. We respond within 24 hours.</p>
                 {[{ label: 'Full Name', k: 'name', ph: 'Your full name' }, { label: 'Email', k: 'email', ph: 'you@email.com' }, { label: 'Phone / WhatsApp', k: 'phone', ph: '+971 …' }].map(f => (
                   <div key={f.k} className="field">
                     <label className="label">{f.label}<span style={{ color: T.gold }}> *</span></label>
@@ -1509,6 +1568,15 @@ const Careers = ({ setPage }) => {
                     <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color: cvFile ? T.ink : T.faded }}>{cvFile ? cvFile.name : 'Choose file…'}</span>
                     <span style={{ color: T.gold, fontWeight: 600, fontSize: 12, letterSpacing: '0.06em', textTransform: 'uppercase', flexShrink: 0, marginLeft: 12 }}>{cvFile ? 'Change' : 'Browse'}</span>
                   </label>
+                  {parsing && (
+                    <p style={{ color: T.muted, fontSize: 13, marginTop: 8, display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <span className="spin" style={{ width: 12, height: 12, border: `2px solid ${T.line}`, borderTopColor: T.gold, borderRadius: '50%', display: 'inline-block' }} />
+                      Reading your CV to fill in your details…
+                    </p>
+                  )}
+                  {!parsing && parsedNote && (
+                    <p style={{ color: T.gold, fontSize: 13, marginTop: 8 }}>{parsedNote}</p>
+                  )}
                 </div>
                 <div className="field">
                   <label className="label">Brief Note <span style={{ color: T.faded, fontWeight: 400, textTransform: 'none', letterSpacing: 'normal' }}>(optional)</span></label>
@@ -1875,6 +1943,32 @@ export default function App() {
     setMetaTag('meta[name="twitter:title"]', 'content', m.title);
     setMetaTag('meta[name="twitter:description"]', 'content', m.desc);
     setCanonical(origin + m.path);
+  }, [page]);
+
+  // Scroll-reveal motion — progressive & safe: reduce-motion is honoured, in-view blocks
+  // show instantly (no flash), and a failsafe guarantees nothing can ever stay hidden.
+  useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const root = document.documentElement;
+    const sel = 'section h2, section h3, section h4, [class*="card"], [class*="Card"], section img, .btn';
+    let nodes = Array.from(document.querySelectorAll(sel))
+      .filter(el => !el.closest('.hero-section') && !el.closest('nav') && !el.closest('header') && !el.closest('footer'));
+    const set = new Set(nodes);
+    nodes = nodes.filter(el => { let p = el.parentElement; while (p) { if (set.has(p)) return false; p = p.parentElement; } return true; });
+    if (!nodes.length) return;
+    const vh = window.innerHeight || 800;
+    const info = nodes.map(el => ({ el, inView: el.getBoundingClientRect().top < vh * 0.92 }));
+    root.classList.add('reveal-ready');
+    info.forEach(({ el, inView }) => { el.setAttribute('data-reveal', ''); if (inView) el.classList.add('is-visible'); });
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('is-visible'); io.unobserve(e.target); } });
+    }, { rootMargin: '0px 0px -8% 0px', threshold: 0.05 });
+    info.forEach(({ el }) => { if (!el.classList.contains('is-visible')) io.observe(el); });
+    const failsafe = setTimeout(() => info.forEach(({ el }) => el.classList.add('is-visible')), 2600);
+    return () => {
+      io.disconnect(); clearTimeout(failsafe); root.classList.remove('reveal-ready');
+      info.forEach(({ el }) => { el.removeAttribute('data-reveal'); el.classList.remove('is-visible'); });
+    };
   }, [page]);
 
   return (
