@@ -18,7 +18,9 @@ tags: [tasks, one-portal]
 ## 📋 Next
 - [ ] Pick the first second hotel to onboard within Roya International
 - [ ] Write a short "launch a new hotel" checklist for super-admins
-- [ ] Review which of the 4 modules are ready vs still in progress
+- [ ] Finish the Sales & F&B playbooks/academies to match Reservations
+- [ ] Roll out the Performance Hub to team leaders (check span-of-control scoping)
+- [ ] Review which modules are ready vs still in progress (per department)
 
 ## 🧊 Later / Someday
 - [ ] Roll out to remaining Roya International properties
